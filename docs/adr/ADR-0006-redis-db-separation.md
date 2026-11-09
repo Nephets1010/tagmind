@@ -72,7 +72,7 @@ redis_cache_url   = TAGMIND_REDIS_URL 的 db 改为 2
 @dataclass(frozen=True)
 class RecContext:
     request_id: str
-    replay_ts: datetime | None = None     # 非 None ⇒ 回放模式
+    replay_ts: datetime | None = None  # 非 None ⇒ 回放模式
     cache_bypass: bool = False
     debug_level: int = 0
 ```

@@ -20,8 +20,8 @@ _SRC = Path(__file__).resolve().parent.parent / "src"
 if _SRC.is_dir() and str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
-from tagmind.db.models import *  # noqa: F403 - 导入全部模型以填充 metadata
 from tagmind.db.base import Base
+from tagmind.db.models import *  # noqa: F403 - 导入全部模型以填充 metadata
 
 config = context.config
 
@@ -51,7 +51,7 @@ def _resolve_url() -> str:
         if settings.database_url:
             return settings.database_url
         return settings.resolved_database_url
-    except Exception:  # noqa: BLE001 - 配置不可用时退回 ini
+    except Exception:
         return config.get_main_option("sqlalchemy.url", "")
 
 
@@ -79,9 +79,7 @@ def run_migrations_online() -> None:
         )
     configuration = config.get_section(config.config_ini_section, {})
     configuration["sqlalchemy.url"] = url
-    connectable = engine_from_config(
-        configuration, prefix="sqlalchemy.", poolclass=pool.NullPool
-    )
+    connectable = engine_from_config(configuration, prefix="sqlalchemy.", poolclass=pool.NullPool)
     with connectable.connect() as connection:
         context.configure(
             connection=connection,

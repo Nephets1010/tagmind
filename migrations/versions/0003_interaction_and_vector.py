@@ -121,9 +121,7 @@ def _has_vector_extension() -> bool:
     """判断当前库是否已启用 ``vector`` 扩展。"""
     conn = op.get_bind()
     return bool(
-        conn.execute(
-            sa.text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")
-        ).scalar()
+        conn.execute(sa.text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")).scalar()
     )
 
 

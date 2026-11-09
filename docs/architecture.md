@@ -2672,7 +2672,9 @@ flowchart TD
 # config/settings.py 的唯一合法形态
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="TAGMIND_", env_file=".env", extra="ignore",
+        env_prefix="TAGMIND_",
+        env_file=".env",
+        extra="ignore",
         case_sensitive=False,
     )
 
@@ -2682,7 +2684,7 @@ class Settings(BaseSettings):
     postgres_db: str = "tagmind"
     postgres_user: str = "tagmind"
     postgres_password: SecretStr = SecretStr("")
-    database_url: str = ""      # 空则由上面五项派生
+    database_url: str = ""  # 空则由上面五项派生
 
     # TAGMIND_VECTOR_BACKEND → vector_backend
     vector_backend: Literal["pgvector", "chroma"] = "pgvector"
@@ -2920,9 +2922,14 @@ class Repository(Protocol, Generic[M]):
 **会话工厂**
 
 ```python
-engine = create_engine(url, pool_size=10, max_overflow=10,
-                       pool_pre_ping=True, pool_recycle=1800,
-                       connect_args={"options": "-c timezone=UTC"})
+engine = create_engine(
+    url,
+    pool_size=10,
+    max_overflow=10,
+    pool_pre_ping=True,
+    pool_recycle=1800,
+    connect_args={"options": "-c timezone=UTC"},
+)
 SessionLocal = sessionmaker(engine, expire_on_commit=False)
 ```
 
@@ -2935,36 +2942,41 @@ SessionLocal = sessionmaker(engine, expire_on_commit=False)
 @dataclass(frozen=True, slots=True)
 class VectorRecord:
     content_id: int
-    embedding: tuple[float, ...]      # 长度 = dim
-    tag_vector: dict[int, float]      # {label_id: 加权值}
+    embedding: tuple[float, ...]  # 长度 = dim
+    tag_vector: dict[int, float]  # {label_id: 加权值}
     embedding_version: str
     tag_space_version: str
+
 
 @dataclass(frozen=True, slots=True)
 class VectorHit:
     content_id: int
-    score: float                      # 越大越相似（已统一为余弦）
+    score: float  # 越大越相似（已统一为余弦）
     recall_source: str
+
 
 @dataclass(frozen=True, slots=True)
 class VectorFilter:
-    label_ids: tuple[int, ...] = ()          # 标签倒排过滤
+    label_ids: tuple[int, ...] = ()  # 标签倒排过滤
     layer_label_ids: tuple[int, ...] = ()
     status: str = "approved"
     published_after: datetime | None = None
 
+
 class VectorStore(Protocol):
-    name: str                                   # "pgvector" | "chroma"
+    name: str  # "pgvector" | "chroma"
 
     def upsert(self, records: Sequence[VectorRecord], *, batch_size: int = 200) -> int: ...
-    def search(self, query: tuple[float, ...], *, top_k: int,
-               filters: VectorFilter | None = None) -> list[VectorHit]: ...
-    def search_by_tags(self, label_ids: Sequence[int], *, top_k: int,
-                       filters: VectorFilter | None = None) -> list[VectorHit]: ...
+    def search(
+        self, query: tuple[float, ...], *, top_k: int, filters: VectorFilter | None = None
+    ) -> list[VectorHit]: ...
+    def search_by_tags(
+        self, label_ids: Sequence[int], *, top_k: int, filters: VectorFilter | None = None
+    ) -> list[VectorHit]: ...
     def delete(self, content_ids: Sequence[int]) -> int: ...
     def count(self) -> int: ...
     def rebuild_index(self) -> None: ...
-    def health(self) -> BackendHealth: ...      # up/down + 延迟 + 错误摘要
+    def health(self) -> BackendHealth: ...  # up/down + 延迟 + 错误摘要
 ```
 
 **两个实现的差异与统一约定**
@@ -2985,14 +2997,16 @@ class VectorStore(Protocol):
 ```python
 # llm/base.py
 class LLMErrorKind(StrEnum):
-    RETRYABLE = "retryable"      # 5xx / 超时 / 连接错误
-    FATAL = "fatal"              # 401 / 403 / 参数错 / 上下文超长
-    PARSE = "parse"              # 响应可解析性错误（可降级解析）
+    RETRYABLE = "retryable"  # 5xx / 超时 / 连接错误
+    FATAL = "fatal"  # 401 / 403 / 参数错 / 上下文超长
+    PARSE = "parse"  # 响应可解析性错误（可降级解析）
+
 
 @dataclass(frozen=True, slots=True)
 class LLMMessage:
     role: Literal["system", "user", "assistant"]
     content: str
+
 
 @dataclass(frozen=True, slots=True)
 class LLMRequest:
@@ -3001,12 +3015,13 @@ class LLMRequest:
     system_prompt_version: str
     user_prompt_version: str
     label_def_version: str
-    temperature: float = 0.0          # 强制 0
+    temperature: float = 0.0  # 强制 0
     max_tokens: int = 2048
     timeout_s: float = 60.0
-    response_schema: dict | None = None   # JSON Schema
+    response_schema: dict | None = None  # JSON Schema
     content_id: int | None = None
     trace_id: str | None = None
+
 
 @dataclass(frozen=True, slots=True)
 class LLMResponse:
@@ -3020,9 +3035,10 @@ class LLMResponse:
     degraded: bool = False
     finish_reason: str | None = None
 
+
 class LLMBackend(Protocol):
-    name: str                              # "deterministic" | "openai_compat"
-    provider: str                          # "deterministic" | "ollama" | "zhipu"
+    name: str  # "deterministic" | "openai_compat"
+    provider: str  # "deterministic" | "ollama" | "zhipu"
 
     def chat(self, request: LLMRequest) -> LLMResponse: ...
     def embed(self, texts: Sequence[str]) -> list[tuple[float, ...]]: ...
@@ -3087,6 +3103,7 @@ def db_url() -> str:
     except Exception as exc:
         pytest.skip(f"PostgreSQL 不可用：{exc}")
     return url
+
 
 @pytest.fixture(scope="session")
 def redis_client() -> Redis:

@@ -31,7 +31,6 @@ _MIGRATIONS_DIR = Path(__file__).resolve().parent.parent
 if str(_MIGRATIONS_DIR) not in sys.path:
     sys.path.insert(0, str(_MIGRATIONS_DIR))
 
-from helpers import execute_raw  # noqa: E402
 
 revision: str = "0001_extensions_and_types"
 down_revision: str | None = None
@@ -66,9 +65,7 @@ _DOMAINS: tuple[tuple[str, str], ...] = (
 def _has_vector_extension(conn: sa.Connection) -> bool:
     """判断当前库是否已启用 ``vector`` 扩展。"""
     return bool(
-        conn.execute(
-            sa.text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")
-        ).scalar()
+        conn.execute(sa.text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")).scalar()
     )
 
 
@@ -106,13 +103,17 @@ def upgrade() -> None:
     # PostgreSQL 不支持 ``CREATE DOMAIN IF NOT EXISTS``，因此先查 pg_type
     # 再决定是否创建——这也让迁移可重复执行。
     for name, definition in _DOMAINS:
-        exists = op.get_bind().execute(
-            sa.text(
-                "SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace "
-                "WHERE n.nspname = current_schema() AND t.typname = :name"
-            ),
-            {"name": name},
-        ).scalar()
+        exists = (
+            op.get_bind()
+            .execute(
+                sa.text(
+                    "SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace "
+                    "WHERE n.nspname = current_schema() AND t.typname = :name"
+                ),
+                {"name": name},
+            )
+            .scalar()
+        )
         if exists:
             continue
         op.execute(sa.text(f"CREATE DOMAIN {name} AS {definition}"))

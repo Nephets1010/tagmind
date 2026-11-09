@@ -69,9 +69,9 @@ llm_api  →  llm_local  →  deterministic
 
 ```python
 class LLMErrorKind(StrEnum):
-    RETRYABLE = "retryable"   # 5xx / 超时 / 连接错误 → 指数退避重试
-    FATAL     = "fatal"       # 401 / 403 / 参数错 / 上下文超长 → 直接 DLQ
-    PARSE     = "parse"       # 响应可解析性问题 → 降级解析或走确定性路径
+    RETRYABLE = "retryable"  # 5xx / 超时 / 连接错误 → 指数退避重试
+    FATAL = "fatal"  # 401 / 403 / 参数错 / 上下文超长 → 直接 DLQ
+    PARSE = "parse"  # 响应可解析性问题 → 降级解析或走确定性路径
 ```
 
 - 401/403 属于 `FATAL`：**不可重试**，直接 DLQ 并告警「密钥失效」（PRD §5.2 明确）。

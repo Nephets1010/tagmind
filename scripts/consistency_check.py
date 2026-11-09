@@ -21,6 +21,7 @@ import argparse
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from sqlalchemy import inspect, text
 from sqlalchemy.engine import Engine
@@ -185,7 +186,9 @@ def _check_indexes(engine: Engine, report: CheckReport) -> None:
 
 def _check_partitions(engine: Engine, report: CheckReport) -> None:
     """V16：``exposure_log`` 的父表 + 至少 1 个分区 + DEFAULT 分区。"""
-    rows = _rows(engine, text(
+    rows = _rows(
+        engine,
+        text(
             """
             SELECT c.relname
             FROM pg_class c
@@ -193,7 +196,8 @@ def _check_partitions(engine: Engine, report: CheckReport) -> None:
             JOIN pg_class p ON p.oid = i.inhparent
             WHERE p.relname = 'exposure_log'
             """
-        ))
+        ),
+    )
     names = [str(row[0]) for row in rows]
     if not names:
         report.block("exposure_log 没有任何分区")
@@ -240,7 +244,9 @@ def _check_pii_privileges(engine: Engine, report: CheckReport) -> None:
 
 def _check_review_record_immutable(engine: Engine, report: CheckReport) -> None:
     """V12：``review_record`` 的 UPDATE 被触发器拒绝。"""
-    rows = _rows(engine, text(
+    rows = _rows(
+        engine,
+        text(
             """
             SELECT COUNT(*)
             FROM pg_trigger t
@@ -249,7 +255,8 @@ def _check_review_record_immutable(engine: Engine, report: CheckReport) -> None:
               AND NOT t.tgisinternal
               AND t.tgname = 'tg_review_record_immutable'
             """
-        ))
+        ),
+    )
     if not rows or int(rows[0][0]) == 0:
         report.block("review_record 缺少不可变触发器")
     else:
@@ -258,13 +265,15 @@ def _check_review_record_immutable(engine: Engine, report: CheckReport) -> None:
 
 def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
     """V1–V5：向量 ↔ 标签一致性。"""
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT
                 (SELECT COUNT(*) FROM content WHERE status = 'approved')
                 - (SELECT COUNT(*) FROM content_vector) AS coverage_gap
             """
-        )
+        ),
     )
     gap = int(row)
     if gap > 0:
@@ -272,7 +281,9 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
     else:
         report.ok("V1：已发布内容的向量覆盖率无缺口")
 
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*)
             FROM content_vector v
@@ -285,7 +296,7 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
                 )
             )
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -293,7 +304,9 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
     else:
         report.ok("V2：tag_vector 的 label_id 均在 labels 内")
 
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*)
             FROM content_vector
@@ -302,7 +315,7 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
                 FROM jsonb_each_text(tag_vector)
             )) > 1e-6
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -310,7 +323,9 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
     else:
         report.ok("V3：向量归一化自洽")
 
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT
                 (SELECT COUNT(*) FROM content_vector v
@@ -319,7 +334,7 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
                  LEFT JOIN content_vector v ON v.content_id = c.id WHERE v.content_id IS NULL
                  AND c.status = 'approved') AS orphans
             """
-        )
+        ),
     )
     orphans = int(row)
     if orphans:
@@ -330,12 +345,14 @@ def _check_vector_consistency(engine: Engine, report: CheckReport) -> None:
 
 def _check_profile_consistency(engine: Engine, report: CheckReport) -> None:
     """V6–V9：画像 ↔ 曝光对账。"""
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*) FROM user_profile
             WHERE NOT cold_start AND ABS(weights_sum - 1) > 1e-6
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -343,12 +360,14 @@ def _check_profile_consistency(engine: Engine, report: CheckReport) -> None:
     else:
         report.ok("V6：画像权重归一化")
 
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*) FROM user_profile
             WHERE cold_start <> (confidence = 0)
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -356,14 +375,16 @@ def _check_profile_consistency(engine: Engine, report: CheckReport) -> None:
     else:
         report.ok("V8：冷启动标记与置信度一致")
 
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*) FROM user_profile
             WHERE label_dims <> (
                 SELECT COUNT(*) FROM jsonb_object_keys(tag_weights)
             )
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -374,7 +395,9 @@ def _check_profile_consistency(engine: Engine, report: CheckReport) -> None:
 
 def _check_conflict_seven_elements(engine: Engine, report: CheckReport) -> None:
     """V10：冲突日志 7 要素非空率必须 100%。"""
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*) FROM label_conflict_log
             WHERE candidates IS NULL
@@ -386,7 +409,7 @@ def _check_conflict_seven_elements(engine: Engine, report: CheckReport) -> None:
                OR confidence IS NULL
                OR review_status IS NULL
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -397,13 +420,15 @@ def _check_conflict_seven_elements(engine: Engine, report: CheckReport) -> None:
 
 def _check_pipeline_version(engine: Engine, report: CheckReport) -> None:
     """V18：``approved`` 内容的 ``pipeline_version`` 必须非空。"""
-    row = _scalar(engine, text(
+    row = _scalar(
+        engine,
+        text(
             """
             SELECT COUNT(*) FROM content
             WHERE status = 'approved'
               AND (pipeline_version IS NULL OR pipeline_version = '')
             """
-        )
+        ),
     )
     violations = int(row)
     if violations:
@@ -484,7 +509,9 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[WARN] {item}")
     for item in report.blocking:
         print(f"[FAIL] {item}")
-    print(f"通过 {len(report.passed)} 项，告警 {len(report.warnings)} 项，阻断 {len(report.blocking)} 项")
+    print(
+        f"通过 {len(report.passed)} 项，告警 {len(report.warnings)} 项，阻断 {len(report.blocking)} 项"
+    )
     return report.exit_code()
 
 

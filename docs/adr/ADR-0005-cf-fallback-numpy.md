@@ -78,8 +78,9 @@ $$
 
 ```python
 class CFBackend(Protocol):
-    name: str        # "lightfm" | "fallback_cf" | "recall_only"
-    algo: str        # 写入 exposure_log.algo 的口径标签
+    name: str  # "lightfm" | "fallback_cf" | "recall_only"
+    algo: str  # 写入 exposure_log.algo 的口径标签
+
     def fit(self, interactions: InteractionMatrix) -> None: ...
     def predict(self, user_id: str, *, top_k: int) -> list[CFHit]: ...
     def health(self) -> BackendHealth: ...

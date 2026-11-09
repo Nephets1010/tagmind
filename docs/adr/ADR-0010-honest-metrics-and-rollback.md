@@ -46,16 +46,17 @@ PRD §1.2 还写了一条：
 class EvidenceType(StrEnum):
     OFFLINE_EVALUATION = "offline_evaluation"
     OFFLINE_SIMULATION = "offline_simulation"
-    LOAD_TEST          = "load_test"
-    ENGINEERING_STAT   = "engineering_stat"
-    ONLINE_GRAY        = "online_gray"
-    ONLINE_REAL        = "online_real"      # 需 PRD 变更方可使用
+    LOAD_TEST = "load_test"
+    ENGINEERING_STAT = "engineering_stat"
+    ONLINE_GRAY = "online_gray"
+    ONLINE_REAL = "online_real"  # 需 PRD 变更方可使用
+
 
 @dataclass(frozen=True)
 class MetricValue:
     name: str
     value: float
-    evidence_type: EvidenceType     # 构造时必填，无默认值
+    evidence_type: EvidenceType  # 构造时必填，无默认值
     sample_size: int
     as_of: date
     label_def_version: str | None = None

@@ -41,10 +41,10 @@ jobs:
           pip install "ruff>=0.4,<1"
 
       - name: ruff check
-        run: ruff check src tests
+        run: ruff check .
 
       - name: ruff format --check
-        run: ruff format --check src tests
+        run: ruff format --check .
 
   typecheck:
     name: Type check (mypy)
@@ -171,7 +171,12 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      TAGMIND_TEST_DATABASE_URL: postgresql://tagmind:tagmind@localhost:5432/tagmind
+      # alembic/env.py 与 scripts/consistency_check.py 读的是 TAGMIND_DATABASE_URL；
+      # 集成测试 fixture 读 TAGMIND_TEST_DATABASE_URL。两者必须同时给出，
+      # 否则迁移会回退到 Settings 派生值（密码为空）而连接失败。
+      TAGMIND_DATABASE_URL: postgresql+psycopg://tagmind:tagmind@localhost:5432/tagmind
+      TAGMIND_TEST_DATABASE_URL: postgresql+psycopg://tagmind:tagmind@localhost:5432/tagmind
+      TAGMIND_POSTGRES_PASSWORD: tagmind
     steps:
       - uses: actions/checkout@v4
 

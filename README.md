@@ -26,7 +26,11 @@ tagmind 面向「内容量大、标签体系复杂、召回延迟要求高」的
 - [阶段状态](#阶段状态)
 - [快速开始](#快速开始)
 - [架构分层](#架构分层)
+- [部署与运维](#部署与运维)
+- [API 文档](#api-文档)
 - [指标口径（诚实声明）](#指标口径诚实声明)
+- [评估与验证](#评估与验证)
+- [关键取舍与风险](#关键取舍与风险)
 - [数据与合规声明](#数据与合规声明)
 - [开发规范](#开发规范)
 - [文档](#文档)
@@ -216,6 +220,152 @@ tagmind/
 **依赖红线**：`domain/` 不得 import fastapi / sqlalchemy / pydantic / numpy /
 celery / redis；业务模块一律经 `db/repositories` 访问数据库。
 
+### 系统分层图
+
+```mermaid
+flowchart TB
+    subgraph ING["接入层"]
+        A1["HTTP /content"]
+        A2["RSS / 上传 / 批量导入"]
+        A3["曝光行为回流"]
+    end
+    subgraph PROC["处理层（Celery 异步）"]
+        B1["清洗 / 分块 / PII 脱敏 / 去重"]
+        B2["12 层打标引擎"]
+        B3["冲突检测 + RAG 仲裁"]
+        B4["质量双通道闸门"]
+    end
+    subgraph STORE["存储层"]
+        C1[("PostgreSQL 16<br/>16 张表 / 按月分区")]
+        C2[("pgvector<br/>1024 维 HNSW")]
+        C3[("Redis 0/1/2<br/>缓存 / broker / 快照")]
+    end
+    subgraph FEAT["特征层"]
+        D1["标签向量<br/>层权 x IDF"]
+        D2["用户画像<br/>归一化权重 + 衰减"]
+        D3["稀疏 CSR 索引"]
+    end
+    subgraph ONLINE["在线服务层"]
+        E1["标签召回"]
+        E2["向量召回"]
+        E3["协同过滤"]
+        E4["热门 / 最新兜底"]
+        E5["融合重排"]
+    end
+    subgraph OPS["运维与离线"]
+        F1["Prometheus / 结构化日志"]
+        F2["漂移周检 / 抽检流水线"]
+        F3["金标评测 / 离线回放 A/B"]
+    end
+
+    A1 --> B1
+    A2 --> B1
+    B1 --> B2 --> B3 --> B4 --> C1
+    B2 --> C2
+    B4 --> D1 --> D3
+    A3 --> C1 --> D2
+    D2 --> E1
+    D3 --> E1
+    C2 --> E2
+    C1 --> E3
+    C1 --> E4
+    E1 --> E5
+    E2 --> E5
+    E3 --> E5
+    E4 --> E5
+    E5 --> A3
+    C3 -.缓存.-> E5
+    C1 --> F2
+    C1 --> F3
+    F1 -.采集.-> PROC
+    F1 -.采集.-> ONLINE
+```
+
+**读图要点**：离线链路（打标 → 特征 → 索引）与在线链路（召回 → 重排）**只在存储层交汇**，
+因此打标任务的积压不会直接拖慢在线 P99；曝光回流同时喂给画像更新与离线回放。
+
+---
+
+## 部署与运维
+
+### 环境划分
+
+| 环境 | 用途 | 配置要点 |
+| --- | --- | --- |
+| `development` | 本地开发与单测 | `TAGMIND_LLM_BACKEND=deterministic`；无密钥可跑；集成测试无 DB 时显式 skip |
+| `staging` | 灰度前验证 | 与生产同构的 Compose；灌合成数据；跑全量回归 + 离线回放 |
+| `production` | 生产 | **强制** `TAGMIND_POSTGRES_PASSWORD`；`DEMO_MODE=0` 强制 API Key；密钥走环境变量 / 密钥管理，绝不入库 |
+
+`TAGMIND_ROLE` 让**同一镜像**分派成 `api` / `worker` / `beat` 三种角色，
+避免三份镜像漂移。首次启动顺序由 compose 的 `depends_on` + healthcheck 保证
+（postgres / redis 健康后 api 才起）。
+
+### 灰度发布
+
+标签体系与提示词都带版本号，灰度按三条轴独立控制：
+
+| 轴 | 配置 | 回滚动作 |
+| --- | --- | --- |
+| 标签体系版本 | `TAGMIND_LABEL_CANARY_VERSION` + `TAGMIND_LABEL_CANARY_RATIO` | 把比例调回 0，历史内容的 `labels_version` 不变，可继续按旧版本解释 |
+| 提示词版本 | `prompt_version` 记入审计 | 切回上一版 `prompt_version`，`prompt_hash` 校验保证不会串版 |
+| 模型 / 后端 | `TAGMIND_LLM_BACKEND` | 降级链**单向不可回**（ADR-0003），回滚靠重新提交而非自动切回 |
+
+数据迁移回滚：5 个 Alembic 版本均有 `downgrade`，但**分区表与触发器不可盲降**——
+先跑 `scripts/consistency_check.py`，再按 ADR-0010 的迁移回滚清单执行。
+
+### 监控告警
+
+| 类别 | 指标 | 告警阈值（可在配置调整） |
+| --- | --- | --- |
+| 打标链路 | JSON 一次解析成功率 / 队列积压 / 单条平均耗时 | 解析成功率 < 98%；积压 > 5000 持续 5min |
+| 质量 | 低质拒绝率、仲裁转人工率 | 转人工率 > 15% |
+| 在线 | P99 延迟、QPS、错误率 | P99 > 100ms；5xx > 1% |
+| 数据一致性 | 向量与标签表一致率、画像与曝光对账差异 | 任一非 100% |
+
+结构化日志用 `request_id` 贯穿 HTTP → contextvar → `exposure_log`，
+错误体带 `trace_id`，可与服务端日志对上。
+
+### 数据回溯与一致性校验
+
+`scripts/consistency_check.py` 覆盖架构 §13 的 18 项校验（V1–V18），核心是：
+
+- **向量 vs 标签**：`content_vector` 的 `tag_vector` 与 `content.labels` 逐条一致，
+  `tag_space_version` 不匹配时**拒绝打分**（避免新旧分数混算）
+- **画像 vs 曝光**：按时间窗重算 `tag_weights`，与 `user_profile` 落库值对账
+- **迁移后**：表数 / 索引 / 分区 / 触发器 / 权限逐项比对，退出码非 0 即阻断发布
+- **离线回放可复现**：强制 `cache_bypass=True`，按回放时间窗从 `exposure_log`
+  重算热门榜，**不读 Redis 缓存**（ADR-0006）
+
+---
+
+## API 文档
+
+> **实现状态**：阶段 0 仅上线健康探针；下表是完整契约，业务接口随阶段 4 交付。
+> 交互式 OpenAPI 在 `http://localhost:8000/docs`。
+
+| 方法 | 路径 | 说明 | 状态 |
+| --- | --- | --- | --- |
+| GET | `/healthz` | 存活探针（Docker HEALTHCHECK 指向此路径） | ✅ 已实现 |
+| GET | `/readyz` | 就绪探针，返回 DB 连通状态 | ✅ 已实现 |
+| GET | `/openapi.json` | OpenAPI schema | ✅ 已实现 |
+| POST | `/content` | 提交内容，返回 `202` + `content_id` + `task_id`；空正文 `400` 带字段级错误码 | 阶段 4 |
+| GET | `/content/{id}` | 状态 + labels + quality + `conflict_count` + `last_error` | 阶段 4 |
+| GET | `/labels/tree` | 12 层标签树（按版本） | 阶段 4 |
+| POST | `/recommend` | 个性化分发，返回 `algo` / `debug.fallback_reason` | 阶段 4 |
+| POST | `/events` | 曝光与行为回流 | 阶段 4 |
+| GET | `/metrics` | Prometheus 指标 | 阶段 4 |
+| GET | `/dlq` · POST `/dlq/replay` | 死信列表与重放 | 阶段 4 |
+
+**统一错误体**（架构 §14.3）：
+
+```json
+{ "error": { "code": "CONTENT_NOT_FOUND", "message": "内容不存在",
+             "details": {"content_id": "c-1"}, "trace_id": "..." } }
+```
+
+**鉴权**：`DEMO_MODE=1` 时管理接口免鉴权但启动日志显式披露；
+非演示模式所有管理类接口要求 `X-API-Key`。
+
 ---
 
 ## 指标口径（诚实声明）
@@ -231,6 +381,87 @@ celery / redis；业务模块一律经 `db/repositories` 访问数据库。
 
 `MetricValue` 的 `evidence_type` **没有默认值**——忘记填会在构造时直接
 `TypeError`，而不是在报告里静默缺失。这是刻意的摩擦。
+
+---
+
+## 评估与验证
+
+### 离线：标签质量
+
+500 条金标集上分层计算 macro F1。报告**同时输出三个数**，避免分母口径含混：
+
+| 指标 | 定义 | 用途 |
+| --- | --- | --- |
+| `macro_f1_all12` | 固定 12 层平均（含低支撑层） | 辅助参考 |
+| `macro_f1_supported` | 仅 `support >= 10` 的层平均 | **正式口径** |
+| `macro_f1_by_l1_subset` | 按 L1 类目子集 | 验收判定：>= 6 个类目子集 >= 90% |
+
+配套：打标覆盖率 >= 95%、层级路径完整率 100%（硬约束）、约束违规率 0%（硬约束）、
+冲突检出覆盖 >= 90%、质量评分与人工评分 Spearman rho >= 0.6。
+
+> **诚实声明**：本仓库的 500 条金标集是**合成参考集**（`synthetic_gold=true`），
+> 不是人工标注，README 与所有报告均显式声明。双人独立标注 + Cohen's kappa 的工具链已实现，
+> 但**人工回填需业务方参与，工程侧不代劳也不伪造**（Q11 / Q20）。
+
+### 离线：排序质量与业务效果
+
+- **排序模型**：按用户分组计算 AUC / GAUC（GAUC 按用户曝光数加权），
+  避免活跃用户主导整体 AUC；同时报告 Recall@K 与 NDCG@K。
+- **三条基线并列**（Q13），才能说清增量来自「个性化」还是「某个组件」：
+  1. 业务基线 = 热门 + 最新
+  2. 算法消融 = 纯标签召回 / 纯向量召回
+  3. 全量融合
+- **业务指标**：CTR（有效点击 / 曝光）、标签覆盖率、**7 日回访率**（留存代理指标）、
+  有效分发率、P99 延迟、QPS。
+- **证据标签**：回放报告首页固定写明 `evidence_type=offline_simulation`、
+  「非线上真实流量」，`sample_size` 与 `as_of` 必带。
+
+> ⚠️ 蓝本中「CTR +40%」「留存 +25%」在本仓库中**从未被宣称达成**。
+> 无真实流量时这些数字不可验证；离线仿真结论不得冒充线上效果。
+> 「7 日回访率」是**代理指标**，不等同于真实留存。
+
+### 线上：A/B 实验
+
+灰度阶段才可用，需同时满足：实验分组写入 `experiment_assignment`、
+曝光日志带 `exp_group`、给出显著性检验与实验期说明、指标标 `online_gray`。
+`online_real` 在架构中**结构性不可达**（ADR-0010），需 PRD 变更才能启用。
+
+### 工程验证
+
+```bash
+ruff check src tests && ruff format --check src tests   # 静态规范
+mypy src/tagmind                                       # 类型
+pytest tests -q                                        # 单测 + 覆盖率门槛 70%
+python scripts/consistency_check.py                     # 数据一致性（需 DB）
+```
+
+CI 另跑密钥扫描（`sk-` / `AKIA` / `token=`）、依赖扫描与迁移幂等校验。
+
+---
+
+## 关键取舍与风险
+
+| # | 取舍 | 为什么这样选 | 代价与风险 |
+| --- | --- | --- | --- |
+| 1 | **pgvector 而非独立向量库** | 10 万向量远低于其舒适区；可与 `content` 表 JOIN、同事务，省掉双写一致性 | 索引构建慢、与业务负载争抢资源；大规模需迁 Milvus |
+| 2 | **`deterministic` 为默认后端** | 零密钥、逐位可复现，CI 与评测可无人值守 | 规则后端准确率**不能**当作大模型能力评估；只验证流水线确定性与口径 |
+| 3 | **不引入 LlamaIndex** | 仲裁只是「向量检索 + 固定模板 + 结构化解析」，自写少 8 个依赖 | 后续若做标签图谱推理需重新评估 |
+| 4 | **LightFM 可选 + 纯 NumPy `fallback_cf` 必交付** | LightFM 无 wheel、2023 后停更，编译常失败 | 两后端结果以 `algo` 分列、**绝不混算**；性能弱于编译版 |
+| 5 | **标签 1490 个，L4 以下按需注入** | 全量注入 system prompt 需 4–6 万 token/条，是主要成本项 | 检索注入有漏召回风险，需监控 L4 覆盖率 |
+| 6 | **标签向量：层权 + IDF** | 树层是强特征，实体层是弱特征，需区别对待 | 层权改动必须触发 `tag_space_version` 变更，否则新旧分数混算 |
+| 7 | **16 张物理表 + 原生 SQL 迁移** | DDL 与架构契约逐字符一致，便于 `information_schema` 零差异比对 | 迁移与 ORM 需靠 `test_db_metadata.py` 锁死一致性 |
+| 8 | **离线回放不读缓存** | 读 Redis 会让仿真结果依赖运行时状态、不可复现 | 回放更慢，且必须按时间窗重算热门榜 |
+
+### 已知风险
+
+| 风险 | 表现 | 缓解 |
+| --- | --- | --- |
+| 标签漂移 | 运营改了类目含义，模型输出逐渐跑偏 | 每周抽检 200 条 → 回灌 few-shot → 提示词版本递增（工具链已实现，人工回填需业务方） |
+| RAG 误仲裁 | 冲突裁决结论错误且被自动放行 | 置信度 < 0.75 自动转人工；`label_conflict_log` 全量可回放；`resolved_before` 保留推翻前结论 |
+| 冷启动 | 新用户无行为，协同过滤失效 | 热门 + 最新兜底，响应显式标 `cold_start=true` 与兜底来源 |
+| 推荐指标不可验证 | 把仿真 CTR 说成线上提升 | `evidence_type` 无默认值 + 报告首页固定文案 + 三基线并列 |
+| 数据合规 | 真实 UGC 与 PII 泄漏 | 仓库全为合成数据；PII 双点脱敏；`pii_mask_map` 只存哈希且对 PUBLIC 无权限；外发记 `egress_log` |
+| 本机未验证项 | 无 PostgreSQL / Docker，迁移幂等、分区、触发器、容器启动**只做静态审查** | CI 的 `migration-idempotent` job 用真实 PG 服务容器验证；QA 报告显式标注「未验证」 |
 
 ---
 

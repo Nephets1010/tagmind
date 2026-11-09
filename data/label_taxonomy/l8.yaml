@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L8 地理与场所
+#
+# 层级定位：发生的国家、省市、场馆与景区。开放多选，配额 ≤5。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 8
+
+labels:
+  - {code: G01_HQ_CITY, name: "总部所在地", description: "机构总部或发布活动举办城市", parent: O01_AI_VENDOR, max_select: 5, examples: ["总部所在"]}
+  - {code: G02_FAB_SITE, name: "晶圆厂所在城市", description: "晶圆厂或研发基地所在的园区城市", parent: O02_FOUNDRY, max_select: 5, examples: ["晶圆厂所"]}
+  - {code: G03_HQ_CITY, name: "总部所在地", description: "系统厂商总部与研发团队所在城市", parent: O03_OS_VENDOR, max_select: 5, examples: ["总部所在"]}
+  - {code: G04_CAPITAL_CITY, name: "首都城市", description: "统计机构与政策发布部门所在城市", parent: O04_STAT_BUREAU, max_select: 5, examples: ["首都城市"]}
+  - {code: G05_FIN_CITY, name: "金融中心城市", description: "证券机构与交易所集聚的金融城市", parent: O05_BROKERAGE, max_select: 5, examples: ["金融中心"]}
+  - {code: G06_FIN_CITY, name: "金融中心城市", description: "资产管理机构总部所在城市", parent: O06_ASSET_FIRM, max_select: 5, examples: ["金融中心"]}
+  - {code: G07_HOSPITAL_CITY, name: "医院所在城市", description: "睡眠门诊与研究机构所在城市", parent: O07_HEALTH_ORG, max_select: 5, examples: ["医院所在"]}
+  - {code: G08_CITY_HOME, name: "城市住宅", description: "整理行动发生在的城市与户型", parent: O08_HOME_Brand, max_select: 5, examples: ["城市住宅"]}
+  - {code: G09_CITY_STREET, name: "城市街景", description: "拍摄或出街搭配发生的城市街道", parent: O09_APPAREL_BRAND, max_select: 5, examples: ["城市街景"]}
+  - {code: G10_AFFECTED_CITY, name: "受灾城市", description: "灾害发生地的城市与区域", parent: O10_EMERGENCY_DEPT, max_select: 5, examples: ["受灾城市"]}
+  - {code: G11_ONLINE_SPACE, name: "线上空间", description: "话题在社交平台上的传播场域", parent: O11_PLATFORM, max_select: 5, examples: ["线上空间"]}
+  - {code: G12_REPORT_CITY, name: "报道涉及城市", description: "调查事件发生地与采访所在城市", parent: O12_MEDIA_OUTLET, max_select: 5, examples: ["报道涉及"]}
+  - {code: G13_STADIUM_CITY, name: "主场城市", description: "俱乐部主场与赛事举办地城市", parent: O13_FOOTBALL_CLUB, max_select: 5, examples: ["主场城市"]}
+  - {code: G14_PROD_CITY, name: "制作城市", description: "剧组拍摄与后期制作所在城市", parent: O14_STREAM_SVC, max_select: 5, examples: ["制作城市"]}
+  - {code: G15_MUSIC_CITY, name: "音乐之城", description: "演出与录制所在的音乐产业城市", parent: O15_LABEL, max_select: 5, examples: ["音乐之城"]}
+  - {code: G16_CAMPUS_CITY, name: "科研城市", description: "科研院所与高校所在的科研城市", parent: O16_SCI_MEDIA, max_select: 5, examples: ["科研城市"]}
+  - {code: G17_OFFICE_CITY, name: "办公城市", description: "团队办公与研发所在城市", parent: O17_TECH_COMPANY, max_select: 5, examples: ["办公城市"]}
+  - {code: G18_CAMPUS_CITY, name: "求学城市", description: "备考者所在或目标院校所在城市", parent: O18_TRAIN_INSTITUTE, max_select: 5, examples: ["求学城市"]}
+  - {code: G19_GOV_CITY, name: "政策发布地", description: "主管部门与试点所在的省会城市", parent: O19_GOV_DEPT, max_select: 5, examples: ["政策发布"]}
+  - {code: G20_COURT_CITY, name: "审理城市", description: "受理案件的法院所在地城市", parent: O20_LAW_FIRM, max_select: 5, examples: ["审理城市"]}
+  - {code: G21_HOSPITAL_CITY, name: "就医城市", description: "就医医院所在的城市", parent: O21_HOSPITAL, max_select: 5, examples: ["就医城市"]}
+  - {code: G22_HOSPITAL_CITY, name: "医院城市", description: "就医医院所在的城市", parent: O22_HOSPITAL, max_select: 5, examples: ["医院城市"]}
+  - {code: G23_HOSPITAL_CITY, name: "就医城市", description: "开方与购药所在城市", parent: O23_HOSPITAL, max_select: 5, examples: ["就医城市"]}
+  - {code: G24_CLINIC_CITY, name: "康复机构城市", description: "康复门诊与工作室所在城市", parent: O24_REHAB_CLINIC, max_select: 5, examples: ["康复机构"]}
+  - {code: G25_CHARGE_CITY, name: "充电城市", description: "充电站与测试路线所在城市", parent: O25_EV_BRAND, max_select: 5, examples: ["充电城市"]}
+  - {code: G26_SERVICE_CITY, name: "服务网点城市", description: "服务门店所在城市", parent: O26_SERVICE_CENTER, max_select: 5, examples: ["服务网点"]}
+  - {code: G27_TEST_CITY, name: "测试城市", description: "开放测试与路试的城市", parent: O27_EV_BRAND, max_select: 5, examples: ["测试城市"]}
+  - {code: G28_CLINIC_CITY, name: "门诊城市", description: "就诊机构所在城市", parent: O28_DERM_CLINIC, max_select: 5, examples: ["门诊城市"]}
+  - {code: G29_TEST_CITY, name: "实测城市", description: "拍摄与测试发生的城市", parent: O29_COSMETIC_BRAND, max_select: 5, examples: ["实测城市"]}
+  - {code: G30_FASHION_CITY, name: "时尚之都", description: "时装周与品牌总部所在城市", parent: O30_FASHION_HOUSE, max_select: 5, examples: ["时尚之都"]}
+  - {code: G31_HOSPITAL_CITY, name: "医院城市", description: "产检医院所在城市", parent: O31_MATERNITY_HOSP, max_select: 5, examples: ["医院城市"]}
+  - {code: G32_HOSPITAL_CITY, name: "机构城市", description: "指导机构所在城市", parent: O32_MATERNITY_HOSP, max_select: 5, examples: ["机构城市"]}
+  - {code: G33_INSTITUTE_CITY, name: "机构城市", description: "指导机构所在城市", parent: O33_EDU_INSTITUTE, max_select: 5, examples: ["机构城市"]}
+  - {code: G34_HOME_CITY, name: "房屋城市", description: "装修项目所在城市", parent: O34_DECOR_COMPANY, max_select: 5, examples: ["房屋城市"]}
+  - {code: G35_HOME_CITY, name: "家居城市", description: "家具选购与配送所在城市", parent: O35_FURNITURE_BRAND, max_select: 5, examples: ["家居城市"]}
+  - {code: G36_CITY_DISTRICT, name: "目标板块", description: "房源所在的城市与板块", parent: O36_REALTY_AGENCY, max_select: 5, examples: ["目标板块"]}
+  - {code: G37_STUDIO_CITY, name: "研发城市", description: "游戏研发工作室所在城市", parent: O37_GAME_STUDIO, max_select: 5, examples: ["研发城市"]}
+  - {code: G38_LAB_CITY, name: "评测城市", description: "评测者与硬件厂商所在地", parent: O38_GPU_VENDOR, max_select: 5, examples: ["评测城市"]}
+  - {code: G39_ARENA_CITY, name: "赛事举办城市", description: "比赛场馆所在城市", parent: O39_ESPORTS_ORG, max_select: 5, examples: ["赛事举办"]}
+  - {code: G40_DEST_CITY, name: "目的城市", description: "本次旅行的目的地城市", parent: O40_TOURISM_BUREAU, max_select: 5, examples: ["目的城市"]}
+  - {code: G41_MOUNTAIN_CITY, name: "山域所在地", description: "徒步路线所在的山地城市", parent: O41_TRAIL_ORG, max_select: 5, examples: ["山域所在"]}
+  - {code: G42_HOTEL_CITY, name: "住宿城市", description: "酒店所在的城市与商圈", parent: O42_HOTEL_BRAND, max_select: 5, examples: ["住宿城市"]}
+  - {code: G43_HOME_CITY, name: "居住城市", description: "厨房与菜系背景所在城市", parent: O43_KITCHEN_BRAND, max_select: 5, examples: ["居住城市"]}
+  - {code: G44_RESTAURANT_CITY, name: "餐厅城市", description: "餐厅所在的城市与商圈", parent: O44_RESTAURANT_BRAND, max_select: 5, examples: ["餐厅城市"]}
+  - {code: G45_CAFE_CITY, name: "咖啡城市", description: "咖啡馆与烘焙工坊所在城市", parent: O45_ROASTERY, max_select: 5, examples: ["咖啡城市"]}
+  - {code: G46_STUDIO_CITY, name: "机构城市", description: "咨询机构所在城市", parent: O46_COUNSEL_STUDIO, max_select: 5, examples: ["机构城市"]}
+  - {code: G47_ONLINE_CITY, name: "线上平台", description: "星座内容被消费的线上场景", parent: O47_ASTRO_SITE, max_select: 5, examples: ["线上平台"]}
+  - {code: G48_CLINIC_CITY, name: "机构城市", description: "心理机构所在城市", parent: O48_MENTAL_CLINIC, max_select: 5, examples: ["机构城市"]}
+  - {code: G49_FARM_CITY, name: "农业市县", description: "种植产区所在县市", parent: O49_COOP_ORG, max_select: 5, examples: ["农业市县"]}
+  - {code: G50_FARM_CITY, name: "养殖基地城市", description: "养殖场所在县市", parent: O50_FARM_CO, max_select: 5, examples: ["养殖基地"]}
+  - {code: G51_ORIGIN_CITY, name: "原产地", description: "地理标志所指的产地县市", parent: O51_COOP_ORG, max_select: 5, examples: ["原产地"]}
+  - {code: G52_PLANT_CITY, name: "制造基地城市", description: "光伏工厂所在的产业城市", parent: O52_PV_MANUFACTURER, max_select: 5, examples: ["制造基地"]}
+  - {code: G53_PROJECT_CITY, name: "项目所在地", description: "储能电站所在县市", parent: O53_ENERGY_CO, max_select: 5, examples: ["项目所在"]}
+  - {code: G54_EXCHANGE_CITY, name: "交易中心城市", description: "碳交易所与试点企业所在地", parent: O54_ENV_SERVICE, max_select: 5, examples: ["交易中心"]}
+  - {code: G55_ART_CITY, name: "艺术之城", description: "美术学院与画廊聚集的城市", parent: O55_ART_INSTITUTE, max_select: 5, examples: ["艺术之城"]}
+  - {code: G56_KILN_CITY, name: "陶都", description: "陶瓷产业集中的城市", parent: O56_POTTERY_STUDIO, max_select: 5, examples: ["陶都"]}
+  - {code: G57_MUSEUM_CITY, name: "展馆城市", description: "展馆所在城市", parent: O57_MUSEUM, max_select: 5, examples: ["展馆城市"]}
+  - {code: G58_BRAND_HQ_CITY, name: "品牌总部城市", description: "影像企业总部与研发地所在城市", parent: O58_CAMERA_BRAND, max_select: 5, examples: ["品牌总部"]}
+  - {code: G59_SHOOT_CITY, name: "拍摄城市", description: "外拍地点所在的城市", parent: O59_PHOTO_CLUB, max_select: 5, examples: ["拍摄城市"]}
+  - {code: G60_KITCHEN_CITY, name: "美食之城", description: "美食文化与拍摄地所在城市", parent: O60_FOOD_MEDIA, max_select: 5, examples: ["美食之城"]}

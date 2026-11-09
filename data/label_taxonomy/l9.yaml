@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L9 商品与作品
+#
+# 层级定位：讲到的具体产品、型号、书影音与菜品。开放多选，配额 ≤5。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 9
+
+labels:
+  - {code: W01_MODEL_NAME, name: "具体模型", description: "被发布或评测的具体模型名称与版本", parent: G01_HQ_CITY, max_select: 5, examples: ["具体模型"]}
+  - {code: W02_SOC_CHIP, name: "旗舰芯片", description: "采用该制程生产的具体处理器型号", parent: G02_FAB_SITE, max_select: 5, examples: ["旗舰芯片"]}
+  - {code: W03_PHONE_MODEL, name: "适配机型", description: "首发适配或重点适配的终端型号", parent: G03_HQ_CITY, max_select: 5, examples: ["适配机型"]}
+  - {code: W04_RETAIL_INDEX, name: "社零指标", description: "社会消费品零售总额等具体指标", parent: G04_CAPITAL_CITY, max_select: 5, examples: ["社零指标"]}
+  - {code: W05_SECTOR_INDEX, name: "行业指数", description: "被讨论的具体行业板块或主题指数", parent: G05_FIN_CITY, max_select: 5, examples: ["行业指数"]}
+  - {code: W06_FUND_PRODUCT, name: "基金产品", description: "被推荐或调仓的具体基金产品", parent: G06_FIN_CITY, max_select: 5, examples: ["基金产品"]}
+  - {code: W07_SLEEP_DEVICE, name: "助眠设备", description: "监测睡眠或改善睡眠的具体产品", parent: G07_HOSPITAL_CITY, max_select: 5, examples: ["助眠设备"]}
+  - {code: W08_STORAGE_BOX, name: "收纳容器", description: "整理过程中使用的具体收纳用品", parent: G08_CITY_HOME, max_select: 5, examples: ["收纳容器"]}
+  - {code: W09_BASIC_PIECE, name: "基础单品", description: "白T、衬衫等具体基础款单品", parent: G09_CITY_STREET, max_select: 5, examples: ["基础单品"]}
+  - {code: W10_SHELTER_POINT, name: "安置点", description: "用于转移安置的场所与设施", parent: G10_AFFECTED_CITY, max_select: 5, examples: ["安置点"]}
+  - {code: W11_HOT_TOPIC, name: "热搜话题", description: "被广泛讨论的具体话题条目", parent: G11_ONLINE_SPACE, max_select: 5, examples: ["热搜话题"]}
+  - {code: W12_REPORT_TOPIC, name: "调查议题", description: "调查所针对的具体行业或机构", parent: G12_REPORT_CITY, max_select: 5, examples: ["调查议题"]}
+  - {code: W13_MATCH_FIXTURE, name: "具体赛事", description: "被复盘的具体比赛与对手", parent: G13_STADIUM_CITY, max_select: 5, examples: ["具体赛事"]}
+  - {code: W14_DRAMA_TITLE, name: "剧集名称", description: "被讨论的具体剧集作品", parent: G14_PROD_CITY, max_select: 5, examples: ["剧集名称"]}
+  - {code: W15_ALBUM_TITLE, name: "专辑作品", description: "被讨论的具体专辑或单曲", parent: G15_MUSIC_CITY, max_select: 5, examples: ["专辑作品"]}
+  - {code: W16_SCI_TOPIC, name: "科学主题", description: "被讲解的具体科学概念或现象", parent: G16_CAMPUS_CITY, max_select: 5, examples: ["科学主题"]}
+  - {code: W17_REPO_MODULE, name: "代码仓库", description: "被评审的具体项目或模块", parent: G17_OFFICE_CITY, max_select: 5, examples: ["代码仓库"]}
+  - {code: W18_EXAM_SUBJECT, name: "考试科目", description: "具体备考科目与参考书目", parent: G18_CAMPUS_CITY, max_select: 5, examples: ["考试科目"]}
+  - {code: W19_PROGRAM_NAME, name: "扶持项目", description: "具体补贴或专项计划的名称", parent: G19_GOV_CITY, max_select: 5, examples: ["扶持项目"]}
+  - {code: W20_CASE_TYPE, name: "案件类型", description: "具体的纠纷或案由分类", parent: G20_COURT_CITY, max_select: 5, examples: ["案件类型"]}
+  - {code: W21_SERVICE_ITEM, name: "报销项目", description: "门诊住院等具体报销项目", parent: G21_HOSPITAL_CITY, max_select: 5, examples: ["报销项目"]}
+  - {code: W22_SCREEN_ITEM, name: "筛查项目", description: "具体的肿瘤筛查与影像检查项目", parent: G22_HOSPITAL_CITY, max_select: 5, examples: ["筛查项目"]}
+  - {code: W23_DRUG_NAME, name: "具体药品", description: "涉及的药品名称与剂型", parent: G23_HOSPITAL_CITY, max_select: 5, examples: ["具体药品"]}
+  - {code: W24_TRAIN_GEAR, name: "训练器材", description: "弹力带、瑜伽垫等具体训练用品", parent: G24_CLINIC_CITY, max_select: 5, examples: ["训练器材"]}
+  - {code: W25_EV_MODEL, name: "电动车车型", description: "被实测或体验的具体车型", parent: G25_CHARGE_CITY, max_select: 5, examples: ["电动车车"]}
+  - {code: W26_CAR_MODEL, name: "燃油车型", description: "保养涉及的具体燃油车车型", parent: G26_SERVICE_CITY, max_select: 5, examples: ["燃油车型"]}
+  - {code: W27_ADAS_VERSION, name: "辅助驾驶版本", description: "具体的软件版本与车型配置", parent: G27_TEST_CITY, max_select: 5, examples: ["辅助驾驶"]}
+  - {code: W28_SKINCARE_PRODUCT, name: "护肤产品", description: "修复期使用的具体护肤品", parent: G28_CLINIC_CITY, max_select: 5, examples: ["护肤产品"]}
+  - {code: W29_FOUNDATION, name: "粉底产品", description: "被实测的具体粉底与色号", parent: G29_TEST_CITY, max_select: 5, examples: ["粉底产品"]}
+  - {code: W30_SEASON_PALETTE, name: "季节色卡", description: "当季主推色与配色方案", parent: G30_FASHION_CITY, max_select: 5, examples: ["季节色卡"]}
+  - {code: W31_TEST_ITEM, name: "产检项目", description: "具体的唐筛、无创或B超检查", parent: G31_HOSPITAL_CITY, max_select: 5, examples: ["产检项目"]}
+  - {code: W32_BABY_FOOD, name: "婴儿辅食", description: "具体的米糊、菜泥或零食产品", parent: G32_HOSPITAL_CITY, max_select: 5, examples: ["婴儿辅食"]}
+  - {code: W33_PARENT_BOOK, name: "育儿读物", description: "推荐的绘本或育儿书籍", parent: G33_INSTITUTE_CITY, max_select: 5, examples: ["育儿读物"]}
+  - {code: W34_STYLE_TYPE, name: "装修风格", description: "具体的风格名称与户型方案", parent: G34_HOME_CITY, max_select: 5, examples: ["装修风格"]}
+  - {code: W35_SOFA_PIECE, name: "沙发单品", description: "具体的沙发、床垫或餐桌型号", parent: G35_HOME_CITY, max_select: 5, examples: ["沙发单品"]}
+  - {code: W36_LAYOUT_TYPE, name: "户型", description: "两室一厅等具体户型结构", parent: G36_CITY_DISTRICT, max_select: 5, examples: ["户型"]}
+  - {code: W37_GAME_TITLE, name: "游戏作品", description: "被攻略的具体游戏名称", parent: G37_STUDIO_CITY, max_select: 5, examples: ["游戏作品"]}
+  - {code: W38_GPU_MODEL, name: "显卡型号", description: "被实测的具体显卡型号", parent: G38_LAB_CITY, max_select: 5, examples: ["显卡型号"]}
+  - {code: W39_MATCH_EVENT, name: "赛事名称", description: "被复盘的具体赛事与场次", parent: G39_ARENA_CITY, max_select: 5, examples: ["赛事名称"]}
+  - {code: W40_LANDMARK, name: "地标景点", description: "游览的具体景点与街区", parent: G40_DEST_CITY, max_select: 5, examples: ["地标景点"]}
+  - {code: W41_TRAIL_NAME, name: "徒步线路", description: "具体的线路名称与路段", parent: G41_MOUNTAIN_CITY, max_select: 5, examples: ["徒步线路"]}
+  - {code: W42_ROOM_TYPE, name: "房型", description: "具体的房型名称与床型", parent: G42_HOTEL_CITY, max_select: 5, examples: ["房型"]}
+  - {code: W43_DISH_NAME, name: "菜品", description: "具体的家常菜名称", parent: G43_HOME_CITY, max_select: 5, examples: ["菜品"]}
+  - {code: W44_SIGNATURE_DISH, name: "招牌菜", description: "被推荐的具体菜品名称", parent: G44_RESTAURANT_CITY, max_select: 5, examples: ["招牌菜"]}
+  - {code: W45_BEAN_ORIGIN, name: "咖啡豆", description: "具体的豆种与产地批次", parent: G45_CAFE_CITY, max_select: 5, examples: ["咖啡豆"]}
+  - {code: W46_COMM_BOOK, name: "沟通读物", description: "推荐的沟通与关系类书籍", parent: G46_STUDIO_CITY, max_select: 5, examples: ["沟通读物"]}
+  - {code: W47_ZODIAC_SIGN, name: "星座", description: "具体的星座与元素划分", parent: G47_ONLINE_CITY, max_select: 5, examples: ["星座"]}
+  - {code: W48_CBT_BOOK, name: "心理读物", description: "推荐的情绪管理书籍与练习", parent: G48_CLINIC_CITY, max_select: 5, examples: ["心理读物"]}
+  - {code: W49_CROP_NAME, name: "作物品种", description: "具体的小麦、水稻或玉米品种", parent: G49_FARM_CITY, max_select: 5, examples: ["作物品种"]}
+  - {code: W50_POULTRY_KIND, name: "禽类品种", description: "具体的蛋鸡或肉鸡品种", parent: G50_FARM_CITY, max_select: 5, examples: ["禽类品种"]}
+  - {code: W51_GEO_NAME, name: "地理标志产品", description: "具体的地标农产品名称", parent: G51_ORIGIN_CITY, max_select: 5, examples: ["地理标志"]}
+  - {code: W52_MODULE_MODEL, name: "组件型号", description: "具体的组件产品型号", parent: G52_PLANT_CITY, max_select: 5, examples: ["组件型号"]}
+  - {code: W53_BATTERY_PRODUCT, name: "储能电池", description: "具体的电池型号与系统产品", parent: G53_PROJECT_CITY, max_select: 5, examples: ["储能电池"]}
+  - {code: W54_QUOTA_TYPE, name: "配额与产品", description: "具体的配额类型或CCER项目", parent: G54_EXCHANGE_CITY, max_select: 5, examples: ["配额与产"]}
+  - {code: W55_PAINTING_WORK, name: "画作", description: "具体的油画作品名称", parent: G55_ART_CITY, max_select: 5, examples: ["画作"]}
+  - {code: W56_POTTERY_ITEM, name: "陶瓷器物", description: "具体的茶器、器皿造型", parent: G56_KILN_CITY, max_select: 5, examples: ["陶瓷器物"]}
+  - {code: W57_EXHIBITION_NAME, name: "展览名称", description: "具体展览的标题与主题", parent: G57_MUSEUM_CITY, max_select: 5, examples: ["展览名称"]}
+  - {code: W58_CAMERA_MODEL, name: "机身型号", description: "被评测的具体相机型号", parent: G58_BRAND_HQ_CITY, max_select: 5, examples: ["机身型号"]}
+  - {code: W59_LIGHT_CONDITION, name: "光线条件", description: "顺侧逆光与时段的光线类型", parent: G59_SHOOT_CITY, max_select: 5, examples: ["光线条件"]}
+  - {code: W60_DISH_SUBJECT, name: "拍摄菜品", description: "被拍摄的具体菜品与摆盘", parent: G60_KITCHEN_CITY, max_select: 5, examples: ["拍摄菜品"]}

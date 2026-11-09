@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# tagmind — L2 一级类目（Category）
+#
+# 层级定位：领域下的主业务类目。严格树（单选），配额 1。
+# 数量：70 个（每域 3–4 个）。
+#
+# 注意：code 跨版本不变；唯一约束是 UNIQUE(version, code) + UNIQUE(version, path)。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 2
+
+labels:
+  # ---- D_TECH 科技数码（4） ----
+  - {code: C_AI, name: "人工智能", description: "大模型、机器学习、AI 应用、智能体与算力", parent: D_TECH, max_select: 1, examples: ["大模型", "智能体", "训练"]}
+  - {code: C_CHIP, name: "半导体与芯片", description: "芯片设计、制造工艺、封装测试、设备与材料", parent: D_TECH, max_select: 1, examples: ["制程", "光刻", "封装"]}
+  - {code: C_PHONE, name: "智能手机", description: "手机终端、操作系统、影像系统、续航与交互", parent: D_TECH, max_select: 1, examples: ["快充", "影像", "折叠屏"]}
+  - {code: C_CLOUD, name: "云计算与大数据", description: "公有云、数据平台、数据仓库、流式计算与数仓", parent: D_TECH, max_select: 1, examples: ["微服务", "数仓", "弹性伸缩"]}
+  # ---- D_FIN 财经商业（4） ----
+  - {code: C_MACRO, name: "宏观经济", description: "GDP、通胀、货币政策、汇率、财政与经济数据", parent: D_FIN, max_select: 1, examples: ["CPI", "降息", "PMI"]}
+  - {code: C_STOCK, name: "股票与证券", description: "A股、港股、美股、板块轮动、研报解读与投资策略", parent: D_FIN, max_select: 1, examples: ["财报", "估值", "止损"]}
+  - {code: C_FUND, name: "基金与理财", description: "公募私募、理财���品、保险配置、资产组合与收益率", parent: D_FIN, max_select: 1, examples: ["定投", "净值", "资产配置"]}
+  - {code: C_ECO, name: "零售与电商", description: "电商平台、大促活动、消费趋势、渠道与门店经营", parent: D_FIN, max_select: 1, examples: ["GMV", "直播带货", "客单价"]}
+  # ---- D_LIFE 生活消费（3） ----
+  - {code: C_HEALTH, name: "健康养生", description: "作息、饮食养生、慢病管理、体检与保健品", parent: D_LIFE, max_select: 1, examples: ["亚健康", "三高", "体检"]}
+  - {code: C_HOME, name: "居住与收纳", description: "户型动线、收纳整理、家居清洁、租房与搬家", parent: D_LIFE, max_select: 1, examples: ["断舍离", "动线", "整理"]}
+  - {code: C_STYLE, name: "日常穿搭", description: "通勤、基础款搭配、尺码选择、衣物护理与衣橱管理", parent: D_LIFE, max_select: 1, examples: ["通勤装", "显瘦", "洗衣"]}
+  # ---- D_SOCIAL 社会文化（3） ----
+  - {code: C_CURR, name: "热点时事", description: "突发事件、舆论事件、公共讨论与社会现象观察", parent: D_SOCIAL, max_select: 1, examples: ["热搜", "舆情", "争议"]}
+  - {code: C_LEGAL, name: "权益与维权", description: "消费者权益、劳动权益、合同纠纷、投诉与举报路径", parent: D_SOCIAL, max_select: 1, examples: ["退一赔三", "仲裁", "投诉"]}
+  # ---- D_ENT 体育娱乐（4） ----
+  - {code: C_STAR, name: "明星与IP", description: "艺人动态、作品宣发、饭圈文化、代言与个人品牌", parent: D_ENT, max_select: 1, examples: ["番位", "代言", "工作室"]}
+  - {code: C_SPORT, name: "体育赛事", description: "足球篮球、赛事进程、球队战术、运动员状态与伤病", parent: D_ENT, max_select: 1, examples: ["首发", "绝杀", "转会"]}
+  - {code: C_MOVIE, name: "影视综艺", description: "剧集电影、综艺节目、票房口碑、演员表现与档期", parent: D_ENT, max_select: 1, examples: ["收视", "档期", "演技"]}
+  - {code: C_MUSIC, name: "音乐演出", description: "流行音乐、livehouse、演唱会、专辑与音乐节", parent: D_ENT, max_select: 1, examples: ["演唱会", "专辑", "巡演"]}
+  # ---- D_EDU 知识教育（3） ----
+  - {code: C_SCI, name: "科普与前沿", description: "基础科学概念、学科前沿、新发现与技术原理解读", parent: D_EDU, max_select: 1, examples: ["原理", "量子", "科普"]}
+  - {code: C_SKILL, name: "职业技能", description: "职场技能、编程、设计、写作、证书与实操教程", parent: D_EDU, max_select: 1, examples: ["教程", "实操", "岗位"]}
+  - {code: C_EXAM, name: "学历与考试", description: "升学考试、考研考公、留学申请、分数线与备考策略", parent: D_EDU, max_select: 1, examples: ["分数线", "调剂", "国考"]}
+  # ---- D_GOV 政务法律（3） ----
+  - {code: C_POLICY, name: "政策解读", description: "政策原文、落地口径、补贴申领、行业影响与监管动向", parent: D_GOV, max_select: 1, examples: ["新规", "补贴", "试点"]}
+  - {code: C_LAW, name: "法律实务", description: "民法典、合同与侵权、劳动法、诉讼流程与法条适用", parent: D_GOV, max_select: 1, examples: ["民法典", "举证", "违约"]}
+  - {code: C_SERVICE, name: "政务办事", description: "社保医保、证照办理、公积金、税务与政务服务指南", parent: D_GOV, max_select: 1, examples: ["落户", "公积金", "个税"]}
+  # ---- D_MED 医药健康（4） ----
+  - {code: C_DISEASE, name: "疾病与诊疗", description: "病症成因、检查手段、治疗方案、预后与就医指南", parent: D_MED, max_select: 1, examples: ["症状", "筛查", "预后"]}
+  - {code: C_DRUG, name: "药品与用药", description: "药品分类、剂量用法、相互作用、不良反应与购药", parent: D_MED, max_select: 1, examples: ["禁忌", "剂量", "处方"]}
+  - {code: C_FIT, name: "运动健身", description: "力量训练、有氧运动、体态矫正、器械与运动损伤", parent: D_MED, max_select: 1, examples: ["深蹲", "心率", "拉伸"]}
+  - {code: C_NUTRITION, name: "营养与膳食", description: "热量摄入、宏量营养素、食谱搭配、特殊膳食与忌口", parent: D_MED, max_select: 1, examples: ["蛋白质", "控糖", "忌口"]}
+  # ---- D_AUTO 汽车出行（4） ----
+  - {code: C_EV, name: "新能源汽车", description: "纯电插混、电池技术、补能网络、智能座舱与新车上市", parent: D_AUTO, max_select: 1, examples: ["续航", "快充", "刀片电池"]}
+  - {code: C_ICE, name: "燃油车与养车", description: "燃油车选购、油耗保养、故障维修与二手车评估", parent: D_AUTO, max_select: 1, examples: ["油耗", "保养", "年检"]}
+  - {code: C_DRIVE, name: "驾驶与出行", description: "驾驶技巧、路况天气、事故处理、用车成本与出行方式", parent: D_AUTO, max_select: 1, examples: ["违章", "油耗", "通勤"]}
+  - {code: C_INTELLIGENT, name: "智能驾驶", description: "辅助驾驶、传感器方案、算法能力、算力芯片与安全边界", parent: D_AUTO, max_select: 1, examples: ["NOA", "激光雷达", "接管"]}
+  # ---- D_BEAUTY 时尚美妆（3） ----
+  - {code: C_SKIN, name: "护肤", description: "肤质判断、成分功效、护肤流程、敏感肌与抗老", parent: D_BEAUTY, max_select: 1, examples: ["烟酰胺", "防晒", "刷酸"]}
+  - {code: C_MAKEUP, name: "彩妆", description: "底妆眼妆、眉形修容、教程测评、持妆与风格", parent: D_BEAUTY, max_select: 1, examples: ["粉底液", "眼影", "持妆"]}
+  - {code: C_TREND, name: "时尚潮流", description: "流行趋势、风格体系、单品分析、秀场与设计师品牌", parent: D_BEAUTY, max_select: 1, examples: ["趋势色", "静奢风", "秀场"]}
+  # ---- D_MOM 母婴育儿（3） ----
+  - {code: C_PREGNANCY, name: "孕期与产后", description: "孕期营养、产检安排、产后恢复、母乳喂养与情绪", parent: D_MOM, max_select: 1, examples: ["胎动", "产后抑郁", "待产包"]}
+  - {code: C_BABY, name: "婴幼儿护理", description: "辅食添加、疫苗接种、睡眠训练、常见病症与发育里程碑", parent: D_MOM, max_select: 1, examples: ["辅食", "疫苗", "湿疹"]}
+  - {code: C_EDU_KID, name: "育儿教育", description: "亲子沟通、习惯养成、绘本阅读、性格培养与教育资源", parent: D_MOM, max_select: 1, examples: ["绘本", "专注力", "鸡娃"]}
+  # ---- D_HOME 家居房产（4） ----
+  - {code: C_DECOR, name: "装修设计", description: "装修风格、预算分配、施工工艺、硬装软装与验收", parent: D_HOME, max_select: 1, examples: ["水电改造", "风格", "监理"]}
+  - {code: C_FURN, name: "家具家电", description: "家具选型、家电参数、尺寸适配、材质对比与售后", parent: D_HOME, max_select: 1, examples: ["沙发", "洗烘一体", "乳胶枕"]}
+  - {code: C_PROPERTY, name: "房产置业", description: "房价走势、选房看房、贷款政策、税费交易与租房市场", parent: D_HOME, max_select: 1, examples: ["学区房", "商贷", "二手房"]}
+  - {code: C_MAINTEN, name: "家政维护", description: "保洁除螨、维修安装、虫害防治、空气治理与家庭安全", parent: D_HOME, max_select: 1, examples: ["除螨", "甲醛", "维修"]}
+  # ---- D_GAME 游戏电竞（4） ----
+  - {code: C_MOBILE, name: "手机游戏", description: "手游新品、版本更新、抽卡养成、氪金与账号交易", parent: D_GAME, max_select: 1, examples: ["抽卡", "版本号", "养成"]}
+  - {code: C_PC, name: "端游与主机", description: "PC 与主机大作、画质性能、MOD 与联机玩法", parent: D_GAME, max_select: 1, examples: ["帧数", "光追", "联机"]}
+  - {code: C_ESPORTS, name: "电竞赛事", description: "赛事战报、战队战术、选手状态、赛事规则与观赛指南", parent: D_GAME, max_select: 1, examples: ["决赛", "首发", "积分"]}
+  - {code: C_GUIDE, name: "攻略与评测", description: "新手攻略、配装流派、角色机制、评分与避坑指南", parent: D_GAME, max_select: 1, examples: ["配装", "抽卡建议", "剧透"]}
+  # ---- D_TRAVEL 旅行户外（4） ----
+  - {code: C_DOMESTIC, name: "国内旅行", description: "国内城市游、周边游、门票预约、路线规划与本地体验", parent: D_TRAVEL, max_select: 1, examples: ["自驾游", "古镇", "预约"]}
+  - {code: C_OUTBOUND, name: "出境旅行", description: "签证政策、境外目的地、行李准备、汇率与旅行安全", parent: D_TRAVEL, max_select: 1, examples: ["签证", "免签", "汇率"]}
+  - {code: C_OUTDOOR, name: "户外运动", description: "徒步登山、露营装备、骑行、攀岩与户外安全", parent: D_TRAVEL, max_select: 1, examples: ["徒步", "帐篷", "路线"]}
+  - {code: C_LODGING, name: "住宿与行程", description: "酒店民宿、房型选择、行程编排、交通接驳与退改规则", parent: D_TRAVEL, max_select: 1, examples: ["民宿", "含早", "改签"]}
+  # ---- D_FOOD 美食餐饮（4） ----
+  - {code: C_RECIPE, name: "家常菜谱", description: "食材清单、步骤火候、调味技巧、常见失败原因与改良", parent: D_FOOD, max_select: 1, examples: ["红烧", "腌制", "火候"]}
+  - {code: C_RESTAURANT, name: "餐厅探店", description: "探店评测、菜品推荐、排队预订、人均消费与性价比", parent: D_FOOD, max_select: 1, examples: ["人均", "招牌菜", "排队"]}
+  - {code: C_DRINK, name: "饮品与酒", description: "咖啡茶饮、酒类品鉴、配方器具、酒后反应与场景搭配", parent: D_FOOD, max_select: 1, examples: ["手冲", "精酿", "醒酒"]}
+  - {code: C_FOODCULTURE, name: "饮食文化", description: "地方饮食传统、节令食俗、餐桌礼仪与饮食健康观", parent: D_FOOD, max_select: 1, examples: ["食俗", "年夜饭", "时令"]}
+  # ---- D_EMO 情感生活（3） ----
+  - {code: C_ASTRO, name: "星座运势", description: "十二星座性格、每月运势、星座配对与流行占星", parent: D_EMO, max_select: 1, examples: ["星座", "运势", "配对"]}
+  - {code: C_RELATION, name: "两性关系", description: "恋爱相处、沟通表达、婚姻家庭、分手修复与边界", parent: D_EMO, max_select: 1, examples: ["沟通", "冷暴力", "相处模式"]}
+  - {code: C_PSYCH, name: "情绪与心理", description: "情绪管理、压力调适、认知行为、社交焦虑与自我认知", parent: D_EMO, max_select: 1, examples: ["内耗", "焦虑", "认知重构"]}
+  # ---- D_AGRI 农业乡村（4） ----
+  - {code: C_PLANT, name: "种植技术", description: "作物栽培、病虫害防治、水肥管理、农机具与产量提升", parent: D_AGRI, max_select: 1, examples: ["育苗", "打药", "亩产"]}
+  - {code: C_LIVESTOCK, name: "畜牧养殖", description: "猪牛羊禽养殖、饲料配方、防疫、繁育与出栏管理", parent: D_AGRI, max_select: 1, examples: ["仔猪", "疫苗", "出栏"]}
+  - {code: C_RURAL, name: "乡村振兴", description: "农村人居环境、产业帮扶、村集体经济与新农人就业", parent: D_AGRI, max_select: 1, examples: ["驻村", "合作社", "土特产"]}
+  - {code: C_MARKET, name: "农产品流通", description: "产地直供、冷链物流、农产品电商、品质分级与溯源", parent: D_AGRI, max_select: 1, examples: ["冷链", "溯源", "产地直供"]}
+  # ---- D_ENERGY 能源环保（4） ----
+  - {code: C_SOLAR, name: "光伏与可再生", description: "光伏组件、风光发电、装机规模、消纳与组件技术", parent: D_ENERGY, max_select: 1, examples: ["组件", "装机", "弃光"]}
+  - {code: C_STORAGE, name: "储能与电网", description: "电化学储能、抽水蓄能、电网调度、特高压与电力交易", parent: D_ENERGY, max_select: 1, examples: ["储能", "调峰", "特高压"]}
+  - {code: C_POLICY_ENV, name: "环保政策", description: "环保法规、排放标准、限塑政策、垃圾分类与环境执法", parent: D_ENERGY, max_select: 1, examples: ["限塑", "排放", "环评"]}
+  - {code: C_CARBON, name: "碳市场", description: "碳排放核算、碳交易配额、CCER、碳中和路径与企业披露", parent: D_ENERGY, max_select: 1, examples: ["碳价", "核查", "碳中和"]}
+  # ---- D_ART 文化艺术（3） ----
+  - {code: C_PAINT, name: "绘画书法", description: "中西画种、笔法墨法、临摹写生、书画鉴赏与创作", parent: D_ART, max_select: 1, examples: ["水墨", "透视", "临摹"]}
+  - {code: C_TRADITION, name: "传统工艺", description: "陶瓷刺绣木作、剪纸扎染、榫卯与手艺人技艺传承", parent: D_ART, max_select: 1, examples: ["苏绣", "釉色", "榫卯"]}
+  - {code: C_EXHIBIT, name: "展览与策展", description: "美术馆展览、策展理念、作品阐释、观展路线与文创", parent: D_ART, max_select: 1, examples: ["特展", "策展人", "导览"]}
+  # ---- D_CAMERA 摄影绘画（4） ----
+  - {code: C_GEAR, name: "器材装备", description: "机身镜头选择、对焦系统、防抖、配件与镜头选购建议", parent: D_CAMERA, max_select: 1, examples: ["全画幅", "定焦", "光圈"]}
+  - {code: C_SHOOT, name: "拍摄技法", description: "曝光参数、用光、构图、人像实拍、风光与纪实拍摄", parent: D_CAMERA, max_select: 1, examples: ["逆光", "构图", "长曝"]}
+  - {code: C_EDIT, name: "后期修图", description: "色彩校正、曲线调色、磨皮锐化、RAW 处理与工作流", parent: D_CAMERA, max_select: 1, examples: ["曲线", "RAW", "磨皮"]}
+  - {code: C_THEME, name: "摄影题材", description: "人像、风光、静物、建筑、街头与生态等题材方向", parent: D_CAMERA, max_select: 1, examples: ["人像", "街拍", "风光大片"]}

@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L5 事件与场景
+#
+# 层级定位：内容描述的事件、情境与使用场景。开放多选，配额 ≤5。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 5
+
+labels:
+  - {code: E01_MODEL_LAUNCH, name: "新品发布", description: "内容描述新模型或新产品正式发布的场景", parent: T_LLM_RELEASE, max_select: 5, examples: ["新品发布"]}
+  - {code: E02_MASS_PROD, name: "量产爬坡", description: "先进制程节点进入量产与良率爬坡阶段", parent: T_PACK_NODE, max_select: 5, examples: ["量产爬坡"]}
+  - {code: E03_OS_LAUNCH, name: "系统发布", description: "操作系统新版本发布与生态开放场景", parent: T_PSYS_OS, max_select: 5, examples: ["系统发布"]}
+  - {code: E04_RETAIL_SALES, name: "消费数据发布", description: "社零与消费数据的公布解读场景", parent: T_GROW_CONSUM, max_select: 5, examples: ["消费数据"]}
+  - {code: E05_SECTOR_SWING, name: "板块轮动", description: "资金在不同行业板块间快速切换的场景", parent: T_SA_ROTATION, max_select: 5, examples: ["板块轮动"]}
+  - {code: E06_REBALANCE, name: "资产再平衡", description: "组合按目标比例调整持仓的场景", parent: T_FPLAN_ALLOC, max_select: 5, examples: ["资产再平"]}
+  - {code: E07_SLEEP_ROUTINE, name: "作息调整", description: "为改善睡眠而调整作息节律的场景", parent: T_LIFE_SLEEP, max_select: 5, examples: ["作息调整"]}
+  - {code: E08_DECLUTTER, name: "断舍离整理", description: "集中清理与归位物品的整理场景", parent: T_STO_METHOD, max_select: 5, examples: ["断舍离整"]}
+  - {code: E09_DAILY_MATCH, name: "日常搭配", description: "日常通勤与休闲场景下的穿搭搭配", parent: T_BASIC_COLOR, max_select: 5, examples: ["日常搭配"]}
+  - {code: E10_DISASTER_RESP, name: "应急响应", description: "灾害或事故发生后的应急处置场景", parent: T_CEVR_BREAK, max_select: 5, examples: ["应急响应"]}
+  - {code: E11_VIRAL_SPREAD, name: "话题刷屏", description: "网络话题快速扩散形成热榜的场景", parent: T_CTOP_VIRAL, max_select: 5, examples: ["话题刷屏"]}
+  - {code: E12_INVESTIG_REPORT, name: "深度调查发布", description: "调查报道发布与证据披露的场景", parent: T_CPUB_INVESTIG, max_select: 5, examples: ["深度调查"]}
+  - {code: E13_MATCH_TACTIC, name: "战术复盘", description: "球队赛后分析阵型与打法的场景", parent: T_SFB_TACTIC, max_select: 5, examples: ["战术复盘"]}
+  - {code: E14_STREAMING_LAUNCH, name: "上线播出", description: "剧集上线与排播的场景", parent: T_MDRAMA_PLATFORM, max_select: 5, examples: ["上线播出"]}
+  - {code: E15_ALBUM_RELEASE, name: "专辑发行", description: "专辑上线与宣发打榜的场景", parent: T_MREL_ALBUM, max_select: 5, examples: ["专辑发行"]}
+  - {code: E16_SCI_EXPLAIN, name: "科普讲解", description: "用日常语言解释科学原理的场景", parent: T_SBASIC_PHYSICS, max_select: 5, examples: ["科普讲解"]}
+  - {code: E17_CODE_REVIEW, name: "代码评审", description: "团队审查与合并代码的工作场景", parent: T_DEV_PRACTICE, max_select: 5, examples: ["代码评审"]}
+  - {code: E18_EXAM_PREP, name: "备考冲刺", description: "考前集中复习与模考的场景", parent: T_EGRAD_PREP, max_select: 5, examples: ["备考冲刺"]}
+  - {code: E19_POLICY_RELEASE, name: "政策出台", description: "产业扶持政策发布与申报启动的场景", parent: T_PIN_SUSTAIN, max_select: 5, examples: ["政策出台"]}
+  - {code: E20_DISPUTE_APPEAL, name: "维权诉讼", description: "纠纷发生后进入诉讼维权的场景", parent: T_LCIVIL_TORT, max_select: 5, examples: ["维权诉讼"]}
+  - {code: E21_CROSS_MEDICAL, name: "异地就医", description: "跨地区就医备案与报销的场景", parent: T_SSOCIAL_CROSS, max_select: 5, examples: ["异地就医"]}
+  - {code: E22_SCREENING_DIAG, name: "筛查确诊", description: "体检筛查发现问题并确诊的过程", parent: T_ONCO_SCREEN, max_select: 5, examples: ["筛查确诊"]}
+  - {code: E23_MED_INTERACT, name: "联合用药", description: "同时服用多种药物的场景", parent: T_DRUGSAFE_INTERACT, max_select: 5, examples: ["联合用药"]}
+  - {code: E24_POSTURE_CORRECT, name: "体态矫正训练", description: "针对体态问题进行矫正练习的场景", parent: T_INJURY_POSTURE, max_select: 5, examples: ["体态矫正"]}
+  - {code: E25_CHARGING_SCENE, name: "补能场景", description: "电动车充电与补能过程的场景", parent: T_EVBAT_FAST, max_select: 5, examples: ["补能场景"]}
+  - {code: E26_GARAGE_SERVICE, name: "进厂保养", description: "车辆进厂做周期保养的场景", parent: T_ICEMAIN_OIL, max_select: 5, examples: ["进厂保养"]}
+  - {code: E27_ASSIST_DRIVE, name: "辅助驾驶实测", description: "在实际道路上体验辅助驾驶的场景", parent: T_INTLEVEL_BOUNDARY, max_select: 5, examples: ["辅助驾驶"]}
+  - {code: E28_BARRIER_REPAIR, name: "屏障修复", description: "敏感肌受损后修复的场景", parent: T_SKINTYPE_SENSITIVE, max_select: 5, examples: ["屏障修复"]}
+  - {code: E29_ALL_DAY_BASE, name: "底妆实测", description: "全天候底妆持妆表现的实测场景", parent: T_MAKEBASE_WEAR, max_select: 5, examples: ["底妆实测"]}
+  - {code: E30_COLOR_TREND, name: "色彩趋势发布", description: "季节流行色与趋势发布的场景", parent: T_TRFORECAST_COLOR, max_select: 5, examples: ["色彩趋势"]}
+  - {code: E31_PRENATAL_CHECK, name: "产检进行", description: "孕期产检项目推进的场景", parent: T_PREGCHECK_SCREEN, max_select: 5, examples: ["产检进行"]}
+  - {code: E32_SOLID_FOOD, name: "添加辅食", description: "为宝宝添加辅食的过程", parent: T_BABY_FEED_MILK, max_select: 5, examples: ["添加辅食"]}
+  - {code: E33_EMOTION_TALK, name: "情绪接纳", description: "孩子表达情绪时家长接应的场景", parent: T_KIDCOMM_ACCEPT, max_select: 5, examples: ["情绪接纳"]}
+  - {code: E34_DESIGN_PLAN, name: "设计方案落地", description: "装修方案确定与开工的场景", parent: T_DECSTYLE_PLAN, max_select: 5, examples: ["设计方案"]}
+  - {code: E35_FURNISH_ROOM, name: "家具进场", description: "家具选型与入户摆放的场景", parent: T_FURNSOFT_SIZE, max_select: 5, examples: ["家具进场"]}
+  - {code: E36_HOUSE_VIEWING, name: "看房选房", description: "实地考察房源与对比决策的场景", parent: T_PROPVIEW_LAYOUT, max_select: 5, examples: ["看房选房"]}
+  - {code: E37_NEWBIE_STAGE, name: "新手开荒", description: "新玩家从零开始推进主线的场景", parent: T_MONEW_ROUTE, max_select: 5, examples: ["新手开荒"]}
+  - {code: E38_PERF_TEST, name: "性能实测", description: "跑分与帧率实测的场景", parent: T_PCPERF_GPU, max_select: 5, examples: ["性能实测"]}
+  - {code: E39_MATCH_REVIEW, name: "赛后复盘", description: "职业比赛结束后的战报分析场景", parent: T_ESPMATCH_REPORT, max_select: 5, examples: ["赛后复盘"]}
+  - {code: E40_CITY_TRIP, name: "城市漫游", description: "在城市中按路线游览的场景", parent: T_DOMCITY_CITY, max_select: 5, examples: ["城市漫游"]}
+  - {code: E41_HIKING_ADVENTURE, name: "徒步穿越", description: "山野线路实走的场景", parent: T_OUTHIKE_ROUTE, max_select: 5, examples: ["徒步穿越"]}
+  - {code: E42_CHECK_IN_STAY, name: "入住体验", description: "办理入住与住宿的场景", parent: T_LODHOTEL_ROOM, max_select: 5, examples: ["入住体验"]}
+  - {code: E43_HOME_COOK, name: "下厨炒菜", description: "家庭厨房爆炒做菜的场景", parent: T_RCPSTAPLE_STIRFRY, max_select: 5, examples: ["下厨炒菜"]}
+  - {code: E44_RESTAURANT_VISIT, name: "到店用餐", description: "线下餐厅探访与点餐的场景", parent: T_RSTREVIEW_DISH, max_select: 5, examples: ["到店用餐"]}
+  - {code: E45_BREW_COFFEE, name: "手冲咖啡", description: "研磨萃取咖啡的过程", parent: T_DRKCOFFEE_BREW, max_select: 5, examples: ["手冲咖啡"]}
+  - {code: E46_NEED_TALK, name: "需求沟通", description: "伴侣之间表达需求与倾听的场景", parent: T_RELCOMM_NEED, max_select: 5, examples: ["需求沟通"]}
+  - {code: E47_ZODIAC_ANALYSIS, name: "星座性格解析", description: "解读星座特质的场景", parent: T_ASTSIGN_TRAIT, max_select: 5, examples: ["星座性格"]}
+  - {code: E48_COGNITIVE_SHIFT, name: "认知调整", description: "改变思维方式缓解内耗的场景", parent: T_PSISTRESS_COGN, max_select: 5, examples: ["认知调整"]}
+  - {code: E49_FIELD_SEASON, name: "田间管理", description: " crops 在生长季的田间作业场景", parent: T_PLCROP_FIELD, max_select: 5, examples: ["田间管理"]}
+  - {code: E50_FARM_DAILY, name: "养殖场日常", description: "养殖环境与生产的日常场景", parent: T_LVPOUL_LAY, max_select: 5, examples: ["养殖场日"]}
+  - {code: E51_BRAND_MARKET, name: "品牌出海", description: "农产品地理标志走向市场的场景", parent: T_MKTTRACE_GEO, max_select: 5, examples: ["品牌出海"]}
+  - {code: E52_CELL_LAUNCH, name: "组件发布", description: "新型光伏组件发布与量产场景", parent: T_SOLTECH_CELL, max_select: 5, examples: ["组件发布"]}
+  - {code: E53_STORAGE_PROJECT, name: "储能项目投运", description: "储能电站建设与并网的场景", parent: T_STOBAT_LFP, max_select: 5, examples: ["储能项目"]}
+  - {code: E54_CARBON_TRADE, name: "碳配额交易", description: "碳市场履约与配额交易场景", parent: T_CARTRADE_QUOTA, max_select: 5, examples: ["碳配额交"]}
+  - {code: E55_OIL_PAINTING, name: "油画创作", description: "油画绘制与技法演示的场景", parent: T_PATOIL_MATERIAL, max_select: 5, examples: ["油画创作"]}
+  - {code: E56_POTTERY_FIRE, name: "制陶烧制", description: "从拉坯到出窑的制陶过程", parent: T_TRACERAMIC_CLAY, max_select: 5, examples: ["制陶烧制"]}
+  - {code: E57_EXHIBIT_OPEN, name: "展览开幕", description: "展览布展与揭幕的场景", parent: T_EXHCUR_NARRATIVE, max_select: 5, examples: ["展览开幕"]}
+  - {code: E58_CAMERA_TEST, name: "器材实拍", description: "使用新机身进行拍摄测试的场景", parent: T_GEARBODY_FORMAT, max_select: 5, examples: ["器材实拍"]}
+  - {code: E59_OUTDOOR_SHOOT, name: "外拍实践", description: "户外光线条件下拍摄的过程", parent: T_SHOLIGHT_DIRECT, max_select: 5, examples: ["外拍实践"]}
+  - {code: E60_FOOD_SHOOT, name: "美食拍摄", description: "食物摆盘与拍摄的创作过程", parent: T_THMSTILL_MACRO, max_select: 5, examples: ["美食拍摄"]}

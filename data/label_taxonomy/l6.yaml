@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L6 人物实体
+#
+# 层级定位：提及的公众人物、角色与职业群体。开放多选，配额 ≤5。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 6
+
+labels:
+  - {code: P01_RESEARCHER, name: "研发负责人", description: "内容提及的模型研发者或技术负责人", parent: E01_MODEL_LAUNCH, max_select: 5, examples: ["研发负责"]}
+  - {code: P02_PROCESS_ENG, name: "工艺工程师", description: "负责制程调试与良率优化的工程师", parent: E02_MASS_PROD, max_select: 5, examples: ["工艺工程"]}
+  - {code: P03_PM_LEAD, name: "产品负责人", description: "主导系统版本规划的产品负责人", parent: E03_OS_LAUNCH, max_select: 5, examples: ["产品负责"]}
+  - {code: P04_STAT_OFFICER, name: "统计部门负责人", description: "发布或解读经济数据的负责人", parent: E04_RETAIL_SALES, max_select: 5, examples: ["统计部门"]}
+  - {code: P05_ANALYST, name: "行业分析师", description: "解读板块行情的研究人员", parent: E05_SECTOR_SWING, max_select: 5, examples: ["行业分析"]}
+  - {code: P06_ADVISOR, name: "理财顾问", description: "提供资产配置建议的投顾或理财经理", parent: E06_REBALANCE, max_select: 5, examples: ["理财顾问"]}
+  - {code: P07_SLEEP_COACH, name: "睡眠指导者", description: "提供睡眠改善建议的医生或科普作者", parent: E07_SLEEP_ROUTINE, max_select: 5, examples: ["睡眠指导"]}
+  - {code: P08_ORGANIZER, name: "整理师", description: "提供收纳规划与陪整理服务的整理师", parent: E08_DECLUTTER, max_select: 5, examples: ["整理师"]}
+  - {code: P09_STYLIST, name: "穿搭博主", description: "分享配色与搭配建议的造型博主", parent: E09_DAILY_MATCH, max_select: 5, examples: ["穿搭博主"]}
+  - {code: P10_RESCUE_WORKER, name: "救援人员", description: "参与一线救援与疏散引导的人员", parent: E10_DISASTER_RESP, max_select: 5, examples: ["救援人员"]}
+  - {code: P11_NET_CELEB, name: "网络当事人", description: "事件中的当事人或引发讨论的公众人物", parent: E11_VIRAL_SPREAD, max_select: 5, examples: ["网络当事"]}
+  - {code: P12_REPORTER, name: "调查记者", description: "主导采访与核实事实的记者", parent: E12_INVESTIG_REPORT, max_select: 5, examples: ["调查记者"]}
+  - {code: P13_COACH, name: "主教练", description: "制定战术与临场调整的教练", parent: E13_MATCH_TACTIC, max_select: 5, examples: ["主教练"]}
+  - {code: P14_SHOWRUNNER, name: "剧集主创", description: "主导剧集创作的导演与编剧", parent: E14_STREAMING_LAUNCH, max_select: 5, examples: ["剧集主创"]}
+  - {code: P15_SINGER, name: "演唱者", description: "演唱作品的歌手或乐队", parent: E15_ALBUM_RELEASE, max_select: 5, examples: ["演唱者"]}
+  - {code: P16_POP_SCI_WRITER, name: "科普作者", description: "撰写科学解读内容的作者", parent: E16_SCI_EXPLAIN, max_select: 5, examples: ["科普作者"]}
+  - {code: P17_SENIOR_ENG, name: "资深工程师", description: "主导设计与评审的技术骨干", parent: E17_CODE_REVIEW, max_select: 5, examples: ["资深工程"]}
+  - {code: P18_EXAM_COACH, name: "考研辅导老师", description: "提供备考规划与授课的教师", parent: E18_EXAM_PREP, max_select: 5, examples: ["考研辅导"]}
+  - {code: P19_BUREAU_OFFICIAL, name: "主管部门负责人", description: "解读与推动政策落实的官员", parent: E19_POLICY_RELEASE, max_select: 5, examples: ["主管部门"]}
+  - {code: P20_LAWYER, name: "代理律师", description: "代理当事人主张权利的律师", parent: E20_DISPUTE_APPEAL, max_select: 5, examples: ["代理律师"]}
+  - {code: P21_MEDICAL_STAFF, name: "接诊医生", description: "异地接诊或提供指引的医务人员", parent: E21_CROSS_MEDICAL, max_select: 5, examples: ["接诊医生"]}
+  - {code: P22_ONCOLOGIST, name: "肿瘤科医生", description: "负责筛查解读与治疗方案的医师", parent: E22_SCREENING_DIAG, max_select: 5, examples: ["肿瘤科医"]}
+  - {code: P23_CLINICIAN, name: "临床药师", description: "审核处方与指导用药的药师", parent: E23_MED_INTERACT, max_select: 5, examples: ["临床药师"]}
+  - {code: P24_REHAB_THERAPIST, name: "康复治疗师", description: "制定矫正训练方案的康复师", parent: E24_POSTURE_CORRECT, max_select: 5, examples: ["康复治疗"]}
+  - {code: P25_TEST_ENGINEER, name: "测试工程师", description: "进行续航与充电实测的工程师", parent: E25_CHARGING_SCENE, max_select: 5, examples: ["测试工程"]}
+  - {code: P26_MECHANIC, name: "维修技师", description: "执行保养与检查的技师", parent: E26_GARAGE_SERVICE, max_select: 5, examples: ["维修技师"]}
+  - {code: P27_TEST_ENGINEER, name: "测试工程师", description: "负责辅助驾驶功能验证的工程师", parent: E27_ASSIST_DRIVE, max_select: 5, examples: ["测试工程"]}
+  - {code: P28_DERMATOLOGIST, name: "皮肤科医生", description: "提供屏障修复方案的专业人士", parent: E28_BARRIER_REPAIR, max_select: 5, examples: ["皮肤科医"]}
+  - {code: P29_MAKEUP_ARTIST, name: "化妆师", description: "负责试色与上妆的化妆师", parent: E29_ALL_DAY_BASE, max_select: 5, examples: ["化妆师"]}
+  - {code: P30_TREND_FORECASTER, name: "趋势预测师", description: "发布与解读色彩趋势的专业人士", parent: E30_COLOR_TREND, max_select: 5, examples: ["趋势预测"]}
+  - {code: P31_OB_GYN, name: "产科医生", description: "负责产检与孕期指导的医生", parent: E31_PRENATAL_CHECK, max_select: 5, examples: ["产科医生"]}
+  - {code: P32_PEDIATRICIAN, name: "儿科医生", description: "提供喂养与过敏指导的医生", parent: E32_SOLID_FOOD, max_select: 5, examples: ["儿科医生"]}
+  - {code: P33_FAMILY_EDUCATOR, name: "育儿教育者", description: "分享家庭沟通方法的 educators", parent: E33_EMOTION_TALK, max_select: 5, examples: ["育儿教育"]}
+  - {code: P34_INTERIOR_DESIGNER, name: "室内设计师", description: "出方案与选材的设计师", parent: E34_DESIGN_PLAN, max_select: 5, examples: ["室内设计"]}
+  - {code: P35_INTERIOR_DESIGNER, name: "室内设计师", description: "提供家具选型与尺寸建议的设计师", parent: E35_FURNISH_ROOM, max_select: 5, examples: ["室内设计"]}
+  - {code: P36_BUYER_ADVISER, name: "置业顾问", description: "陪同看房与提供房源的经纪人", parent: E36_HOUSE_VIEWING, max_select: 5, examples: ["置业顾问"]}
+  - {code: P37_GUIDE_AUTHOR, name: "攻略作者", description: "撰写开荒攻略的玩家", parent: E37_NEWBIE_STAGE, max_select: 5, examples: ["攻略作者"]}
+  - {code: P38_HARDWARE_REVIEWER, name: "硬件评测者", description: "进行跑分与硬件对比的评测人", parent: E38_PERF_TEST, max_select: 5, examples: ["硬件评测"]}
+  - {code: P39_CASTER, name: "赛事解说", description: "解说比赛并分析局势的主持人", parent: E39_MATCH_REVIEW, max_select: 5, examples: ["赛事解说"]}
+  - {code: P40_TRAVEL_BLOGGER, name: "旅行博主", description: "分享城市路线与机位的博主", parent: E40_CITY_TRIP, max_select: 5, examples: ["旅行博主"]}
+  - {code: P41_OUTDOOR_GUIDE, name: "户外领队", description: "带队并讲解路线的领队", parent: E41_HIKING_ADVENTURE, max_select: 5, examples: ["户外领队"]}
+  - {code: P42_HOTEL_REVIEWER, name: "住宿测评者", description: "实测房型与服务体验的测评人", parent: E42_CHECK_IN_STAY, max_select: 5, examples: ["住宿测评"]}
+  - {code: P43_HOME_CHEF, name: "家常厨师", description: "示范家常菜做法的厨师", parent: E43_HOME_COOK, max_select: 5, examples: ["家常厨师"]}
+  - {code: P44_FOOD_REVIEWER, name: "美食探店博主", description: "到店拍摄与评测的博主", parent: E44_RESTAURANT_VISIT, max_select: 5, examples: ["美食探店"]}
+  - {code: P45_BARISTA, name: "咖啡师", description: "示范手冲参数的咖啡师", parent: E45_BREW_COFFEE, max_select: 5, examples: ["咖啡师"]}
+  - {code: P46_RELATION_COUNSELOR, name: "情感咨询师", description: "提供沟通方法指导的咨询师", parent: E46_NEED_TALK, max_select: 5, examples: ["情感咨询"]}
+  - {code: P47_ASTROLOGER, name: "占星师", description: "提供星座解读的占星师", parent: E47_ZODIAC_ANALYSIS, max_select: 5, examples: ["占星师"]}
+  - {code: P48_PSYCH_COUNSELOR, name: "心理咨询师", description: "提供认知行为方法的咨询师", parent: E48_COGNITIVE_SHIFT, max_select: 5, examples: ["心理咨询"]}
+  - {code: P49_AGRONOMIST, name: "农技员", description: "提供田间技术指导的农技人员", parent: E49_FIELD_SEASON, max_select: 5, examples: ["农技员"]}
+  - {code: P50_VET, name: "兽医", description: "负责禽病防控的技术人员", parent: E50_FARM_DAILY, max_select: 5, examples: ["兽医"]}
+  - {code: P51_BRAND_MANAGER, name: "品牌运营者", description: "负责地理标志运营与授权的人", parent: E51_BRAND_MARKET, max_select: 5, examples: ["品牌运营"]}
+  - {code: P52_PV_ENGINEER, name: "光伏工程师", description: "负责组件技术与产线调试的工程师", parent: E52_CELL_LAUNCH, max_select: 5, examples: ["光伏工程"]}
+  - {code: P53_ENERGY_ENGINEER, name: "能源工程师", description: "负责储能系统调试的工程师", parent: E53_STORAGE_PROJECT, max_select: 5, examples: ["能源工程"]}
+  - {code: P54_CARBON_CONSULTANT, name: "碳管理顾问", description: "提供核算与交易咨询的专业人士", parent: E54_CARBON_TRADE, max_select: 5, examples: ["碳管理顾"]}
+  - {code: P55_PAINTER, name: "画家", description: "示范油画技法的创作者", parent: E55_OIL_PAINTING, max_select: 5, examples: ["画家"]}
+  - {code: P56_POTTER, name: "陶艺家", description: "负责成型与烧制的陶艺家", parent: E56_POTTERY_FIRE, max_select: 5, examples: ["陶艺家"]}
+  - {code: P57_CURATOR, name: "策展人", description: "主导主题设定与展陈叙事", parent: E57_EXHIBIT_OPEN, max_select: 5, examples: ["策展人"]}
+  - {code: P58_PHOTO_REVIEWER, name: "器材评测人", description: "进行机身对比与实拍测评的作者", parent: E58_CAMERA_TEST, max_select: 5, examples: ["器材评测"]}
+  - {code: P59_PHOTO_TUTOR, name: "摄影老师", description: "讲解用光与构图的摄影师", parent: E59_OUTDOOR_SHOOT, max_select: 5, examples: ["摄影老师"]}
+  - {code: P60_FOOD_PHOTOGRAPHER, name: "美食摄影师", description: "专注食物摄影的创作者", parent: E60_FOOD_SHOOT, max_select: 5, examples: ["美食摄影"]}

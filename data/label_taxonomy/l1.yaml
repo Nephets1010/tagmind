@@ -1,0 +1,38 @@
+# ---------------------------------------------------------------------------
+# tagmind — L1 领域域（Domain）
+#
+# 层级定位：内容所属的顶层事业域。严格树（单选），配额 1。
+# 数量：20 个（Q2 拍板：L1 = 20）。
+#
+# 每个条目：
+#   code        稳定编码，跨版本不变
+#   name        中文名称
+#   description 语义说明（进 system prompt）
+#   max_select  该层配额
+#   examples    few-shot 正例关键词
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 1
+
+labels:
+  - {code: D_TECH, name: "科技数码", description: "消费电子、软件、人工智能、通信等技术类内容", max_select: 1, examples: ["芯片", "大模型", "操作系统"]}
+  - {code: D_FIN, name: "财经商业", description: "宏观经济、资本市场、企业经营、电商与零售", max_select: 1, examples: ["GDP", "财报", "大促"]}
+  - {code: D_LIFE, name: "生活消费", description: "日常生活方式、健康、居家、穿搭与购物决策", max_select: 1, examples: ["收纳", "晨跑", "搭配"]}
+  - {code: D_SOCIAL, name: "社会文化", description: "时事、民生、社会现象、公共讨论与评论", max_select: 1, examples: ["舆论", "维权", "民生"]}
+  - {code: D_ENT, name: "体育娱乐", description: "体育赛事、明星动态、影视综艺与演出", max_select: 1, examples: ["联赛", "综艺", "票房"]}
+  - {code: D_EDU, name: "知识教育", description: "科普、教程、学历教育、职业技能与考试", max_select: 1, examples: ["原理", "考证", "课程"]}
+  - {code: D_GOV, name: "政务法律", description: "政策解读、法规制度、办事流程与公共安全", max_select: 1, examples: ["条例", "申报", "监管"]}
+  - {code: D_MED, name: "医药健康", description: "疾病诊疗、药品用药、营养膳食与运动康复", max_select: 1, examples: ["症状", "禁忌", "康复"]}
+  - {code: D_AUTO, name: "汽车出行", description: "整车、新能源、智能驾驶、道路出行与用车成本", max_select: 1, examples: ["续航", "智驾", "保养"]}
+  - {code: D_BEAUTY, name: "时尚美妆", description: "护肤、彩妆、个护、香氛与时尚潮流", max_select: 1, examples: ["精华", "粉底", "流行色"]}
+  - {code: D_MOM, name: "母婴育儿", description: "孕期产后、婴幼儿护理、辅食与育儿教育", max_select: 1, examples: ["胎教", "辅食", "疫苗"]}
+  - {code: D_HOME, name: "家居房产", description: "装修设计、家具家电、房产置业与居住决策", max_select: 1, examples: ["水电改造", "户型", "学区房"]}
+  - {code: D_GAME, name: "游戏电竞", description: "手游、端游、主机、攻略评测与电竞赛事", max_select: 1, examples: ["版本更新", "开黑", "赛事"]}
+  - {code: D_TRAVEL, name: "旅行户外", description: "旅游目的地、行程规划、户外运动与住宿", max_select: 1, examples: ["路线", "露营", "民宿"]}
+  - {code: D_FOOD, name: "美食餐饮", description: "菜谱做法、餐厅探店、饮品酒水与饮食文化", max_select: 1, examples: ["火候", "探店", "配方"]}
+  - {code: D_EMO, name: "情感生活", description: "两性关系、星座运势、情绪调适与生活感悟", max_select: 1, examples: ["相处", "运势", "内耗"]}
+  - {code: D_AGRI, name: "农业乡村", description: "种植养殖、农业技术、乡村振兴与农产品", max_select: 1, examples: ["病虫害", "灌溉", "合作社"]}
+  - {code: D_ENERGY, name: "能源环保", description: "光伏风电、储能、碳市场、环保政策与生态保护", max_select: 1, examples: ["装机量", "碳排放", "减排"]}
+  - {code: D_ART, name: "文化艺术", description: "绘画书法、音乐舞蹈、传统工艺与设计美学", max_select: 1, examples: ["笔法", "构图", "非遗"]}
+  - {code: D_CAMERA, name: "摄影绘画", description: "相机镜头等器材、拍摄技法与后期修图", max_select: 1, examples: ["光圈", "构图", "调色"]}

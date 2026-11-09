@@ -1,0 +1,137 @@
+# ---------------------------------------------------------------------------
+# tagmind — 容器编排
+#
+# 五个服务：api / worker / beat / postgres(pgvector) / redis。
+# api、worker、beat **复用同一镜像**，靠 TAGMIND_ROLE 分派（架构附录 A.4）。
+#
+# 凭据一律从环境读，不在文件里硬编码；本地开发用 .env，
+# 生产用 secret manager 注入。
+# ---------------------------------------------------------------------------
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: tagmind-postgres
+    environment:
+      POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
+      POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
+      POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+    ports:
+      - "${TAGMIND_POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${TAGMIND_POSTGRES_USER:-tagmind} -d ${TAGMIND_POSTGRES_DB:-tagmind}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: tagmind-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${TAGMIND_REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tagmind-api
+    image: tagmind:latest
+    environment:
+      TAGMIND_ROLE: api
+      TAGMIND_ENV: ${TAGMIND_ENV:-development}
+      TAGMIND_API_HOST: 0.0.0.0
+      TAGMIND_API_PORT: 8000
+      TAGMIND_POSTGRES_HOST: postgres
+      TAGMIND_POSTGRES_PORT: 5432
+      TAGMIND_POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
+      TAGMIND_POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
+      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      TAGMIND_REDIS_URL: redis://redis:6379/0
+      TAGMIND_REDIS_PASSWORD: ${TAGMIND_REDIS_PASSWORD:-}
+      TAGMIND_LLM_BACKEND: ${TAGMIND_LLM_BACKEND:-deterministic}
+      TAGMIND_LLM_ENABLED: ${TAGMIND_LLM_ENABLED:-false}
+      TAGMIND_LLM_API_KEY: ${TAGMIND_LLM_API_KEY:-}
+      TAGMIND_METRICS_PORT: 9100
+    ports:
+      - "${TAGMIND_API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tagmind-worker
+    image: tagmind:latest
+    environment:
+      TAGMIND_ROLE: worker
+      TAGMIND_ENV: ${TAGMIND_ENV:-development}
+      TAGMIND_POSTGRES_HOST: postgres
+      TAGMIND_POSTGRES_PORT: 5432
+      TAGMIND_POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
+      TAGMIND_POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
+      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      TAGMIND_REDIS_URL: redis://redis:6379/0
+      TAGMIND_REDIS_PASSWORD: ${TAGMIND_REDIS_PASSWORD:-}
+      TAGMIND_LLM_BACKEND: ${TAGMIND_LLM_BACKEND:-deterministic}
+      TAGMIND_LLM_ENABLED: ${TAGMIND_LLM_ENABLED:-false}
+      TAGMIND_LLM_API_KEY: ${TAGMIND_LLM_API_KEY:-}
+      TAGMIND_SCHEDULER_TIMEZONE: ${TAGMIND_SCHEDULER_TIMEZONE:-Asia/Shanghai}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tagmind-beat
+    image: tagmind:latest
+    environment:
+      TAGMIND_ROLE: beat
+      TAGMIND_ENV: ${TAGMIND_ENV:-development}
+      TAGMIND_POSTGRES_HOST: postgres
+      TAGMIND_POSTGRES_PORT: 5432
+      TAGMIND_POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
+      TAGMIND_POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
+      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      TAGMIND_REDIS_URL: redis://redis:6379/0
+      TAGMIND_REDIS_PASSWORD: ${TAGMIND_REDIS_PASSWORD:-}
+      TAGMIND_SCHEDULER_TIMEZONE: ${TAGMIND_SCHEDULER_TIMEZONE:-Asia/Shanghai}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:

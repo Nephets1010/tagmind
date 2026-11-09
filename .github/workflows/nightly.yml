@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# tagmind — Nightly
+#
+# 夜间全量评测 + 离线回放，产出 artifact 报告。
+#
+# **口径诚实**：夜间产出的所有数字都是 ``evidence_type=offline_simulation``，
+# 报告首页固定带「非线上真实流量」文案。失败也是交付物——报告必须保留，
+# 不得通过调整口径使其达标（PRD §7.5 声明 5）。
+# ---------------------------------------------------------------------------
+
+name: Nightly
+
+on:
+  schedule:
+    # 每日 UTC 18:00（北京时间次日 02:00）跑评测，避开业务高峰。
+    - cron: "0 18 * * *"
+  workflow_dispatch:
+    inputs:
+      tag_version:
+        description: "标签体系版本"
+        required: false
+        default: "ld_v1"
+
+env:
+  PYTHONUTF8: "1"
+
+jobs:
+  evaluation:
+    name: Offline evaluation & replay
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: tagmind
+          POSTGRES_USER: tagmind
+          POSTGRES_PASSWORD: tagmind
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tagmind -d tagmind"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TAGMIND_TEST_DATABASE_URL: postgresql://tagmind:tagmind@localhost:5432/tagmind
+      TAGMIND_ENV: development
+      TAGMIND_LLM_BACKEND: deterministic
+      TAGMIND_LLM_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: 应用迁移
+        run: alembic -c alembic.ini upgrade head
+
+      - name: 导入标签体系
+        run: python -m tagmind.cli seed-labels --version "${{ inputs.tag_version || 'ld_v1' }}"
+
+      - name: 灌入合成数据集
+        run: python -m tagmind.cli seed --contents 1000 --users 100 --days 30
+
+      - name: 一致性巡检
+        run: python scripts/consistency_check.py --after-migration head --full
+
+      - name: 离线评测
+        continue-on-error: true
+        run: python -m tagmind.cli eval
+
+      - name: 离线回放（三条基线）
+        continue-on-error: true
+        run: python -m tagmind.cli bench
+
+      - name: 上传报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-report-${{ github.run_number }}
+          path: |
+            reports/
+            coverage.xml
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: 汇总口径声明
+        if: always()
+        run: |
+          {
+            echo "## 夜间评测口径声明"
+            echo
+            echo "- evidence_type: \`offline_simulation\`（离线回放，**非线上真实流量**）"
+            echo "- 不可用于宣称「线上 CTR 提升」"
+            echo "- 已知偏差见 docs/metrics-report.md"
+            echo "- 失败也是交付物：报告原样保留，不调整口径"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L7 机构与品牌
+#
+# 层级定位：涉及的公司、机构、品牌与 IP。开放多选，配额 ≤5。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 7
+
+labels:
+  - {code: O01_AI_VENDOR, name: "人工智能厂商", description: "发布或提供该模型的企业与研究机构", parent: P01_RESEARCHER, max_select: 5, examples: ["人工智能"]}
+  - {code: O02_FOUNDRY, name: "晶圆代工厂", description: "从事先进制程制造的代工企业", parent: P02_PROCESS_ENG, max_select: 5, examples: ["晶圆代工"]}
+  - {code: O03_OS_VENDOR, name: "系统厂商", description: "操作系统与终端设备的提供方", parent: P03_PM_LEAD, max_select: 5, examples: ["系统厂商"]}
+  - {code: O04_STAT_BUREAU, name: "统计与研究机构", description: "负责经济统计与宏观研究的机构", parent: P04_STAT_OFFICER, max_select: 5, examples: ["统计与研"]}
+  - {code: O05_BROKERAGE, name: "证券研究机构", description: "发布行业观点的证券公司研究所", parent: P05_ANALYST, max_select: 5, examples: ["证券研究"]}
+  - {code: O06_ASSET_FIRM, name: "资产管理机构", description: "提供基金与组合管理服务的机构", parent: P06_ADVISOR, max_select: 5, examples: ["资产管理"]}
+  - {code: O07_HEALTH_ORG, name: "医疗机构", description: "开展睡眠监测与健康管理的机构", parent: P07_SLEEP_COACH, max_select: 5, examples: ["医疗机构"]}
+  - {code: O08_HOME_Brand, name: "家居收纳品牌", description: "生产收纳工具与容器的品牌", parent: P08_ORGANIZER, max_select: 5, examples: ["家居收纳"]}
+  - {code: O09_APPAREL_BRAND, name: "服装品牌", description: "被推荐的成衣或基础款单品品牌", parent: P09_STYLIST, max_select: 5, examples: ["服装品牌"]}
+  - {code: O10_EMERGENCY_DEPT, name: "应急部门", description: "组织协调救援的政府部门与机构", parent: P10_RESCUE_WORKER, max_select: 5, examples: ["应急部门"]}
+  - {code: O11_PLATFORM, name: "内容平台", description: "话题发酵与内容分发的平台方", parent: P11_NET_CELEB, max_select: 5, examples: ["内容平台"]}
+  - {code: O12_MEDIA_OUTLET, name: "媒体机构", description: "刊发调查报道的媒体单位", parent: P12_REPORTER, max_select: 5, examples: ["媒体机构"]}
+  - {code: O13_FOOTBALL_CLUB, name: "足球俱乐部", description: "球员所属的职业足球俱乐部", parent: P13_COACH, max_select: 5, examples: ["足球俱乐"]}
+  - {code: O14_STREAM_SVC, name: "流媒体平台", description: "采购与播出的视频平台", parent: P14_SHOWRUNNER, max_select: 5, examples: ["流媒体平"]}
+  - {code: O15_LABEL, name: "唱片厂牌", description: "负责发行与宣发的音乐公司", parent: P15_SINGER, max_select: 5, examples: ["唱片厂牌"]}
+  - {code: O16_SCI_MEDIA, name: "科普媒体", description: "刊载或推送科普内容的机构", parent: P16_POP_SCI_WRITER, max_select: 5, examples: ["科普媒体"]}
+  - {code: O17_TECH_COMPANY, name: "技术公司", description: "工程师所属或使用该技术体系的组织", parent: P17_SENIOR_ENG, max_select: 5, examples: ["技术公司"]}
+  - {code: O18_TRAIN_INSTITUTE, name: "培训机构", description: "开设考研课程与辅导班的教育机构", parent: P18_EXAM_COACH, max_select: 5, examples: ["培训机构"]}
+  - {code: O19_GOV_DEPT, name: "行业主管部门", description: "制定并执行该项政策的政府部门", parent: P19_BUREAU_OFFICIAL, max_select: 5, examples: ["行业主管"]}
+  - {code: O20_LAW_FIRM, name: "律师事务所", description: "承办案件的律师事务所", parent: P20_LAWYER, max_select: 5, examples: ["律师事务"]}
+  - {code: O21_HOSPITAL, name: "医疗机构", description: "异地就医的定点医院", parent: P21_MEDICAL_STAFF, max_select: 5, examples: ["医疗机构"]}
+  - {code: O22_HOSPITAL, name: "三甲医院", description: "开展肿瘤筛查与治疗的医院", parent: P22_ONCOLOGIST, max_select: 5, examples: ["三甲医院"]}
+  - {code: O23_HOSPITAL, name: "医疗机构", description: "提供用药指导的医院与药房", parent: P23_CLINICIAN, max_select: 5, examples: ["医疗机构"]}
+  - {code: O24_REHAB_CLINIC, name: "康复医疗机构", description: "提供体态评估与康复服务的机构", parent: P24_REHAB_THERAPIST, max_select: 5, examples: ["康复医疗"]}
+  - {code: O25_EV_BRAND, name: "新能源车企", description: "生产该车型的电动汽车企业", parent: P25_TEST_ENGINEER, max_select: 5, examples: ["新能源车"]}
+  - {code: O26_SERVICE_CENTER, name: "维修服务连锁", description: "提供保养服务的汽修连锁企业", parent: P26_MECHANIC, max_select: 5, examples: ["维修服务"]}
+  - {code: O27_EV_BRAND, name: "车企研发部门", description: "研发辅助驾驶系统的企业", parent: P27_TEST_ENGINEER, max_select: 5, examples: ["车企研发"]}
+  - {code: O28_DERM_CLINIC, name: "皮肤科门诊", description: "提供诊断与治疗服务的医疗机构", parent: P28_DERMATOLOGIST, max_select: 5, examples: ["皮肤科门"]}
+  - {code: O29_COSMETIC_BRAND, name: "美妆品牌", description: "生产该底妆产品的品牌", parent: P29_MAKEUP_ARTIST, max_select: 5, examples: ["美妆品牌"]}
+  - {code: O30_FASHION_HOUSE, name: "时装机构", description: "发布色彩趋势报告的机构与品牌", parent: P30_TREND_FORECASTER, max_select: 5, examples: ["时装机构"]}
+  - {code: O31_MATERNITY_HOSP, name: "妇幼保健院", description: "提供产检服务的专科医院", parent: P31_OB_GYN, max_select: 5, examples: ["妇幼保健"]}
+  - {code: O32_MATERNITY_HOSP, name: "妇幼保健机构", description: "提供育儿指导的医疗机构", parent: P32_PEDIATRICIAN, max_select: 5, examples: ["妇幼保健"]}
+  - {code: O33_EDU_INSTITUTE, name: "教育机构", description: "提供家庭育儿指导的机构", parent: P33_FAMILY_EDUCATOR, max_select: 5, examples: ["教育机构"]}
+  - {code: O34_DECOR_COMPANY, name: "装修公司", description: "承接施工的装饰企业", parent: P34_INTERIOR_DESIGNER, max_select: 5, examples: ["装修公司"]}
+  - {code: O35_FURNITURE_BRAND, name: "家具品牌", description: "生产该家具的品牌或定制工坊", parent: P35_INTERIOR_DESIGNER, max_select: 5, examples: ["家具品牌"]}
+  - {code: O36_REALTY_AGENCY, name: "房地产中介", description: "撮合买卖双方的经纪机构", parent: P36_BUYER_ADVISER, max_select: 5, examples: ["房地产中"]}
+  - {code: O37_GAME_STUDIO, name: "游戏研发商", description: "开发该游戏的厂商", parent: P37_GUIDE_AUTHOR, max_select: 5, examples: ["游戏研发"]}
+  - {code: O38_GPU_VENDOR, name: "显卡厂商", description: "生产被测硬件的芯片厂商", parent: P38_HARDWARE_REVIEWER, max_select: 5, examples: ["显卡厂商"]}
+  - {code: O39_ESPORTS_ORG, name: "电竞俱乐部", description: "参赛战队的所属俱乐部", parent: P39_CASTER, max_select: 5, examples: ["电竞俱乐"]}
+  - {code: O40_TOURISM_BUREAU, name: "文旅机构", description: "推广城市旅游资源的机构", parent: P40_TRAVEL_BLOGGER, max_select: 5, examples: ["文旅机构"]}
+  - {code: O41_TRAIL_ORG, name: "户外俱乐部", description: "组织徒步与登山活动的机构", parent: P41_OUTDOOR_GUIDE, max_select: 5, examples: ["户外俱乐"]}
+  - {code: O42_HOTEL_BRAND, name: "酒店集团", description: "运营该住宿品牌的酒店集团", parent: P42_HOTEL_REVIEWER, max_select: 5, examples: ["酒店集团"]}
+  - {code: O43_KITCHEN_BRAND, name: "厨具品牌", description: "生产锅具与厨电的品牌", parent: P43_HOME_CHEF, max_select: 5, examples: ["厨具品牌"]}
+  - {code: O44_RESTAURANT_BRAND, name: "餐饮品牌", description: "经营该餐厅的餐饮企业", parent: P44_FOOD_REVIEWER, max_select: 5, examples: ["餐饮品牌"]}
+  - {code: O45_ROASTERY, name: "烘焙工坊", description: "烘焙与售卖咖啡豆的商家", parent: P45_BARISTA, max_select: 5, examples: ["烘焙工坊"]}
+  - {code: O46_COUNSEL_STUDIO, name: "心理咨询机构", description: "提供情感咨询与家庭治疗的服务机构", parent: P46_RELATION_COUNSELOR, max_select: 5, examples: ["心理咨询"]}
+  - {code: O47_ASTRO_SITE, name: "占星平台", description: "发布星座内容与工具的平台", parent: P47_ASTROLOGER, max_select: 5, examples: ["占星平台"]}
+  - {code: O48_MENTAL_CLINIC, name: "心理机构", description: "提供心理咨询与治疗服务的机构", parent: P48_PSYCH_COUNSELOR, max_select: 5, examples: ["心理机构"]}
+  - {code: O49_COOP_ORG, name: "农业合作社", description: "组织统一生产与销售的合作社", parent: P49_AGRONOMIST, max_select: 5, examples: ["农业合作"]}
+  - {code: O50_FARM_CO, name: "养殖企业", description: "从事蛋鸡或肉鸡养殖的公司", parent: P50_VET, max_select: 5, examples: ["养殖企业"]}
+  - {code: O51_COOP_ORG, name: "合作社", description: "持有地理标志使用权的经营主体", parent: P51_BRAND_MANAGER, max_select: 5, examples: ["合作社"]}
+  - {code: O52_PV_MANUFACTURER, name: "光伏制造企业", description: "生产光伏组件与电池的企业", parent: P52_PV_ENGINEER, max_select: 5, examples: ["光伏制造"]}
+  - {code: O53_ENERGY_CO, name: "能源企业", description: "投资运营储能项目的公司", parent: P53_ENERGY_ENGINEER, max_select: 5, examples: ["能源企业"]}
+  - {code: O54_ENV_SERVICE, name: "环境咨询机构", description: "从事碳核算核查的服务机构", parent: P54_CARBON_CONSULTANT, max_select: 5, examples: ["环境咨询"]}
+  - {code: O55_ART_INSTITUTE, name: "美术学院", description: "开展油画教学与研究的机构", parent: P55_PAINTER, max_select: 5, examples: ["美术学院"]}
+  - {code: O56_POTTERY_STUDIO, name: "陶艺工坊", description: "生产与展示陶瓷器物的机构", parent: P56_POTTER, max_select: 5, examples: ["陶艺工坊"]}
+  - {code: O57_MUSEUM, name: "美术馆", description: "承办展览的博物馆或美术馆", parent: P57_CURATOR, max_select: 5, examples: ["美术馆"]}
+  - {code: O58_CAMERA_BRAND, name: "相机品牌", description: "生产该机身与镜头的厂商", parent: P58_PHOTO_REVIEWER, max_select: 5, examples: ["相机品牌"]}
+  - {code: O59_PHOTO_CLUB, name: "摄影社群", description: "组织外拍活动的社群组织", parent: P59_PHOTO_TUTOR, max_select: 5, examples: ["摄影社群"]}
+  - {code: O60_FOOD_MEDIA, name: "美食内容机构", description: "运营美食内容与课程的机构", parent: P60_FOOD_PHOTOGRAPHER, max_select: 5, examples: ["美食内容"]}

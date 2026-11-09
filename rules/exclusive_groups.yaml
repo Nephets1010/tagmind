@@ -1,0 +1,317 @@
+# ---------------------------------------------------------------------------
+# tagmind — 显式互斥组定义
+#
+# 用途：C6 显式互斥组校验——同一互斥组内的标签最多命中 1 个。
+# 本文件是互斥组的**外部声明**，与 label_def.exclusive_group 列互为校验：
+# 两边不一致即视为体系配置损坏。
+#
+# 语义说明：L12 是「情感·立场·风险」层。每条 L4 主题链路各有一组
+# 「看好 / 中立 / 质疑」三元组——同一主题下只能选一种立场，这就是 C6 的
+# 典型场景（PRD §4.5：「如情感组『正面/负面/中立』三选一」）。
+#
+# 不同主题之间**不**互斥：一篇内容可以既夸技术又夸消费，不必二选一。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+
+groups:
+  - name: emo_achievement
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M41_ACHIEVEMENT_POS", "M41_ACHIEVEMENT_NEU", "M41_ACHIEVEMENT_NEG"]
+    member_names: ["登顶满足·看好", "登顶满足·中立", "登顶满足·质疑"]
+  - name: emo_aha_moment
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M16_AHA_MOMENT_POS", "M16_AHA_MOMENT_NEU", "M16_AHA_MOMENT_NEG"]
+    member_names: ["茅塞顿开·看好", "茅塞顿开·中立", "茅塞顿开·质疑"]
+  - name: emo_alerted
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M23_ALERTED_POS", "M23_ALERTED_NEU", "M23_ALERTED_NEG"]
+    member_names: ["风险警示·看好", "风险警示·中立", "风险警示·质疑"]
+  - name: emo_anxious_hope
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M18_ANXIOUS_HOPE_POS", "M18_ANXIOUS_HOPE_NEU", "M18_ANXIOUS_HOPE_NEG"]
+    member_names: ["焦虑又期待·看好", "焦虑又期待·中立", "焦虑又期待·质疑"]
+  - name: emo_aroma_pleasure
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M45_AROMA_PLEASURE_POS", "M45_AROMA_PLEASURE_NEU", "M45_AROMA_PLEASURE_NEG"]
+    member_names: ["风味愉悦·看好", "风味愉悦·中立", "风味愉悦·质疑"]
+  - name: emo_art_appreciation
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M55_ART_APPRECIATION_POS", "M55_ART_APPRECIATION_NEU", "M55_ART_APPRECIATION_NEG"]
+    member_names: ["艺术共鸣·看好", "艺术共鸣·中立", "艺术共鸣·质疑"]
+  - name: emo_breakthrough
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M52_BREAKTHROUGH_POS", "M52_BREAKTHROUGH_NEU", "M52_BREAKTHROUGH_NEG"]
+    member_names: ["技术突破可期·看好", "技术突破可期·中立", "技术突破可期·质疑"]
+  - name: emo_cautious
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M06_CAUTIOUS_POS", "M06_CAUTIOUS_NEU", "M06_CAUTIOUS_NEG"]
+    member_names: ["偏谨慎·看好", "偏谨慎·中立", "偏谨慎·质疑"]
+  - name: emo_cautious_hope
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M22_CAUTIOUS_HOPE_POS", "M22_CAUTIOUS_HOPE_NEU", "M22_CAUTIOUS_HOPE_NEG"]
+    member_names: ["谨慎中有希望·看好", "谨慎中有希望·中立", "谨慎中有希望·质疑"]
+  - name: emo_cautious_use
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M27_CAUTIOUS_USE_POS", "M27_CAUTIOUS_USE_NEU", "M27_CAUTIOUS_USE_NEG"]
+    member_names: ["谨慎使用·看好", "谨慎使用·中立", "谨慎使用·质疑"]
+  - name: emo_charmed
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M56_CHARMED_POS", "M56_CHARMED_NEU", "M56_CHARMED_NEG"]
+    member_names: ["被陶艺打动·看好", "被陶艺打动·中立", "被陶艺打动·质疑"]
+  - name: emo_confident_style
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M09_CONFIDENT_STYLE_POS", "M09_CONFIDENT_STYLE_NEU", "M09_CONFIDENT_STYLE_NEG"]
+    member_names: ["造型自信·看好", "造型自信·中立", "造型自信·质疑"]
+  - name: emo_consumption_opt
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M04_CONSUMPTION_OPT_POS", "M04_CONSUMPTION_OPT_NEU", "M04_CONSUMPTION_OPT_NEG"]
+    member_names: ["消费偏乐观·看好", "消费偏乐观·中立", "消费偏乐观·质疑"]
+  - name: emo_controversial
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M11_CONTROVERSIAL_POS", "M11_CONTROVERSIAL_NEU", "M11_CONTROVERSIAL_NEG"]
+    member_names: ["争议明显·看好", "争议明显·中立", "争议明显·质疑"]
+  - name: emo_cozy_satisfy
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M35_COZY_SATISFY_POS", "M35_COZY_SATISFY_NEU", "M35_COZY_SATISFY_NEG"]
+    member_names: ["满意居家·看好", "满意居家·中立", "满意居家·质疑"]
+  - name: emo_cozy_stay
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M42_COZY_STAY_POS", "M42_COZY_STAY_NEU", "M42_COZY_STAY_NEG"]
+    member_names: ["入住满意·看好", "入住满意·中立", "入住满意·质疑"]
+  - name: emo_delicious
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M43_DELICIOUS_POS", "M43_DELICIOUS_NEU", "M43_DELICIOUS_NEG"]
+    member_names: ["味道成功·看好", "味道成功·中立", "味道成功·质疑"]
+  - name: emo_eco_support
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M03_ECO_SUPPORT_POS", "M03_ECO_SUPPORT_NEU", "M03_ECO_SUPPORT_NEG"]
+    member_names: ["生态向好·看好", "生态向好·中立", "生态向好·质疑"]
+  - name: emo_excited_match
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M39_EXCITED_MATCH_POS", "M39_EXCITED_MATCH_NEU", "M39_EXCITED_MATCH_NEG"]
+    member_names: ["赛事精彩·看好", "赛事精彩·中立", "赛事精彩·质疑"]
+  - name: emo_expected_nice
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M34_EXPECTED_NICE_POS", "M34_EXPECTED_NICE_NEU", "M34_EXPECTED_NICE_NEG"]
+    member_names: ["效果期待·看好", "效果期待·中立", "效果期待·质疑"]
+  - name: emo_exposed
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M12_EXPOSED_POS", "M12_EXPOSED_NEU", "M12_EXPOSED_NEG"]
+    member_names: ["问题被揭示·看好", "问题被揭示·中立", "问题被揭示·质疑"]
+  - name: emo_handling_good
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M58_HANDLING_GOOD_POS", "M58_HANDLING_GOOD_NEU", "M58_HANDLING_GOOD_NEG"]
+    member_names: ["手感称心·看好", "手感称心·中立", "手感称心·质疑"]
+  - name: emo_harvest_joy
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M49_HARVEST_JOY_POS", "M49_HARVEST_JOY_NEU", "M49_HARVEST_JOY_NEG"]
+    member_names: ["丰收喜悦·看好", "丰收喜悦·中立", "丰收喜悦·质疑"]
+  - name: emo_healing
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M33_HEALING_POS", "M33_HEALING_NEU", "M33_HEALING_NEG"]
+    member_names: ["关系修复·看好", "关系修复·中立", "关系修复·质疑"]
+  - name: emo_helpful
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M37_HELPFUL_POS", "M37_HELPFUL_NEU", "M37_HELPFUL_NEG"]
+    member_names: ["攻略实用·看好", "攻略实用·中立", "攻略实用·质疑"]
+  - name: emo_high_expect
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M14_HIGH_EXPECT_POS", "M14_HIGH_EXPECT_NEU", "M14_HIGH_EXPECT_NEG"]
+    member_names: ["期待值高·看好", "期待值高·中立", "期待值高·质疑"]
+  - name: emo_hopeful
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M46_HOPEFUL_POS", "M46_HOPEFUL_NEU", "M46_HOPEFUL_NEG"]
+    member_names: ["关系有希望·看好", "关系有希望·中立", "关系有希望·质疑"]
+  - name: emo_hot_sentiment
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M05_HOT_SENTIMENT_POS", "M05_HOT_SENTIMENT_NEU", "M05_HOT_SENTIMENT_NEG"]
+    member_names: ["行情火热·看好", "行情火热·中立", "行情火热·质疑"]
+  - name: emo_impressed_range
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M25_IMPRESSED_RANGE_POS", "M25_IMPRESSED_RANGE_NEU", "M25_IMPRESSED_RANGE_NEG"]
+    member_names: ["续航表现满意·看好", "续航表现满意·中立", "续航表现满意·质疑"]
+  - name: emo_improved
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M17_IMPROVED_POS", "M17_IMPROVED_NEU", "M17_IMPROVED_NEG"]
+    member_names: ["质量提升·看好", "质量提升·中立", "质量提升·质疑"]
+  - name: emo_inspired
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M57_INSPIRED_POS", "M57_INSPIRED_NEU", "M57_INSPIRED_NEG"]
+    member_names: ["观展受启发·看好", "观展受启发·中立", "观展受启发·质疑"]
+  - name: emo_intrigued
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M47_INTRIGUED_POS", "M47_INTRIGUED_NEU", "M47_INTRIGUED_NEG"]
+    member_names: ["被说中·看好", "被说中·中立", "被说中·质疑"]
+  - name: emo_joyful_parent
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M32_JOYFUL_PARENT_POS", "M32_JOYFUL_PARENT_NEU", "M32_JOYFUL_PARENT_NEG"]
+    member_names: ["育儿喜悦·看好", "育儿喜悦·中立", "育儿喜悦·质疑"]
+  - name: emo_light_joy
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M59_LIGHT_JOY_POS", "M59_LIGHT_JOY_NEU", "M59_LIGHT_JOY_NEG"]
+    member_names: ["光线之悦·看好", "光线之悦·中立", "光线之悦·质疑"]
+  - name: emo_maintenance_safe
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M26_MAINTENANCE_SAFE_POS", "M26_MAINTENANCE_SAFE_NEU", "M26_MAINTENANCE_SAFE_NEG"]
+    member_names: ["保养安心·看好", "保养安心·中立", "保养安心·质疑"]
+  - name: emo_market_mature
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M54_MARKET_MATURE_POS", "M54_MARKET_MATURE_NEU", "M54_MARKET_MATURE_NEG"]
+    member_names: ["市场趋于成熟·看好", "市场趋于成熟·中立", "市场趋于成熟·质疑"]
+  - name: emo_music_love
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M15_MUSIC_LOVE_POS", "M15_MUSIC_LOVE_NEU", "M15_MUSIC_LOVE_NEG"]
+    member_names: ["音乐获好评·看好", "音乐获好评·中立", "音乐获好评·质疑"]
+  - name: emo_policy_convenient
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M21_POLICY_CONVENIENT_POS", "M21_POLICY_CONVENIENT_NEU", "M21_POLICY_CONVENIENT_NEG"]
+    member_names: ["就医便捷·看好", "就医便捷·中立", "就医便捷·质疑"]
+  - name: emo_praise
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M01_PRAISE_POS", "M01_PRAISE_NEU", "M01_PRAISE_NEG"]
+    member_names: ["整体获好评·看好", "整体获好评·中立", "整体获好评·质疑"]
+  - name: emo_praise_play
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M13_PRAISE_PLAY_POS", "M13_PRAISE_PLAY_NEU", "M13_PRAISE_PLAY_NEG"]
+    member_names: ["表现受赞·看好", "表现受赞·中立", "表现受赞·质疑"]
+  - name: emo_progress
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M02_PROGRESS_POS", "M02_PROGRESS_NEU", "M02_PROGRESS_NEG"]
+    member_names: ["进展获认可·看好", "进展获认可·中立", "进展获认可·质疑"]
+  - name: emo_progressing
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M24_PROGRESSING_POS", "M24_PROGRESSING_NEU", "M24_PROGRESSING_NEG"]
+    member_names: ["体态改善中·看好", "体态改善中·中立", "体态改善中·质疑"]
+  - name: emo_proud_origin
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M51_PROUD_ORIGIN_POS", "M51_PROUD_ORIGIN_NEU", "M51_PROUD_ORIGIN_NEG"]
+    member_names: ["产地自豪·看好", "产地自豪·中立", "产地自豪·质疑"]
+  - name: emo_reassured
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M31_REASSURED_POS", "M31_REASSURED_NEU", "M31_REASSURED_NEG"]
+    member_names: ["结果安心·看好", "结果安心·中立", "结果安心·质疑"]
+  - name: emo_relief
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M48_RELIEF_POS", "M48_RELIEF_NEU", "M48_RELIEF_NEG"]
+    member_names: ["如释重负·看好", "如释重负·中立", "如释重负·质疑"]
+  - name: emo_relieved
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M28_RELIEVED_POS", "M28_RELIEVED_NEU", "M28_RELIEVED_NEG"]
+    member_names: ["状态缓解·看好", "状态缓解·中立", "状态缓解·质疑"]
+  - name: emo_righteous
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M20_RIGHTEOUS_POS", "M20_RIGHTEOUS_NEU", "M20_RIGHTEOUS_NEG"]
+    member_names: ["主张有底气·看好", "主张有底气·中立", "主张有底气·质疑"]
+  - name: emo_satisfied
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M08_SATISFIED_POS", "M08_SATISFIED_NEU", "M08_SATISFIED_NEG"]
+    member_names: ["整理有成效·看好", "整理有成效·中立", "整理有成效·质疑"]
+  - name: emo_satisfied_base
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M29_SATISFIED_BASE_POS", "M29_SATISFIED_BASE_NEU", "M29_SATISFIED_BASE_NEG"]
+    member_names: ["底妆满意·看好", "底妆满意·中立", "底妆满意·质疑"]
+  - name: emo_satisfied_buy
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M36_SATISFIED_BUY_POS", "M36_SATISFIED_BUY_NEU", "M36_SATISFIED_BUY_NEG"]
+    member_names: ["看房满意·看好", "看房满意·中立", "看房满意·质疑"]
+  - name: emo_solemn
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M10_SOLEMN_POS", "M10_SOLEMN_NEU", "M10_SOLEMN_NEG"]
+    member_names: ["心情沉重·看好", "心情沉重·中立", "心情沉重·质疑"]
+  - name: emo_steady_income
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M50_STEADY_INCOME_POS", "M50_STEADY_INCOME_NEU", "M50_STEADY_INCOME_NEG"]
+    member_names: ["收益平稳·看好", "收益平稳·中立", "收益平稳·质疑"]
+  - name: emo_storage_opt
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M53_STORAGE_OPT_POS", "M53_STORAGE_OPT_NEU", "M53_STORAGE_OPT_NEG"]
+    member_names: ["储能前景乐观·看好", "储能前景乐观·中立", "储能前景乐观·质疑"]
+  - name: emo_supportive
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M19_SUPPORTIVE_POS", "M19_SUPPORTIVE_NEU", "M19_SUPPORTIVE_NEG"]
+    member_names: ["政策扶持获益·看好", "政策扶持获益·中立", "政策扶持获益·质疑"]
+  - name: emo_tasty_praise
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M44_TASTY_PRAISE_POS", "M44_TASTY_PRAISE_NEU", "M44_TASTY_PRAISE_NEG"]
+    member_names: ["口味好评·看好", "口味好评·中立", "口味好评·质疑"]
+  - name: emo_tempting
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M60_TEMPTING_POS", "M60_TEMPTING_NEU", "M60_TEMPTING_NEG"]
+    member_names: ["令人食指大动·看好", "令人食指大动·中立", "令人食指大动·质疑"]
+  - name: emo_tired_fix
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M07_TIRED_FIX_POS", "M07_TIRED_FIX_NEU", "M07_TIRED_FIX_NEG"]
+    member_names: ["困倦可改善·看好", "困倦可改善·中立", "困倦可改善·质疑"]
+  - name: emo_trend_excited
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M30_TREND_EXCITED_POS", "M30_TREND_EXCITED_NEU", "M30_TREND_EXCITED_NEG"]
+    member_names: ["趋势期待·看好", "趋势期待·中立", "趋势期待·质疑"]
+  - name: emo_want_to_go
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M40_WANT_TO_GO_POS", "M40_WANT_TO_GO_NEU", "M40_WANT_TO_GO_NEG"]
+    member_names: ["想去打卡·看好", "想去打卡·中立", "想去打卡·质疑"]
+  - name: emo_worth_it
+    layer: 12
+    description: "同一主题下的情感立场三选一"
+    members: ["M38_WORTH_IT_POS", "M38_WORTH_IT_NEU", "M38_WORTH_IT_NEG"]
+    member_names: ["值得入手·看好", "值得入手·中立", "值得入手·质疑"]

@@ -1,0 +1,194 @@
+# ---------------------------------------------------------------------------
+# tagmind — CI
+#
+# 门禁：lint → typecheck → test（含覆盖率 ≥70%）→ 密钥扫描 → 依赖扫描。
+#
+# 任何一步失败即阻断合并。阶段 0 的验收项：③ CI 跑 lint + mypy + pytest +
+# 密钥扫描 + 依赖扫描；④ 预提交钩子能拦下 sk- / AKIA / token= 模式。
+# ---------------------------------------------------------------------------
+
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+# 同一分支的新 push 取消旧的运行，避免浪费 CI 资源。
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUTF8: "1"
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install "ruff>=0.4,<1"
+
+      - name: ruff check
+        run: ruff check src tests
+
+      - name: ruff format --check
+        run: ruff format --check src tests
+
+  typecheck:
+    name: Type check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: mypy
+        run: mypy src/tagmind
+
+  test:
+    name: Test (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: 单元测试 + 覆盖率
+        run: pytest tests/unit -q --cov=src/tagmind --cov-report=xml --cov-report=term-missing
+
+      - name: 覆盖率门槛
+        run: |
+          pytest tests/unit -q --cov=src/tagmind --cov-report=term-missing --cov-fail-under=70
+
+      - name: 集成测试（无 DB 时自动 skip）
+        run: pytest tests/integration -q -m integration
+
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 扫描疑似密钥
+        run: |
+          echo "== 检查 sk- 前缀密钥 =="
+          if git grep -nIE "(sk-[A-Za-z0-9_-]{16,})" -- \
+              ':!.env.example' ':!docs/**' ':!*.lock' ':!poetry.lock'; then
+            echo "::error::检测到疑似 OpenAI 风格密钥（sk- 前缀）"
+            exit 1
+          fi
+
+          echo "== 检查 AWS AKIA 密钥 =="
+          if git grep -nIE "(AKIA[0-9A-Z]{16})" -- \
+              ':!.env.example' ':!docs/**' ':!*.lock'; then
+            echo "::error::检测到疑似 AWS Access Key（AKIA 前缀）"
+            exit 1
+          fi
+
+          echo "== 检查硬编码 token/secret/password =="
+          if git grep -nIE "(token|secret|password|api[_-]?key)[[:space:]]*[=:][[:space:]]*['\"][A-Za-z0-9/+_-]{16,}" -- \
+              ':!.env.example' ':!docs/**' ':!tests/**' ':!*.lock'; then
+            echo "::error::检测到疑似硬编码凭据"
+            exit 1
+          fi
+
+          echo "::notice::密钥扫描通过"
+
+  dependency-scan:
+    name: Dependency scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装 pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      - name: 依赖漏洞扫描
+        run: |
+          pip-audit --strict --progress-spinner=off -r <(python -c "
+          import tomllib, pathlib
+          data = tomllib.loads(pathlib.Path('pyproject.toml').read_text(encoding='utf-8'))
+          for dep in data['project']['dependencies']:
+              print(dep)
+          ")
+
+  migration-idempotent:
+    name: Migration idempotency
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: tagmind
+          POSTGRES_USER: tagmind
+          POSTGRES_PASSWORD: tagmind
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tagmind -d tagmind"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TAGMIND_TEST_DATABASE_URL: postgresql://tagmind:tagmind@localhost:5432/tagmind
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: alembic upgrade head（两次都必须成功）
+        run: |
+          alembic -c alembic.ini upgrade head
+          alembic -c alembic.ini upgrade head
+
+      - name: 迁移后一致性校验
+        run: python scripts/consistency_check.py --after-migration head

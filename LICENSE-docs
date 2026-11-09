@@ -1,0 +1,58 @@
+tagmind — 文档与设计许可
+
+Copyright (c) 2026 Nephets1010
+
+本项目的**源代码**采用 Apache License 2.0，完整文本见同目录下的 `LICENSE` 文件。
+
+本项目的**文档与设计材料**（`docs/` 目录、ADR、README 中的架构描述）采用
+Creative Commons Attribution 4.0 International（CC BY 4.0）许可：
+
+    https://creativecommons.org/licenses/by/4.0/
+
+## 你可以做什么
+
+- 复制、修改、翻译本项目的文档
+- 将文档用于商业或非商业用途
+- 在衍生作品中引用本项目的设计思路
+
+## 你必须做什么
+
+- **署名**：注明「tagmind 项目（作者：Nephets1010）」并链接到
+  https://github.com/Nephets1010/tagmind
+- **标注变更**：若修改了原文，需注明做过修改
+
+## 源代码的例外
+
+以下内容同样适用 Apache License 2.0，而非 CC BY 4.0：
+
+- `src/` 目录下的全部源代码
+- `tests/` 目录下的全部测试
+- `rules/` 目录下的规则文件
+- `migrations/` 目录下的迁移脚本
+- `data/` 目录下的示例数据
+- 配置文件（`pyproject.toml`、`Dockerfile`、`docker-compose.yml` 等）
+
+## 第三方组件
+
+本项目依赖以下开源组件，它们各自采用独立的许可证：
+
+| 组件 | 许可证 |
+|---|---|
+| FastAPI | MIT |
+| Pydantic / pydantic-settings | MIT |
+| Neo4j Python Driver | Apache 2.0 |
+| Neo4j Community Server | GPL v3 |
+| Redis | BSD-3-Clause（服务端） / MIT（客户端） |
+| NumPy | BSD-3-Clause |
+| Uvicorn | BSD-3-Clause |
+| Prometheus Client | Apache 2.0 |
+| PyYAML | MIT |
+| HTTPX | BSD-3-Clause |
+| Tenacity | Apache 2.0 |
+| pytest | MIT |
+| Ruff | MIT |
+| mypy | MIT |
+
+**关于 Neo4j Community 的 GPL v3**：本项目以独立服务方式使用 Neo4j，不与其代码链接，
+不构成衍生作品。若你需要在商业环境中使用本项目，请自行确认合规边界，或改用
+Neo4j Enterprise / Aura（商业许可）。

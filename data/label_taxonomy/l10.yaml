@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L10 属性与量化
+#
+# 层级定位：时间、数值、状态与参数等客观属性。开放多选，配额 ≤8；**不进召回特征**。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 10
+
+labels:
+  - {code: A01_PARAM_SCALE, name: "参数规模", description: "模型参数量与上下文长度等量化指标", parent: W01_MODEL_NAME, max_select: 8, is_feature: False, examples: ["参数规模"]}
+  - {code: A02_NODE_ANGSTROM, name: "制程纳米数", description: "工艺节点的纳米标注与晶体管密度", parent: W02_SOC_CHIP, max_select: 8, is_feature: False, examples: ["制程纳米"]}
+  - {code: A03_OS_VERSION, name: "系统版本号", description: "系统版本号与升级覆盖范围", parent: W03_PHONE_MODEL, max_select: 8, is_feature: False, examples: ["系统版本"]}
+  - {code: A04_YOY_GROWTH, name: "同比增速", description: "指标同比与环比的量化变化幅度", parent: W04_RETAIL_INDEX, max_select: 8, is_feature: False, examples: ["同比增速"]}
+  - {code: A05_PCT_CHANGE, name: "涨跌幅", description: "板块与个股的涨跌百分比", parent: W05_SECTOR_INDEX, max_select: 8, is_feature: False, examples: ["涨跌幅"]}
+  - {code: A06_ALLOC_RATIO, name: "配置比例", description: "各类资产的持仓百分比", parent: W06_FUND_PRODUCT, max_select: 8, is_feature: False, examples: ["配置比例"]}
+  - {code: A07_SLEEP_HOURS, name: "睡眠时长", description: "夜间睡眠小时数与深睡占比", parent: W07_SLEEP_DEVICE, max_select: 8, is_feature: False, examples: ["睡眠时长"]}
+  - {code: A08_AREA_SQM, name: "收纳面积", description: "整理涉及的空间面积与物品数量", parent: W08_STORAGE_BOX, max_select: 8, is_feature: False, examples: ["收纳面积"]}
+  - {code: A09_COLOR_CODE, name: "色号", description: "单品的色号与面料成分", parent: W09_BASIC_PIECE, max_select: 8, is_feature: False, examples: ["色号"]}
+  - {code: A10_WARNING_LEVEL, name: "预警级别", description: "气象与灾害预警的等级与强度", parent: W10_SHELTER_POINT, max_select: 8, is_feature: False, examples: ["预警级别"]}
+  - {code: A11_HEAT_INDEX, name: "热度指数", description: "话题阅读量、讨论量与转发量", parent: W11_HOT_TOPIC, max_select: 8, is_feature: False, examples: ["热度指数"]}
+  - {code: A12_EVIDENCE_COUNT, name: "证据数量", description: "采访样本数与文件证据份数", parent: W12_REPORT_TOPIC, max_select: 8, is_feature: False, examples: ["证据数量"]}
+  - {code: A13_FORMATION, name: "阵型", description: "首发阵型与控球率等数据", parent: W13_MATCH_FIXTURE, max_select: 8, is_feature: False, examples: ["阵型"]}
+  - {code: A14_EPS_COUNT, name: "集数时长", description: "集数、单集时长与上线排期", parent: W14_DRAMA_TITLE, max_select: 8, is_feature: False, examples: ["集数时长"]}
+  - {code: A15_TRACK_COUNT, name: "曲目数量", description: "曲目数与专辑时长", parent: W15_ALBUM_TITLE, max_select: 8, is_feature: False, examples: ["曲目数量"]}
+  - {code: A16_MEASURE_VALUE, name: "物理量", description: "涉及的数值、尺度或单位", parent: W16_SCI_TOPIC, max_select: 8, is_feature: False, examples: ["物理量"]}
+  - {code: A17_LOC_COUNT, name: "代码规模", description: "改动行数、覆盖率和耗时", parent: W17_REPO_MODULE, max_select: 8, is_feature: False, examples: ["代码规模"]}
+  - {code: A18_SCORE_LINE, name: "分数线", description: "国家线、院校线与目标分数", parent: W18_EXAM_SUBJECT, max_select: 8, is_feature: False, examples: ["分数线"]}
+  - {code: A19_AMOUNT_CAP, name: "补贴额度", description: "资助金额上限与申报条件", parent: W19_PROGRAM_NAME, max_select: 8, is_feature: False, examples: ["补贴额度"]}
+  - {code: A20_CLAIM_AMOUNT, name: "索赔金额", description: "诉讼请求金额与赔偿标准", parent: W20_CASE_TYPE, max_select: 8, is_feature: False, examples: ["索赔金额"]}
+  - {code: A21_REIMBURSE_RATE, name: "报销比例", description: "起付线、报销比例与封顶线", parent: W21_SERVICE_ITEM, max_select: 8, is_feature: False, examples: ["报销比例"]}
+  - {code: A22_STAGE_NUM, name: "分期指标", description: "TNM 分期与肿瘤标志物数值", parent: W22_SCREEN_ITEM, max_select: 8, is_feature: False, examples: ["分期指标"]}
+  - {code: A23_DOSAGE_MG, name: "剂量", description: "单次剂量与每日次数", parent: W23_DRUG_NAME, max_select: 8, is_feature: False, examples: ["剂量"]}
+  - {code: A24_TRAIN_FREQ, name: "训练频次", description: "每周训练次数与组数时长", parent: W24_TRAIN_GEAR, max_select: 8, is_feature: False, examples: ["训练频次"]}
+  - {code: A25_CHARGE_POWER, name: "充电功率", description: "峰值功率与补能耗时", parent: W25_EV_MODEL, max_select: 8, is_feature: False, examples: ["充电功率"]}
+  - {code: A26_OIL_SPEC, name: "机油规格", description: "机油粘度等级与保养里程", parent: W26_CAR_MODEL, max_select: 8, is_feature: False, examples: ["机油规格"]}
+  - {code: A27_TAKEOVER_COUNT, name: "接管次数", description: "接管次数与事故责任数据", parent: W27_ADAS_VERSION, max_select: 8, is_feature: False, examples: ["接管次数"]}
+  - {code: A28_INGREDIENT_PCT, name: "成分浓度", description: "关键成分的浓度与使用频次", parent: W28_SKINCARE_PRODUCT, max_select: 8, is_feature: False, examples: ["成分浓度"]}
+  - {code: A29_WEAR_HOURS, name: "持妆时长", description: "带妆小时数与脱妆部位", parent: W29_FOUNDATION, max_select: 8, is_feature: False, examples: ["持妆时长"]}
+  - {code: A30_COLOR_CODE, name: "色号", description: "潘通色号与色卡编号", parent: W30_SEASON_PALETTE, max_select: 8, is_feature: False, examples: ["色号"]}
+  - {code: A31_WEEK_NUM, name: "孕周指标", description: "孕周数与检查结果的数值", parent: W31_TEST_ITEM, max_select: 8, is_feature: False, examples: ["孕周指标"]}
+  - {code: A32_MONTH_AGE, name: "月龄阶段", description: "添加月龄与每日喂养次数", parent: W32_BABY_FOOD, max_select: 8, is_feature: False, examples: ["月龄阶段"]}
+  - {code: A33_AGE_RANGE, name: "适用年龄", description: "适用孩子的年龄阶段", parent: W33_PARENT_BOOK, max_select: 8, is_feature: False, examples: ["适用年龄"]}
+  - {code: A34_BUDGET_AMOUNT, name: "预算金额", description: "装修总预算与单项分配", parent: W34_STYLE_TYPE, max_select: 8, is_feature: False, examples: ["预算金额"]}
+  - {code: A35_SIZE_CM, name: "尺寸规格", description: "长宽高尺寸与占地面积", parent: W35_SOFA_PIECE, max_select: 8, is_feature: False, examples: ["尺寸规格"]}
+  - {code: A36_AREA_SQM, name: "面积户型", description: "建筑面积与套内面积", parent: W36_LAYOUT_TYPE, max_select: 8, is_feature: False, examples: ["面积户型"]}
+  - {code: A37_CHAPTER_NUM, name: "章节进度", description: "主线章节与体力消耗数值", parent: W37_GAME_TITLE, max_select: 8, is_feature: False, examples: ["章节进度"]}
+  - {code: A38_FPS_AVG, name: "平均帧率", description: "游戏内帧率、显存占用与功耗", parent: W38_GPU_MODEL, max_select: 8, is_feature: False, examples: ["平均帧率"]}
+  - {code: A39_SCORE_LINE, name: "比分战绩", description: "各局比分与经济差数据", parent: W39_MATCH_EVENT, max_select: 8, is_feature: False, examples: ["比分战绩"]}
+  - {code: A40_DAYS_COUNT, name: "行程天数", description: "停留天数与每日景点数量", parent: W40_LANDMARK, max_select: 8, is_feature: False, examples: ["行程天数"]}
+  - {code: A41_DISTANCE_KM, name: "里程爬升", description: "路线公里数与累计爬升米数", parent: W41_TRAIL_NAME, max_select: 8, is_feature: False, examples: ["里程爬升"]}
+  - {code: A42_PRICE_NIGHT, name: "房价与面积", description: "每晚价格与房间面积", parent: W42_ROOM_TYPE, max_select: 8, is_feature: False, examples: ["房价与面"]}
+  - {code: A43_WOK_HEAT, name: "火候与时长", description: "油温、火力与烹饪时长", parent: W43_DISH_NAME, max_select: 8, is_feature: False, examples: ["火候与时"]}
+  - {code: A44_AVG_PRICE, name: "人均价格", description: "人均消费与菜品价格区间", parent: W44_SIGNATURE_DISH, max_select: 8, is_feature: False, examples: ["人均价格"]}
+  - {code: A45_GRIND_RATIO, name: "研磨与比例", description: "研磨度、粉水比与水温", parent: W45_BEAN_ORIGIN, max_select: 8, is_feature: False, examples: ["研磨与比"]}
+  - {code: A46_SESSION_COUNT, name: "咨询次数", description: "咨询频次与自我练习周数", parent: W46_COMM_BOOK, max_select: 8, is_feature: False, examples: ["咨询次数"]}
+  - {code: A47_TRAIT_COUNT, name: "特质数量", description: "星座性格关键词与强度", parent: W47_ZODIAC_SIGN, max_select: 8, is_feature: False, examples: ["特质数量"]}
+  - {code: A48_WEEK_PRACTICE, name: "练习周期", description: "每周练习次数与记录天数", parent: W48_CBT_BOOK, max_select: 8, is_feature: False, examples: ["练习周期"]}
+  - {code: A49_YIELD_PER_MU, name: "亩产水平", description: "亩产量与种植成本数据", parent: W49_CROP_NAME, max_select: 8, is_feature: False, examples: ["亩产水平"]}
+  - {code: A50_LAY_RATE, name: "产蛋与成活数据", description: "产蛋率、蛋重与成活率", parent: W50_POULTRY_KIND, max_select: 8, is_feature: False, examples: ["产蛋与成"]}
+  - {code: A51_PREMIUM_RATE, name: "溢价水平", description: "地标产品相对普通品的价格溢价", parent: W51_GEO_NAME, max_select: 8, is_feature: False, examples: ["溢价水平"]}
+  - {code: A52_EFFICIENCY_PCT, name: "转换效率", description: "量产效率与单瓦成本数据", parent: W52_MODULE_MODEL, max_select: 8, is_feature: False, examples: ["转换效率"]}
+  - {code: A53_CYCLE_COUNT, name: "循环次数", description: "循环寿命与系统容量数据", parent: W53_BATTERY_PRODUCT, max_select: 8, is_feature: False, examples: ["循环次数"]}
+  - {code: A54_CARBON_PRICE, name: "碳价水平", description: "碳成交价与履约成本数据", parent: W54_QUOTA_TYPE, max_select: 8, is_feature: False, examples: ["碳价水平"]}
+  - {code: A55_CANVAS_SIZE, name: "画幅尺寸", description: "尺寸、颜料品种与创作年份", parent: W55_PAINTING_WORK, max_select: 8, is_feature: False, examples: ["画幅尺寸"]}
+  - {code: A56_KILN_TEMP, name: "窑温与釉色", description: "烧成温度、釉色与器物尺寸", parent: W56_POTTERY_ITEM, max_select: 8, is_feature: False, examples: ["窑温与釉"]}
+  - {code: A57_WORK_COUNT, name: "展品规模", description: "展品数量、展期与票价", parent: W57_EXHIBITION_NAME, max_select: 8, is_feature: False, examples: ["展品规模"]}
+  - {code: A58_MEGA_PIXEL, name: "像素与连拍", description: "像素、连拍速度与机身重量", parent: W58_CAMERA_MODEL, max_select: 8, is_feature: False, examples: ["像素与连"]}
+  - {code: A59_EXPOSURE_SET, name: "曝光参数", description: "光圈快门 ISO 与测光方式", parent: W59_LIGHT_CONDITION, max_select: 8, is_feature: False, examples: ["曝光参数"]}
+  - {code: A60_APERTURE_F, name: "光圈与景深", description: "光圈数值、焦距与景深范围", parent: W60_DISH_SUBJECT, max_select: 8, is_feature: False, examples: ["光圈与景"]}

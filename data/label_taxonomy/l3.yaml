@@ -1,0 +1,288 @@
+# ---------------------------------------------------------------------------
+# tagmind — L3 二级类目（Sub-category）
+#
+# 层级定位：类目下的细分业务方向。严格树（同父互斥），配额 ≤3。
+# 数量：200 个（每个 L2 类目 2–3 个）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 3
+
+labels:
+  # ---- C_AI 人工智能（3） ----
+  - {code: S_AI_LLM, name: "大模型与LLM", description: "大语言模型、多模态模型、训练与推理能力、上下文与评测", parent: C_AI, max_select: 3, examples: ["参数规模", "上下文长度", "幻觉"]}
+  - {code: S_AI_APP, name: "AI应用落地", description: "行业场景、SaaS 产品、AI 助手、企业落地案例与 ROI", parent: C_AI, max_select: 3, examples: ["落地场景", "降本", "试点"]}
+  - {code: S_AI_AGENT, name: "智能体与自动化", description: "Agent 编排、工具调用、多智能体协作、工作流自动化", parent: C_AI, max_select: 3, examples: ["工具调用", "编排", "工作流"]}
+  # ---- C_CHIP 半导体与芯片（3） ----
+  - {code: S_CHIP_STORAGE, name: "存储芯片", description: "NAND、DRAM、HBM、SSD 与内存价格周期", parent: C_CHIP, max_select: 3, examples: ["HBM", "闪存", "内存颗粒"]}
+  - {code: S_CHIP_PACK, name: "先进封装与制程", description: "CoWoS、Chiplet、先进光刻、良率与制程节点竞争", parent: C_CHIP, max_select: 3, examples: ["Chiplet", "良率", "纳米"]}
+  - {code: S_CHIP_EQUIP, name: "设备与材料", description: "光刻机、刻蚀机、硅片光刻胶、EDA 工具与国产替代", parent: C_CHIP, max_select: 3, examples: ["光刻胶", "EDA", "国产替代"]}
+  # ---- C_PHONE 智能手机（3） ----
+  - {code: S_PHONE_SYS, name: "系统与交互", description: "操作系统、桌面生态、折叠形态、跨设备互联与交互创新", parent: C_PHONE, max_select: 3, examples: ["鸿蒙", "多设备", "折叠屏"]}
+  - {code: S_PHONE_IMG, name: "影像与显示", description: "传感器、计算摄影、屏幕面板、护眼与影像算法", parent: C_PHONE, max_select: 3, examples: ["主摄", "潜望", "峰值亮度"]}
+  - {code: S_PHONE_POWER, name: "续航与性能", description: "电池技术、快充协议、芯片性能、散热与续航实测", parent: C_PHONE, max_select: 3, examples: ["快充", "骁龙", "温控"]}
+  # ---- C_CLOUD 云计算与大数据（3） ----
+  - {code: S_CLOUD_INFRA, name: "云基础设施", description: "公有云 IaaS/PaaS、弹性伸缩、多可用区与云原生", parent: C_CLOUD, max_select: 3, examples: ["容器", "多可用区", "Serverless"]}
+  - {code: S_CLOUD_DATA, name: "数据平台与数仓", description: "湖仓一体、实时计算、数据治理、血缘与指标体系", parent: C_CLOUD, max_select: 3, examples: ["湖仓", "实时数仓", "指标口径"]}
+  - {code: S_CLOUD_AI, name: "云上AI与模型服务", description: "模型托管、推理服务、向量数据库、GPU 调度与 MaaS", parent: C_CLOUD, max_select: 3, examples: ["MaaS", "推理成本", "向量库"]}
+  # ---- C_MACRO 宏观经济（3） ----
+  - {code: S_MACRO_GROW, name: "增长与产出", description: "GDP 核算、消费与投资贡献、产业结构与增长动能", parent: C_MACRO, max_select: 3, examples: ["消费贡献", "三驾马车", "增加值"]}
+  - {code: S_MACRO_PRICE, name: "通胀与价格", description: "CPI/PPI 拆解、核心通胀、输入性通胀与价格预期", parent: C_MACRO, max_select: 3, examples: ["核心CPI", "PPI", "输入性"]}
+  - {code: S_MACRO_POLICY, name: "货币与财政政策", description: "利率与准备金、财政赤字、专项债与政策传导路径", parent: C_MACRO, max_select: 3, examples: ["LPR", "降准", "专项债"]}
+  # ---- C_STOCK 股票与证券（3） ----
+  - {code: S_STOCK_A, name: "A股市场", description: "沪深板块轮动、题材炒作、北向资金、涨跌停与市场情绪", parent: C_STOCK, max_select: 3, examples: ["题材股", "北向", "涨停板"]}
+  - {code: S_STOCK_GLOBAL, name: "海外市场", description: "港股美股、美联储利率、汇率影响与中概股表现", parent: C_STOCK, max_select: 3, examples: ["美联储", "中概", "恒生指数"]}
+  - {code: S_STOCK_RESEARCH, name: "研报与估值", description: "盈利预测、目标价、估值模型、机构分歧与预期差", parent: C_STOCK, max_select: 3, examples: ["目标价", "PE", "预期差"]}
+  # ---- C_FUND 基金与理财（3） ----
+  - {code: S_FUND_PUBLIC, name: "公募基金", description: "基金经理、风格漂移、费率结构、规模效应与持有人结构", parent: C_FUND, max_select: 3, examples: ["基金经理", "风格漂移", "申购费"]}
+  - {code: S_FUND_PRIVATE, name: "私募与另类投资", description: "私募策略、量化对冲、募资情况、业绩分化与合规", parent: C_FUND, max_select: 3, examples: ["量化", "对冲", "募资"]}
+  - {code: S_FUND_PLAN, name: "个人理财配置", description: "资产配置、养老金、保险年金、税务筹划与家庭财务", parent: C_FUND, max_select: 3, examples: ["养老金", "年金险", "资产配置"]}
+  # ---- C_ECO 零售与电商（3） ----
+  - {code: S_ECO_CHANNEL, name: "渠道与流量", description: "平台电商、社交电商、即时零售、私域运营与流量成本", parent: C_ECO, max_select: 3, examples: ["私域", "获客成本", "即时零售"]}
+  - {code: S_ECO_PROMO, name: "大促与营销", description: "促销玩法、价格机制、直播带货、会员体系与复购", parent: C_ECO, max_select: 3, examples: ["满减", "直播", "复购率"]}
+  - {code: S_ECO_SUPPLY, name: "供应链与零售业态", description: "即时零售、商超便利、仓储履约、品牌自营与库存周转", parent: C_ECO, max_select: 3, examples: ["履约", "周转天数", "自营"]}
+  # ---- C_HEALTH 健康养生（3） ----
+  - {code: S_HEALTH_LIFESTYLE, name: "作息与亚健康", description: "睡眠、久坐、屏幕时间、疲劳管理与代谢改善", parent: C_HEALTH, max_select: 3, examples: ["睡眠", "久坐", "代谢综合征"]}
+  - {code: S_HEALTH_CHRONIC, name: "慢病管理", description: "高血压、糖尿病、血脂异常、体重管理与长期用药", parent: C_HEALTH, max_select: 3, examples: ["血糖", "血压", "他汀"]}
+  - {code: S_HEALTH_CHECK, name: "体检与保健品", description: "体检项目解读、指标参考、保健品成分与理性消费", parent: C_HEALTH, max_select: 3, examples: ["指标异常", "膳食补充", "筛查"]}
+  # ---- C_HOME 居住与收纳（3） ----
+  - {code: S_HOME_STORAGE, name: "收纳整理", description: "断舍离、动线规划、收纳工具、季节换季与家庭物品管理", parent: C_HOME, max_select: 3, examples: ["断舍离", "标签法", "换季"]}
+  - {code: S_HOME_RENT, name: "租房与搬家", description: "找房渠道、押金与合同、二房东风险、搬家与租住改造", parent: C_HOME, max_select: 3, examples: ["押金", "二房东", "押一付三"]}
+  - {code: S_HOME_CLEAN, name: "居家清洁", description: "日常保洁、深度清洁、厨房卫生、异味处理与清洁工具", parent: C_HOME, max_select: 3, examples: ["油污", "除味", "清洁剂"]}
+  # ---- C_STYLE 日常穿搭（3） ----
+  - {code: S_STYLE_COMMUTE, name: "通勤着装", description: "职场通勤、正式度、舒适度、季节替换与通勤效率", parent: C_STYLE, max_select: 3, examples: ["通勤", "衬衫", "正装"]}
+  - {code: S_STYLE_BASIC, name: "基础款搭配", description: "基础款衣橱、配色法则、身材比例、叠穿与材质选择", parent: C_STYLE, max_select: 3, examples: ["配色", "版型", "叠穿"]}
+  - {code: S_STYLE_CARE, name: "衣物护理", description: "洗涤标签、面料保养、除皱、收纳防变形与旧衣处置", parent: C_STYLE, max_select: 3, examples: ["洗涤", "熨烫", "起球"]}
+  # ---- C_CURR 热点时事（3） ----
+  - {code: S_CURR_EVENT, name: "突发事件", description: "自然灾害、事故灾难、突发公共卫生事件与应急响应", parent: C_CURR, max_select: 3, examples: ["预警", "救援", "响应级别"]}
+  - {code: S_CURR_TOPIC, name: "社会话题", description: "网络热议话题、公众讨论、价值观争议与舆论走向", parent: C_CURR, max_select: 3, examples: ["热搜", "争议", "话题"]}
+  - {code: S_CURR_PUBLIC, name: "民生与调查", description: "民生调查报道、数据披露、深度调查与公共讨论质量", parent: C_CURR, max_select: 3, examples: ["调查报道", "披露", "回应"]}
+  # ---- C_LEGAL 权益与维权（3） ----
+  - {code: S_LEGAL_CONSUMER, name: "消费者权益", description: "退换货、三包、虚假宣传、价格欺诈与平台维权", parent: C_LEGAL, max_select: 3, examples: ["三包", "虚假宣传", "仅退款"]}
+  - {code: S_LEGAL_LABOR, name: "劳动权益", description: "劳动合同、加班费、竞业限制、社保与劳动仲裁", parent: C_LEGAL, max_select: 3, examples: ["加班费", "竞业", "仲裁"]}
+  - {code: S_LEGAL_CONTRACT, name: "合同与纠纷", description: "合同审查、违约责任、证据保全、诉讼路径与风险防范", parent: C_LEGAL, max_select: 3, examples: ["违约", "证据", "起诉"]}
+  # ---- C_STAR 明星与IP（3） ----
+  - {code: S_STAR_DAILY, name: "艺人动态", description: "行程通告、作品播出、奖项提名、私生活与舆论回应", parent: C_STAR, max_select: 3, examples: ["路透", "提名", "工作室声明"]}
+  - {code: S_STAR_FANDOM, name: "饭圈与应援", description: "数据打榜、集资应援、控评争议、站姐与社群运营", parent: C_STAR, max_select: 3, examples: ["打榜", "集资", "控评"]}
+  - {code: S_STAR_BRAND, name: "代言与商业价值", description: "代言合作、商务片酬、肖像权、粉丝购买力与舆情风险", parent: C_STAR, max_select: 3, examples: ["代言", "商务", "解约"]}
+  # ---- C_SPORT 体育赛事（3） ----
+  - {code: S_SPORT_FOOTBALL, name: "足球赛事", description: "五大联赛、俱乐部赛事、战术分析、VAR 与球员评价", parent: C_SPORT, max_select: 3, examples: ["战术", "VAR", "积分榜"]}
+  - {code: S_SPORT_BALL, name: "篮球与格斗", description: "NBA/CBA、季后赛、球员交易、格斗赛事与伤病管理", parent: C_SPORT, max_select: 3, examples: ["季后赛", "交易", "膝伤"]}
+  - {code: S_SPORT_NATION, name: "国家队与奥运", description: "奥运项目、世预赛、选拔机制、全运会与运动员保障", parent: C_SPORT, max_select: 3, examples: ["奥运", "选拔", "亚运"]}
+  # ---- C_MOVIE 影视综艺（3） ----
+  - {code: S_MOVIE_DRAMA, name: "剧集与网剧", description: "剧集制作、播出平台、口碑评分、追剧节奏与改编", parent: C_MOVIE, max_select: 3, examples: ["开播", "口碑", "改编"]}
+  - {code: S_MOVIE_FILM, name: "电影与票房", description: "档期排片、票房口碑、视效制作、奖项角逐与海外发行", parent: C_MOVIE, max_select: 3, examples: ["排片", "票房", "视效"]}
+  - {code: S_MOVIE_VARIETY, name: "综艺与真人秀", description: "综艺模式、嘉宾争议、剪辑叙事、口碑分化与招商", parent: C_MOVIE, max_select: 3, examples: ["真人秀", "剪辑", "招商"]}
+  # ---- C_MUSIC 音乐演出（3） ----
+  - {code: S_MUSIC_RELEASE, name: "专辑与单曲", description: "专辑发行、歌曲榜单、制作幕后、宣发策略与流媒体表现", parent: C_MUSIC, max_select: 3, examples: ["打歌", "发行", "版权"]}
+  - {code: S_MUSIC_LIVE, name: "演出与音乐节", description: "演唱会选址、票务与黄牛、现场体验、舞台设计与巡演", parent: C_MUSIC, max_select: 3, examples: ["黄牛", "返场", "巡演"]}
+  - {code: S_MUSIC_INDUSTRY, name: "音乐产业与版权", description: "音乐平台、版权分成、唱片工业、独立音乐人与数据榜单", parent: C_MUSIC, max_select: 3, examples: ["分成", "独立音乐人", "榜单"]}
+  # ---- C_SCI 科普与前沿（3） ----
+  - {code: S_SCI_BASIC, name: "基础科学科普", description: "物理化学生物原理、常识纠错、生活中的科学现象", parent: C_SCI, max_select: 3, examples: ["原理", "为什么", "常识误区"]}
+  - {code: S_SCI_FRONTIER, name: "前沿研究速览", description: "量子计算、基因编辑、聚变能源、空间探测与新材料", parent: C_SCI, max_select: 3, examples: ["量子", "基因编辑", "聚变"]}
+  - {code: S_SCI_MATH, name: "数学与逻辑", description: "数学定理直觉、概率统计、算法思维与逻辑推理训练", parent: C_SCI, max_select: 3, examples: ["定理", "概率", "博弈"]}
+  # ---- C_SKILL 职业技能（3） ----
+  - {code: S_SKILL_DEV, name: "编程与工程实践", description: "编程语言、工程规范、调试、代码评审与技术成长路径", parent: C_SKILL, max_select: 3, examples: ["代码评审", "重构", "技术栈"]}
+  - {code: S_SKILL_DATA, name: "数据与AI技能", description: "SQL、Python 数据分析、机器学习入门、可视化与业务洞察", parent: C_SKILL, max_select: 3, examples: ["SQL", "可视化", "特征工程"]}
+  - {code: S_SKILL_DESIGN, name: "设计与表达", description: "视觉设计、写作结构、演讲表达、个人品牌与协作沟通", parent: C_SKILL, max_select: 3, examples: ["排版", "结构化表达", "汇报"]}
+  # ---- C_EXAM 学历与考试（3） ----
+  - {code: S_EXAM_GRAD, name: "考研与升学", description: "考研科目、分数线的含义、调剂录取、跨考与备考节奏", parent: C_EXAM, max_select: 3, examples: ["初试", "复试", "调剂"]}
+  - {code: S_EXAM_CIVIL, name: "考公与事业编", description: "国考省考、选调生、事业单位笔试面试与岗位选择", parent: C_EXAM, max_select: 3, examples: ["国考", "岗位", "笔试"]}
+  - {code: S_EXAM_ABROAD, name: "留学与认证", description: "申请流程、选校策略、语言考试、费用预算与学历认证", parent: C_EXAM, max_select: 3, examples: ["雅思", "选校", "认证"]}
+  # ---- C_POLICY 政策解读（3） ----
+  - {code: S_POLICY_INDUSTRY, name: "产业政策", description: "产业规划、补贴申报、标准制定、试点示范与政策扶持", parent: C_POLICY, max_select: 3, examples: ["专项", "试点", "标准"]}
+  - {code: S_POLICY_LIFE, name: "民生政策", description: "养老医疗、教育住房、税费优惠与民生保障政策解读", parent: C_POLICY, max_select: 3, examples: ["养老金", "个税", "保障"]}
+  - {code: S_POLICY_REGULATE, name: "监管与执法", description: "行业监管、平台合规、执法案例、违规处罚与合规要点", parent: C_POLICY, max_select: 3, examples: ["处罚", "合规", "监管"]}
+  # ---- C_LAW 法律实务（3） ----
+  - {code: S_LAW_CIVIL, name: "民法与合同", description: "物权与债权、合同订立履行、侵权责任与格式条款", parent: C_LAW, max_select: 3, examples: ["物权", "格式条款", "侵权"]}
+  - {code: S_LAW_COURSE, name: "诉讼与仲裁", description: "管辖、证据规则、诉讼时效、仲裁裁决与执行难", parent: C_LAW, max_select: 3, examples: ["管辖", "时效", "执行"]}
+  - {code: S_LAW_CRIM, name: "刑事与合规", description: "罪名认定、量刑情节、认罪认罚、单位犯罪与企业合规", parent: C_LAW, max_select: 3, examples: ["量刑", "认罪认罚", "合规"]}
+  # ---- C_SERVICE 政务办事（3） ----
+  - {code: S_SERVICE_SOCIAL, name: "社保与医保", description: "参保缴费、异地就医、医保报销、退休手续与待遇衔接", parent: C_SERVICE, max_select: 3, examples: ["异地就医", "报销", "退休"]}
+  - {code: S_SERVICE_LICENSE, name: "证照与户口", description: "身份证护照、营业执照、户口迁移、居住证与人才引进", parent: C_SERVICE, max_select: 3, examples: ["护照", "落户", "居住证"]}
+  - {code: S_SERVICE_TAX, name: "税务与公积金", description: "个税专项、发票、公积金缴存与提取、企业税务合规", parent: C_SERVICE, max_select: 3, examples: ["专项附加", "公积金", "汇算"]}
+  # ---- C_DISEASE 疾病与诊疗（3） ----
+  - {code: S_DISEASE_ONCO, name: "肿瘤与重大疾病", description: "癌症早筛、化疗放疗、靶向与免疫治疗、患者支持", parent: C_DISEASE, max_select: 3, examples: ["早筛", "靶向", "分期"]}
+  - {code: S_DISEASE_CARDIO, name: "心血管与代谢", description: "冠心病、心律失常、脑卒中、糖尿病并发症与干预", parent: C_DISEASE, max_select: 3, examples: ["支架", "心梗", "并发症"]}
+  - {code: S_DISEASE_INFECT, name: "传染病与免疫", description: "呼吸道与肠道传染病、疫苗接种、抗体与免疫调节", parent: C_DISEASE, max_select: 3, examples: ["流感", "疫苗", "抗体"]}
+  # ---- C_DRUG 药品与用药（3） ----
+  - {code: S_DRUG_ANTIBIO, name: "抗菌药与抗病毒", description: "抗生素合理使用、耐药性、抗病毒药物与疗程管理", parent: C_DRUG, max_select: 3, examples: ["耐药", "疗程", "抗病毒"]}
+  - {code: S_DRUG_CHRONIC, name: "慢病长期用药", description: "降压降糖降脂药、剂量调整、联合用药与停药风险", parent: C_DRUG, max_select: 3, examples: ["二甲双胍", "联合用药", "停药"]}
+  - {code: S_DRUG_SAFE, name: "用药安全与相互作用", description: "禁忌配伍、特殊人群用药、药品不良反应与合理用药咨询", parent: C_DRUG, max_select: 3, examples: ["相互作用", "肝肾功能", "不良反应"]}
+  # ---- C_FIT 运动健身（3） ----
+  - {code: S_FIT_STRENGTH, name: "力量训练", description: "深蹲硬拉卧推、动作规范、渐进负荷、训练计划与塑形", parent: C_FIT, max_select: 3, examples: ["深蹲", "渐进超负荷", "护腕"]}
+  - {code: S_FIT_CARDIO, name: "有氧与燃脂", description: "跑步骑行游泳、心率区间、有氧替代、间歇训练与减脂", parent: C_FIT, max_select: 3, examples: ["心率区间", "间歇", "配速"]}
+  - {code: S_FIT_INJURY, name: "体态与运动损伤", description: "圆肩驼背、骨盆前倾、跑步膝、腰椎间盘与康复训练", parent: C_FIT, max_select: 3, examples: ["圆肩", "跑步膝", "康复"]}
+  # ---- C_NUTRITION 营养与膳食（3） ----
+  - {code: S_NUTR_BALANCE, name: "营养素与热量", description: "蛋白质碳水脂肪配比、热量缺口、宏量营养素与代餐", parent: C_NUTRITION, max_select: 3, examples: ["热量缺口", "蛋白摄入", "代餐"]}
+  - {code: S_NUTR_SPECIAL, name: "特殊膳食与忌口", description: "孕期饮食、素食、过敏忌口、术后饮食与地域饮食偏好", parent: C_NUTRITION, max_select: 3, examples: ["忌口", "过敏原", "术后饮食"]}
+  - {code: S_NUTR_PLAN, name: "膳食方案与食谱", description: "三餐搭配、外卖点餐、备餐技巧、营养密度与食谱设计", parent: C_NUTRITION, max_select: 3, examples: ["备餐", "营养密度", "食谱"]}
+  # ---- C_EV 新能源汽车（3） ----
+  - {code: S_EV_BATTERY, name: "电池与补能", description: "电池类型、快充慢充、换电、续航达成率与冬季衰减", parent: C_EV, max_select: 3, examples: ["快充", "换电", "达成率"]}
+  - {code: S_EV_MODEL, name: "车型与选购", description: "纯电插混增程、续航标称、配置对比、空间与购车决策", parent: C_EV, max_select: 3, examples: ["插混", "增程", "配置对比"]}
+  - {code: S_EV_COCKPIT, name: "智能座舱与辅助", description: "车机系统、语音交互、OTA 升级、辅助驾驶配置与用车体验", parent: C_EV, max_select: 3, examples: ["车机", "OTA", "语音"]}
+  # ---- C_ICE 燃油车与养车（3） ----
+  - {code: S_ICE_BUY, name: "燃油车选购", description: "排量选择、AT与MT、配置取舍、合资自主对比与购车", parent: C_ICE, max_select: 3, examples: ["排量", "变速箱", "对比"]}
+  - {code: S_ICE_MAINTAIN, name: "保养与油耗", description: "保养周期、机滤更换、机油选择、油耗实测与成本核算", parent: C_ICE, max_select: 3, examples: ["保养周期", "机油", "油耗"]}
+  - {code: S_ICE_REPAIR, name: "故障与二手车", description: "常见故障、维修报价、事故车识别、二手车评估与过户", parent: C_ICE, max_select: 3, examples: ["积碳", "事故车", "过户"]}
+  # ---- C_DRIVE 驾驶与出行（3） ----
+  - {code: S_DRIVE_SKILL, name: "驾驶技巧", description: "起步泊车、并线超车、弯道控车、雨雪路驾驶与安全距离", parent: C_DRIVE, max_select: 3, examples: ["侧方停车", "距离", "弯道"]}
+  - {code: S_DRIVE_TRAFFIC, name: "路况与违章", description: "限行尾号、拥堵指数、违章处理、事故责任认定与理赔", parent: C_DRIVE, max_select: 3, examples: ["限行", "违章", "定责"]}
+  - {code: S_DRIVE_URBAN, name: "城市出行方式", description: "公交地铁、网约车、共享单车、骑行通勤与通勤成本", parent: C_DRIVE, max_select: 3, examples: ["通勤成本", "网约车", "骑行"]}
+  # ---- C_INTELLIGENT 智能驾驶（2） ----
+  - {code: S_INT_LEVEL, name: "辅助驾驶分级", description: "L2/L3/L4 能力边界、接管责任、场景限制与法规进展", parent: C_INTELLIGENT, max_select: 3, examples: ["L3", "接管", "责任"]}
+  - {code: S_INT_HARDWARE, name: "传感器与算力", description: "激光雷达、毫米波、摄像头方案、芯片算力与成本下探", parent: C_INTELLIGENT, max_select: 3, examples: ["激光雷达", "算力", "方案"]}
+  # ---- C_SKIN 护肤（3） ----
+  - {code: S_SKIN_TYPE, name: "肤质与问题肌", description: "油性干性混合性、敏感肌、痘痘肌与屏障修复", parent: C_SKIN, max_select: 3, examples: ["敏感肌", "屏障", "闭口"]}
+  - {code: S_SKIN_INGREDIENT, name: "成分与功效", description: "烟酰胺视黄醇玻尿酸、水杨酸、A醇耐受与功效评测", parent: C_SKIN, max_select: 3, examples: ["视黄醇", "浓度", "耐受"]}
+  - {code: S_SKIN_ROUTINE, name: "护肤流程与防晒", description: "早晚流程、清洁卸妆、防晒指数、换季护肤与预算分配", parent: C_SKIN, max_select: 3, examples: ["防晒", "卸妆", "流程"]}
+  # ---- C_MAKEUP 彩妆（3） ----
+  - {code: S_MAKE_BASE, name: "底妆与持妆", description: "粉底色号、遮瑕、妆前打底、脱妆原因与油皮干皮适配", parent: C_MAKEUP, max_select: 3, examples: ["色号", "卡粉", "持妆"]}
+  - {code: S_MAKE_EYE, name: "眼妆与眉形", description: "眼影配色、眼线笔法、睫毛膏、眉形设计与眼型调整", parent: C_MAKEUP, max_select: 3, examples: ["眼影", "卧蚕", "眉形"]}
+  - {code: S_MAKE_STYLE, name: "妆容风格与教程", description: "日常淡妆、欧美浓妆、新手教程、换脸妆容与产品清单", parent: C_MAKEUP, max_select: 3, examples: ["淡妆", "教程", "产品清单"]}
+  # ---- C_TREND 时尚潮流（3） ----
+  - {code: S_TREND_FORECAST, name: "趋势预测与流行色", description: "季节趋势、流行色卡、廓形变化、灵感来源与趋势落地", parent: C_TREND, max_select: 3, examples: ["趋势色", "廓形", "灵感"]}
+  - {code: S_TREND_DESIGNER, name: "设计师品牌", description: "奢侈品牌、运动潮流、联名合作、品牌定位与设计师风格", parent: C_TREND, max_select: 3, examples: ["联名", "设计师", "品牌定位"]}
+  - {code: S_TREND_CULTURE, name: "潮流文化与亚文化", description: "街头潮流、机能风、复古千禧、户外风格与亚文化圈层", parent: C_TREND, max_select: 3, examples: ["机能风", "复古", "圈层"]}
+  # ---- C_PREGNANCY 孕期与产后（3） ----
+  - {code: S_PREG_NUTRITION, name: "孕期营养与体重", description: "孕期体重增长、营养补充、叶酸与钙、饮食禁忌与控糖", parent: C_PREGNANCY, max_select: 3, examples: ["叶酸", "增重", "控糖"]}
+  - {code: S_PREG_CHECK, name: "产检与分娩", description: "产检项目、唐筛无创、待产准备、分娩方式与无痛分娩", parent: C_PREGNANCY, max_select: 3, examples: ["唐筛", "待产包", "无痛"]}
+  - {code: S_PREG_RECOVER, name: "产后恢复与情绪", description: "恶露与伤口、盆底肌修复、产后抑郁、母乳喂养与作息调整", parent: C_PREGNANCY, max_select: 3, examples: ["盆底肌", "产后抑郁", "母乳"]}
+  # ---- C_BABY 婴幼儿护理（3） ----
+  - {code: S_BABY_FEED, name: "辅食与喂养", description: "辅食添加顺序、过敏原引入、奶量、喂养姿势与自主进食", parent: C_BABY, max_select: 3, examples: ["辅食", "过敏原", "奶量"]}
+  - {code: S_BABY_HEALTH, name: "疫苗与常见病症", description: "接种时间表、发热咳嗽、湿疹腹泻与就医时机", parent: C_BABY, max_select: 3, examples: ["接种", "湿疹", "发热"]}
+  - {code: S_BABY_SLEEP, name: "睡眠与发育", description: "睡眠规律、哄睡方法、大运动里程碑、抬头翻身与语言发展", parent: C_BABY, max_select: 3, examples: ["哄睡", "翻身", "里程碑"]}
+  # ---- C_EDU_KID 育儿教育（3） ----
+  - {code: S_KID_COMMUN, name: "亲子沟通", description: "情绪接纳、提问方式、批评与鼓励、冲突处理与陪伴质量", parent: C_EDU_KID, max_select: 3, examples: ["接纳", "鼓励", "冲突"]}
+  - {code: S_KID_HABIT, name: "习惯与自律", description: "作息习惯、任务习惯、专注力训练、奖励机制与规则建立", parent: C_EDU_KID, max_select: 3, examples: ["专注力", "奖励", "规则"]}
+  - {code: S_KID_RESOURCE, name: "教育资源与绘本", description: "绘本分级、兴趣班选择、幼小衔接、screen time 与教育资源", parent: C_EDU_KID, max_select: 3, examples: ["绘本", "幼小衔接", "兴趣班"]}
+  # ---- C_DECOR 装修设计（2） ----
+  - {code: S_DECOR_STYLE, name: "风格与方案", description: "现代简约、奶油风、侘寂、预算分配、动线设计与方案落地", parent: C_DECOR, max_select: 3, examples: ["奶油风", "动线", "方案"]}
+  - {code: S_DECOR_BUILD, name: "施工与验收", description: "水电改造、防水工艺、吊顶地板、监理验收与增项控制", parent: C_DECOR, max_select: 3, examples: ["水电", "增项", "验收"]}
+  # ---- C_FURN 家具家电（3） ----
+  - {code: S_FURN_SOFT, name: "家具选购", description: "沙发床垫餐桌、尺寸适配、材质对比、环保板材与风格搭配", parent: C_FURN, max_select: 3, examples: ["沙发", "床垫", "环保板材"]}
+  - {code: S_FURN_APPLIANCE, name: "家电选购", description: "冰箱洗衣机空调、参数对比、能效等级、安装需求与售后", parent: C_FURN, max_select: 3, examples: ["能效", "参数对比", "安装"]}
+  - {code: S_FURN_SMART, name: "智能家居", description: "全屋智能、智能门锁扫地机、联动方案、生态兼容与隐私", parent: C_FURN, max_select: 3, examples: ["全屋智能", "米家", "联动"]}
+  # ---- C_PROPERTY 房产置业（3） ----
+  - {code: S_PROP_MARKET, name: "房价与市场", description: "房价走势、区域分化、新房二手房、库存去化与市场预期", parent: C_PROPERTY, max_select: 3, examples: ["去化", "区域分化", "挂牌价"]}
+  - {code: S_PROP_VIEW, name: "选房看房", description: "户型分析、楼层朝向、采光通风、学区与通勤配套评估", parent: C_PROPERTY, max_select: 3, examples: ["户型", "采光", "学区"]}
+  - {code: S_PROP_LOAN, name: "贷款与交易税费", description: "首付比例、商贷公积金、利率、契税增值税与过户流程", parent: C_PROPERTY, max_select: 3, examples: ["首付", "契税", "过户"]}
+  # ---- C_MAINTEN 家政维护（3） ----
+  - {code: S_MAIN_PEST, name: "虫害与除害", description: "蟑螂老鼠白蚁、驱蚊防虫、生物防治与季节性防治", parent: C_MAINTEN, max_select: 3, examples: ["蟑螂", "白蚁", "驱蚊"]}
+  - {code: S_MAIN_AIR, name: "空气与水质治理", description: "甲醛治理、新风系统、净水器滤芯、空气质量与除湿", parent: C_MAINTEN, max_select: 3, examples: ["甲醛", "新风", "滤芯"]}
+  - {code: S_MAIN_REPAIR, name: "维修与安装", description: "水电维修、灯具安装、家电维修、上门服务与价格透明", parent: C_MAINTEN, max_select: 3, examples: ["上门", "维修报价", "安装"]}
+  # ---- C_MOBILE 手游（3） ----
+  - {code: S_MOBILE_NEW, name: "新手与前期", description: "新手引导、主线推进、开荒资源、初始阵容与前期规划", parent: C_MOBILE, max_select: 3, examples: ["开荒", "新手", "抽卡池"]}
+  - {code: S_MOBILE_GACHA, name: "抽卡与养成", description: "卡池机制、保底、养成材料、角色强度与账号规划", parent: C_MOBILE, max_select: 3, examples: ["保底", "强度", "养成"]}
+  - {code: S_MOBILE_ECON, name: "氪金与账号交易", description: "定价档位、通胀感知、账号交易风险、实名与防沉迷", parent: C_MOBILE, max_select: 3, examples: ["档位", "账号交易", "实名"]}
+  # ---- C_PC 端游与主机（3） ----
+  - {code: S_PC_PERF, name: "性能与画质", description: "帧数优化、显卡选购、光追与 DLSS、分辨率与画质设置", parent: C_PC, max_select: 3, examples: ["帧数", "DLSS", "显卡"]}
+  - {code: S_PC_ONLINE, name: "联机与服务", description: "联机延迟、匹配机制、赛季更新、DLC 设计与服务器稳定性", parent: C_PC, max_select: 3, examples: ["延迟", "赛季", "DLC"]}
+  - {code: S_PC_CONSOLE, name: "主机与跨平台", description: "PlayStation、Xbox、Switch、独占作品与跨平台存档", parent: C_PC, max_select: 3, examples: ["独占", "存档", "Switch"]}
+  # ---- C_ESPORTS 电竞赛事（3） ----
+  - {code: S_ESP_MATCH, name: "赛事进程与战报", description: "小组赛淘汰赛、赛果预测、战队阵容、版本与赛训", parent: C_ESPORTS, max_select: 3, examples: ["赛训", "阵容", "预测"]}
+  - {code: S_ESP_RULES, name: "规则与裁判", description: "赛事规则、版本统一、裁判争议、选手礼仪与处罚", parent: C_ESPORTS, max_select: 3, examples: ["规则", "处罚", "版本"]}
+  - {code: S_ESP_CULTURE, name: "电竞生态与观赛", description: "俱乐部运营、青训体系、观赛体验、直播生态与周边", parent: C_ESPORTS, max_select: 3, examples: ["青训", "俱乐部", "观赛"]}
+  # ---- C_GUIDE 攻略与评测（3） ----
+  - {code: S_GUIDE_ROUTE, name: "流程与任务攻略", description: "主线支线、任务顺序、隐藏任务、收集要素与地图探索", parent: C_GUIDE, max_select: 3, examples: ["支线", "隐藏任务", "收集"]}
+  - {code: S_GUIDE_BUILD, name: "配装与流派", description: "武器搭配、技能加点、BUILD 推荐、版本强度与成型思路", parent: C_GUIDE, max_select: 3, examples: ["配装", "加点", "流派"]}
+  - {code: S_GUIDE_REVIEW, name: "评分与避坑", description: "媒体评分、优缺点总结、适合人群、劝退点与购买建议", parent: C_GUIDE, max_select: 3, examples: ["评分", "劝退", "适合人群"]}
+  # ---- C_DOMESTIC 国内旅行（3） ----
+  - {code: S_DOM_CITY, name: "城市与古镇", description: "热门城市、历史文化街区、博物馆、人流控制与行程串联", parent: C_DOMESTIC, max_select: 3, examples: ["博物馆", "古镇", "人流"]}
+  - {code: S_DOM_TICKET, name: "门票与预约", description: "门票价格、预约机制、免票政策、淡旺季与退改规则", parent: C_DOMESTIC, max_select: 3, examples: ["预约", "免票", "淡季"]}
+  - {code: S_DOM_TRANSPORT, name: "本地交通与周边游", description: "高铁自驾飞机、市内交通、周边短途与自驾路线规划", parent: C_DOMESTIC, max_select: 3, examples: ["自驾", "高铁", "市内交通"]}
+  # ---- C_OUTBOUND 出境旅行（2） ----
+  - {code: S_OUT_VISA, name: "签证与入境", description: "签证类型、材料准备、面试、免签政策与入境查验", parent: C_OUTBOUND, max_select: 3, examples: ["材料", "面签", "免签"]}
+  - {code: S_OUT_PREP, name: "行前准备与安全", description: "行李清单、汇率与支付、境外通信、应急联络与旅行保险", parent: C_OUTBOUND, max_select: 3, examples: ["行李", "保险", "汇率"]}
+  # ---- C_OUTDOOR 户外运动（3） ----
+  - {code: S_OUT_HIKE, name: "徒步登山", description: "路线选择、装备清单、补给点、天气风险与高反预防", parent: C_OUTDOOR, max_select: 3, examples: ["路线", "高反", "补给"]}
+  - {code: S_OUT_CAMP, name: "露营野餐", description: "营地选择、帐篷天幕、野外炊事、垃圾分类与防火", parent: C_OUTDOOR, max_select: 3, examples: ["营地", "炊事", "防火"]}
+  - {code: S_OUT_CYCLE, name: "骑行与攀岩", description: "骑行路线、公路车装备、骑行安全、攀岩入门与保护", parent: C_OUTDOOR, max_select: 3, examples: ["骑行", "攀岩", "头盔"]}
+  # ---- C_LODGING 住宿与行程（3） ----
+  - {code: S_LOD_HOTEL, name: "酒店与民宿", description: "星级定位、房型、含早、点评真实性与隐私安全", parent: C_LODGING, max_select: 3, examples: ["房型", "含早", "差评"]}
+  - {code: S_LOD_PLAN, name: "行程编排", description: "多日路线、景点预约衔接、交通换乘、留白时间与节奏", parent: C_LODGING, max_select: 3, examples: ["多日", "换乘", "留白"]}
+  - {code: S_LOD_RULE, name: "预订与退改", description: "预订平台、比价、免费取消、入住规则与押金争议", parent: C_LODGING, max_select: 3, examples: ["比价", "取消", "押金"]}
+  # ---- C_RECIPE 家常菜谱（3） ----
+  - {code: S_RCP_STAPLE, name: "家常主食小炒", description: "番茄炒蛋、红烧肉、青椒土豆丝等经典家常菜谱与调味", parent: C_RECIPE, max_select: 3, examples: ["番茄炒蛋", "红烧", "下饭"]}
+  - {code: S_RCP_SOUP, name: "汤羹与蒸菜", description: "家常汤、蒸菜、炖盅、勾芡火候与出锅时机", parent: C_RECIPE, max_select: 3, examples: ["炖汤", "勾芡", "出锅"]}
+  - {code: S_RCP_BAKE, name: "面点与烘焙", description: "馒头包子、面条手擀、烤箱烘焙、发酵与失败原因", parent: C_RECIPE, max_select: 3, examples: ["发酵", "手擀面", "烤箱"]}
+  # ---- C_RESTAURANT 餐厅探店（3） ----
+  - {code: S_RST_REVIEW, name: "探店评测", description: "菜品评分、环境服务、价格、避雷与推荐指数", parent: C_RESTAURANT, max_select: 3, examples: ["踩雷", "性价比", "推荐菜"]}
+  - {code: S_RST_BOOK, name: "排队与预订", description: "排号策略、线上预约、包间预订、时段选择与黄牛", parent: C_RESTAURANT, max_select: 3, examples: ["排号", "预订", "黄牛"]}
+  - {code: S_RST_SCENE, name: "场景与用餐体验", description: "约会聚餐、商务宴请、烟火气、仪式感与人均预算", parent: C_RESTAURANT, max_select: 3, examples: ["约会", "聚餐", "人均"]}
+  # ---- C_DRINK 饮品与酒（3） ----
+  - {code: S_DRK_COFFEE, name: "咖啡与茶", description: "手冲参数、奶咖比例、茶种冲泡、器具选择与风味描述", parent: C_DRINK, max_select: 3, examples: ["手冲", "粉水比", "茶汤"]}
+  - {code: S_DRK_ALCOHOL, name: "酒类品鉴", description: "白酒啤酒威士忌、醒酒机制、品鉴笔记、搭配与酒后反应", parent: C_DRINK, max_select: 3, examples: ["威士忌", "醒酒", "搭配"]}
+  - {code: S_DRK_DIY, name: "自制饮品", description: "奶茶自制、果饮冷萃、气泡水、器具与家庭出品", parent: C_DRINK, max_select: 3, examples: ["奶茶", "冷萃", "自制"]}
+  # ---- C_FOODCULTURE 饮食文化（3） ----
+  - {code: S_FCU_REGIONAL, name: "地方饮食", description: "川湘粤菜系、北方面食、东南小吃、火锅烧烤与地域口味", parent: C_FOODCULTURE, max_select: 3, examples: ["川菜", "火锅", "小吃"]}
+  - {code: S_FCU_FESTIVAL, name: "节令食俗", description: "春节年夜饭、端午粽子、中秋月饼、清明青团与时令", parent: C_FOODCULTURE, max_select: 3, examples: ["年夜饭", "粽子", "青团"]}
+  - {code: S_FCU_ETIQ, name: "餐桌礼仪与健康观", description: "座次礼仪、敬酒分餐、餐桌谈论忌讳与饮食健康观念", parent: C_FOODCULTURE, max_select: 3, examples: ["座次", "分餐", "忌讳"]}
+  # ---- C_ASTRO 星座运势（3） ----
+  - {code: S_AST_SIGNS, name: "十二星座性格", description: "星座特质、元素划分、上升星座与性格关键词", parent: C_ASTRO, max_select: 3, examples: ["火象", "上升", "特质"]}
+  - {code: S_AST_FORTUNE, name: "月度运势", description: "本月运势、事业爱情财运、健康提醒与幸运元素", parent: C_ASTRO, max_select: 3, examples: ["本月", "幸运色", "财运"]}
+  - {code: S_AST_MATCH, name: "配对与合盘", description: "星座配对、契合度、上升太阳金星对照与常见搭配误区", parent: C_ASTRO, max_select: 3, examples: ["配对", "合盘", "上升"]}
+  # ---- C_RELATION 两性关系（3） ----
+  - {code: S_REL_COMM, name: "沟通与相处", description: "表达需求、倾听回应、冲突修复、边界感与情绪承接", parent: C_RELATION, max_select: 3, examples: ["需求表达", "共情", "边界"]}
+  - {code: S_REL_STAGE, name: "恋爱与婚姻", description: "暧昧追求、异地关系、婚恋决策、家庭介入与长期经营", parent: C_RELATION, max_select: 3, examples: ["暧昧", "异地", "婚前"]}
+  - {code: S_REL_BREAK, name: "分手与自我修复", description: "分手决策、冷处理、复合可能、分手后疗愈与自我价值", parent: C_RELATION, max_select: 3, examples: ["分手", "复合", "疗愈"]}
+  # ---- C_PSYCH 情绪与心理（3） ----
+  - {code: S_PSI_STRESS, name: "压力与情绪调适", description: "压力源、情绪命名、认知重构、呼吸放松与自我关怀", parent: C_PSYCH, max_select: 3, examples: ["内耗", "认知重构", "呼吸"]}
+  - {code: S_PSI_SOCIAL, name: "社交困扰", description: "社交焦虑、回避型人格、边界与拒绝技巧、原生家庭议题", parent: C_PSYCH, max_select: 3, examples: ["社恐", "回避型", "原生家庭"]}
+  - {code: S_PSI_SLEEPMOOD, name: "睡眠与情绪障碍", description: "失眠、抑郁焦虑倾向、季节性情绪、求助渠道与专业干预", parent: C_PSYCH, max_select: 3, examples: ["失眠", "抑郁倾向", "专业干预"]}
+  # ---- C_PLANT 种植技术（3） ----
+  - {code: S_PL_CROP, name: "大田作物", description: "水稻小麦玉米、播种密度、水肥管理、农机与产量", parent: C_PLANT, max_select: 3, examples: ["播种", "灌溉", "亩产"]}
+  - {code: S_PL_VEG, name: "蔬菜与果树", description: "大棚蔬菜、果树修剪授粉、疏果套袋、水肥一体化", parent: C_PLANT, max_select: 3, examples: ["大棚", "疏果", "水肥一体"]}
+  - {code: S_PL_PEST, name: "病虫害与绿色防控", description: "识别诊断、农药选择、生物防治、抗药性与绿色种植", parent: C_PLANT, max_select: 3, examples: ["蚜虫", "抗药性", "生物防治"]}
+  # ---- C_LIVESTOCK 畜牧养殖（3） ----
+  - {code: S_LV_PIG, name: "生猪养殖", description: "母猪繁殖、仔猪保育、育肥料肉比、出栏与猪价周期", parent: C_LIVESTOCK, max_select: 3, examples: ["母猪", "料肉比", "猪价"]}
+  - {code: S_LV_POULTRY, name: "禽类与蛋鸡", description: "肉鸡饲养、蛋鸡产蛋、疫病防控、笼养改造与福利", parent: C_LIVESTOCK, max_select: 3, examples: ["产蛋率", "笼养", "禽流感"]}
+  - {code: S_LV_AQUA, name: "水产与牛羊", description: "池塘养殖、稻田养鱼、肉牛肉羊育肥、饲料配方与粪污处理", parent: C_LIVESTOCK, max_select: 3, examples: ["池塘", "育肥", "粪污"]}
+  # ---- C_RURAL 乡村振兴（3） ----
+  - {code: S_RUR_INFRA, name: "农村人居环境", description: "村道硬化、污水处理、垃圾治理、庭院美化与基础设施", parent: C_RURAL, max_select: 3, examples: ["村道", "污水", "庭院"]}
+  - {code: S_RUR_INDUSTRY, name: "乡村产业与就业", description: "乡村旅游、返乡创业、合作社经营、农产品加工与电商", parent: C_RURAL, max_select: 3, examples: ["返乡", "合作社", "乡村旅游"]}
+  - {code: S_RUR_POLICY, name: "帮扶与集体经济", description: "帮扶项目、村集体资产、扶贫衔接、积分治理与老乡评价", parent: C_RURAL, max_select: 3, examples: ["帮扶", "集体经济", "积分"]}
+  # ---- C_MARKET 农产品流通（3） ----
+  - {code: S_MKT_COLD, name: "冷链与仓储", description: "冷链设施、温控标准、损耗控制、产地仓与配送时效", parent: C_MARKET, max_select: 3, examples: ["冷链", "损耗", "产地仓"]}
+  - {code: S_MKT_ECOM, name: "农产品电商", description: "产地直发、农产品直播、社区团购、品质分级与售后", parent: C_MARKET, max_select: 3, examples: ["直发", "社区团购", "分级"]}
+  - {code: S_MKT_TRACE, name: "质量分级与溯源", description: "地理标志、质量认证、溯源码、农残检测与品牌溢价", parent: C_MARKET, max_select: 3, examples: ["地标", "溯源", "农残"]}
+  # ---- C_SOLAR 光伏与可再生（2） ----
+  - {code: S_SOL_TECH, name: "光伏组件与技术", description: "单晶硅片、TOPCon 异质结、组件效率、衰减与银浆降本", parent: C_SOLAR, max_select: 3, examples: ["TOPCon", "衰减", "银浆"]}
+  - {code: S_SOL_PROJECT, name: "电站与消纳", description: "集中式分布式、屋顶光伏、弃光限电、绿电交易与收益", parent: C_SOLAR, max_select: 3, examples: ["分布式", "弃光", "绿电"]}
+  # ---- C_STORAGE 储能与电网（2） ----
+  - {code: S_STO_BATTERY, name: "电化学储能", description: "锂电池储能、钠离子、循环寿命、安全事故与成本下降", parent: C_STORAGE, max_select: 3, examples: ["循环寿命", "钠离子", "安全"]}
+  - {code: S_STO_GRID, name: "电网调度与输电", description: "特高压、配电网改造、调峰调频、电力现货市场与消纳", parent: C_STORAGE, max_select: 3, examples: ["特高压", "现货", "调频"]}
+  # ---- C_POLICY_ENV 环保政策（3） ----
+  - {code: S_PEN_EMISSION, name: "排放标准与环评", description: "国标排放、环评流程、超低排放改造、监测数据与处罚", parent: C_POLICY_ENV, max_select: 3, examples: ["超低排放", "环评", "在线监测"]}
+  - {code: S_PEN_WASTE, name: "固废与塑料治理", description: "垃圾分类、限塑令、餐厨处理、危废处置与资源化利用", parent: C_POLICY_ENV, max_select: 3, examples: ["分类", "限塑", "危废"]}
+  - {code: S_PEN_NATURE, name: "生态保护政策", description: "生态红线、自然保护区、林草湿地保护、生态补偿与修复", parent: C_POLICY_ENV, max_select: 3, examples: ["生态红线", "保护区", "修复"]}
+  # ---- C_CARBON 碳市场（3） ----
+  - {code: S_CAR_ACCOUNT, name: "碳核算与披露", description: "组织碳足迹、范围一二三、温室气体核算标准与企业披露", parent: C_CARBON, max_select: 3, examples: ["范围三", "碳足迹", "披露"]}
+  - {code: S_CAR_TRADE, name: "碳交易与CCER", description: "配额分配、碳价走势、CCER 开发、核查与履约成本", parent: C_CARBON, max_select: 3, examples: ["配额", "碳价", "CCER"]}
+  - {code: S_CAR_PATH, name: "碳中和路径", description: "双碳目标、路径规划、绿电绿证、碳汇与零碳园区", parent: C_CARBON, max_select: 3, examples: ["双碳", "绿证", "碳汇"]}
+  # ---- C_PAINT 绘画书法（3） ----
+  - {code: S_PAT_OIL, name: "油画与西方绘画", description: "油画材料、透视、古典大师、学院派与当代绘画流派", parent: C_PAINT, max_select: 3, examples: ["油画", "透视", "古典"]}
+  - {code: S_PAT_CN, name: "中国画与书法", description: "山水花鸟、笔法墨法、篆隶楷行草、临帖与章法", parent: C_PAINT, max_select: 3, examples: ["山水", "行书", "墨法"]}
+  # ---- C_TRADITION 传统工艺（3） ----
+  - {code: S_TRA_CERAMIC, name: "陶瓷与烧制", description: "泥料釉色、拉坯成型、柴烧与电窑、器型审美", parent: C_TRADITION, max_select: 3, examples: ["釉色", "拉坯", "柴烧"]}
+  - {code: S_TRA_TEXTILE, name: "刺绣与织染", description: "苏绣湘绣、扎染蜡染、蓝印花布、织造与纹样寓意", parent: C_TRADITION, max_select: 3, examples: ["苏绣", "扎染", "纹样"]}
+  - {code: S_TRA_WOOD, name: "木作与金属工艺", description: "榫卯木作、竹编、剪纸、皮雕与手工修复", parent: C_TRADITION, max_select: 3, examples: ["榫卯", "竹编", "修复"]}
+  # ---- C_EXHIBIT 展览与策展（2） ----
+  - {code: S_EXH_SHOW, name: "展览观展", description: "特展巡展、展签解读、观展路线、预约与观展礼仪", parent: C_EXHIBIT, max_select: 3, examples: ["特展", "巡展", "礼仪"]}
+  - {code: S_EXH_CURATOR, name: "策展与艺术市场", description: "策展叙事、空间动线、艺术家工作室、拍卖行与收藏", parent: C_EXHIBIT, max_select: 3, examples: ["策展", "空间动线", "拍卖"]}
+  # ---- C_GEAR 器材装备（3） ----
+  - {code: S_GEAR_BODY, name: "机身与画幅", description: "全画幅画幅选择、对焦系统、防抖、连拍与高感表现", parent: C_GEAR, max_select: 3, examples: ["画幅", "防抖", "高感"]}
+  - {code: S_GEAR_LENS, name: "镜头选择", description: "定焦变焦、恒定光圈、镜头焦段、像差与二手镜头", parent: C_GEAR, max_select: 3, examples: ["焦段", "恒定光圈", "像差"]}
+  - {code: S_GEAR_ACCESS, name: "配件与稳定", description: "稳定器、三脚架、滤镜、闪光灯、存储卡与无人机", parent: C_GEAR, max_select: 3, examples: ["稳定器", "滤镜", "无人机"]}
+  # ---- C_SHOOT 拍摄技法（3） ----
+  - {code: S_SHO_LIGHT, name: "用光技巧", description: "顺侧逆光、柔硬光、人像布光、黄金时刻与阴天光", parent: C_SHOOT, max_select: 3, examples: ["侧光", "柔光", "黄金时刻"]}
+  - {code: S_SHO_COMPOSE, name: "构图与视角", description: "三分构图、引导线、框架、视角选择与画面叙事", parent: C_SHOOT, max_select: 3, examples: ["三分", "引导线", "视角"]}
+  - {code: S_SHO_TECH, name: "曝光与实操", description: "光圈快门 ISO 组合、曝光补偿、长曝星空与抓拍", parent: C_SHOOT, max_select: 3, examples: ["曝光补偿", "长曝", "抓拍"]}
+  # ---- C_EDIT 后期修图（3） ----
+  - {code: S_EDT_COLOR, name: "调色与曲线", description: "色彩校正、HSL 调色、曲线、明暗对比与风格预设", parent: C_EDIT, max_select: 3, examples: ["HSL", "曲线", "预设"]}
+  - {code: S_EDT_PORTRAIT, name: "人像精修", description: "磨皮祛痘、液化、五官微调、瑕疵修复与自然度", parent: C_EDIT, max_select: 3, examples: ["磨皮", "液化", "自然度"]}
+  - {code: S_EDT_WORKFLOW, name: "工作流与批量", description: "RAW 处理、图层管理、批量导出、预设管理与云协作", parent: C_EDIT, max_select: 3, examples: ["RAW", "图层", "批量"]}
+  # ---- C_THEME 摄影题材（3） ----
+  - {code: S_THM_PORTRAIT, name: "人像摄影", description: "模特沟通、肖像光影、身材取景、纪实抓拍与后期", parent: C_THEME, max_select: 3, examples: ["引导", "取景", "纪实"]}
+  - {code: S_THM_LAND, name: "风光与城市", description: "风光大片、城市夜景、长焦压缩、地质与天气题材", parent: C_THEME, max_select: 3, examples: ["夜景", "长焦", "天气"]}
+  - {code: S_THM_STILL, name: "静物与微距", description: "产品静物、微距昆虫、食物摄影、极简构图与布光", parent: C_THEME, max_select: 3, examples: ["微距", "极简", "布光"]}

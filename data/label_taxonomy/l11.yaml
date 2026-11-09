@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# tagmind — L11 消费意图
+#
+# 层级定位：内容唤起的受众潜在诉求。开放多选，配额 ≤3；强特征。
+#
+# 每个标签挂在上一层同名链路上（L5 挂 L4，逐层向下），保证 ancestors 数组
+# 恰好每层一个（架构 §5.3 的 ancestors 契约与 C3 祖先闭包校验都依赖这一点）。
+# ---------------------------------------------------------------------------
+
+version: ld_v1
+layer: 11
+
+labels:
+  - {code: I01_EVAL_REF, name: "选型对比", description: "读者希望获得的能力对比与选型依据", parent: A01_PARAM_SCALE, max_select: 3, examples: ["选型对比"]}
+  - {code: I02_PERF_POWER, name: "性能功耗评估", description: "读者对芯片性能与能耗权衡的判断需求", parent: A02_NODE_ANGSTROM, max_select: 3, examples: ["性能功耗"]}
+  - {code: I03_ECOSYSTEM_CHOICE, name: "生态选择", description: "读者在生态阵营之间做选择的需求", parent: A03_OS_VERSION, max_select: 3, examples: ["生态选择"]}
+  - {code: I04_TREND_INSIGHT, name: "趋势判断", description: "读者希望据此判断消费走向的需求", parent: A04_YOY_GROWTH, max_select: 3, examples: ["趋势判断"]}
+  - {code: I05_ALLOCATION, name: "配置决策", description: "读者希望获得行业配置依据的需求", parent: A05_PCT_CHANGE, max_select: 3, examples: ["配置决策"]}
+  - {code: I06_RISK_MATCH, name: "风险匹配", description: "读者希望获得与自身风险承受力匹配方案的需求", parent: A06_ALLOC_RATIO, max_select: 3, examples: ["风险匹配"]}
+  - {code: I07_RESTORATIVE_SLEEP, name: "改善睡眠", description: "读者希望获得可执行睡眠改善方案的需求", parent: A07_SLEEP_HOURS, max_select: 3, examples: ["改善睡眠"]}
+  - {code: I08_ORDERLY_LIFE, name: "居家有序", description: "读者希望获得居家秩序感的需求", parent: A08_AREA_SQM, max_select: 3, examples: ["居家有序"]}
+  - {code: I09_EASY_COORD, name: "易搭配", description: "读者希望获得低门槛搭配方案的需求", parent: A09_COLOR_CODE, max_select: 3, examples: ["易搭配"]}
+  - {code: I10_SAFETY_ACTION, name: "避险行动", description: "读者希望知道如何自我保护的需求", parent: A10_WARNING_LEVEL, max_select: 3, examples: ["避险行动"]}
+  - {code: I11_OPINION_FORM, name: "形成观点", description: "读者希望判断该话题是非的需求", parent: A11_HEAT_INDEX, max_select: 3, examples: ["形成观点"]}
+  - {code: I12_SEE_THROUGH, name: "看清问题", description: "读者希望了解问题全貌的需求", parent: A12_EVIDENCE_COUNT, max_select: 3, examples: ["看清问题"]}
+  - {code: I13_TACTIC_LEARN, name: "战术学习", description: "读者希望理解战术意图的需求", parent: A13_FORMATION, max_select: 3, examples: ["战术学习"]}
+  - {code: I14_WATCH_PICK, name: "追剧选择", description: "读者决定追哪部剧的需求", parent: A14_EPS_COUNT, max_select: 3, examples: ["追剧选择"]}
+  - {code: I15_NEW_SONG, name: "听新歌", description: "读者希望获取新歌试听的需求", parent: A15_TRACK_COUNT, max_select: 3, examples: ["听新歌"]}
+  - {code: I16_KNOW_WHY, name: "理解原理", description: "读者希望真正理解原理的需求", parent: A16_MEASURE_VALUE, max_select: 3, examples: ["理解原理"]}
+  - {code: I17_QUALITY_PRACTICE, name: "工程质量", description: "读者希望提升工程实践的需求", parent: A17_LOC_COUNT, max_select: 3, examples: ["工程质量"]}
+  - {code: I18_ADMIT_CHANCE, name: "提高上岸率", description: "读者希望提升录取概率的需求", parent: A18_SCORE_LINE, max_select: 3, examples: ["提高上岸"]}
+  - {code: I19_CLAIM_BENEFIT, name: "申报受益", description: "企业与个人争取政策红利的需求", parent: A19_AMOUNT_CAP, max_select: 3, examples: ["申报受益"]}
+  - {code: I20_LEGAL_PROTECT, name: "依法维权", description: "读者希望用法律手段保护权益的需求", parent: A20_CLAIM_AMOUNT, max_select: 3, examples: ["依法维权"]}
+  - {code: I21_REIMBURSE_CLAIM, name: "顺利报销", description: "读者希望完成报销流程的需求", parent: A21_REIMBURSE_RATE, max_select: 3, examples: ["顺利报销"]}
+  - {code: I22_EARLY_TREAT, name: "早诊早治", description: "读者希望实现早发现早干预的需求", parent: A22_STAGE_NUM, max_select: 3, examples: ["早诊早治"]}
+  - {code: I23_SAFE_USE, name: "安全用药", description: "读者希望避免相互作用的需求", parent: A23_DOSAGE_MG, max_select: 3, examples: ["安全用药"]}
+  - {code: I24_STRAIGHT_BACK, name: "改善体态", description: "读者希望改善体型的需求", parent: A24_TRAIN_FREQ, max_select: 3, examples: ["改善体态"]}
+  - {code: I25_RANGE_TRUST, name: "续航可信", description: "读者希望获得真实续航判断的需求", parent: A25_CHARGE_POWER, max_select: 3, examples: ["续航可信"]}
+  - {code: I26_KEEP_CAR, name: "延长车况", description: "读者希望保持车辆良好状态的需求", parent: A26_OIL_SPEC, max_select: 3, examples: ["延长车况"]}
+  - {code: I27_TRUST_BOUNDARY, name: "用对能力", description: "读者希望了解能力边界的需求", parent: A27_TAKEOVER_COUNT, max_select: 3, examples: ["用对能力"]}
+  - {code: I28_CALM_SKIN, name: "安抚敏感", description: "读者希望缓解敏感泛红的需求", parent: A28_INGREDIENT_PCT, max_select: 3, examples: ["安抚敏感"]}
+  - {code: I29_FLAWLESS_LOOK, name: "妆面服帖", description: "读者希望获得自然持妆的需求", parent: A29_WEAR_HOURS, max_select: 3, examples: ["妆面服帖"]}
+  - {code: I30_MATCH_COLOR, name: "配色不踩雷", description: "读者希望获得实用配色建议的需求", parent: A30_COLOR_CODE, max_select: 3, examples: ["配色不踩"]}
+  - {code: I31_HEALTHY_PREG, name: "顺利妊娠", description: "读者希望胎儿健康平安的需求", parent: A31_WEEK_NUM, max_select: 3, examples: ["顺利妊娠"]}
+  - {code: I32_SAFE_GROWTH, name: "健康成长", description: "读者希望宝宝安全成长的需求", parent: A32_MONTH_AGE, max_select: 3, examples: ["健康成长"]}
+  - {code: I33_WARM_BOND, name: "亲子亲近", description: "读者希望建立亲密亲子关系的需求", parent: A33_AGE_RANGE, max_select: 3, examples: ["亲子亲近"]}
+  - {code: I34_IDEAL_HOME, name: "理想住所", description: "读者希望实现理想居住效果的需求", parent: A34_BUDGET_AMOUNT, max_select: 3, examples: ["理想住所"]}
+  - {code: I35_FIT_SPACE, name: "适配空间", description: "读者希望家具恰好放得下的需求", parent: A35_SIZE_CM, max_select: 3, examples: ["适配空间"]}
+  - {code: I36_BUY_RIGHT, name: "买对房", description: "读者希望买到合适房子的需求", parent: A36_AREA_SQM, max_select: 3, examples: ["买对房"]}
+  - {code: I37_SMOOTH_START, name: "顺利开荒", description: "读者希望少走弯路的上手需求", parent: A37_CHAPTER_NUM, max_select: 3, examples: ["顺利开荒"]}
+  - {code: I38_RIGHT_GPU, name: "选对显卡", description: "读者希望按预算选到合适显卡的需求", parent: A38_FPS_AVG, max_select: 3, examples: ["选对显卡"]}
+  - {code: I39_SEE_STRATEGY, name: "看懂战术", description: "读者希望理解职业对局的需求", parent: A39_SCORE_LINE, max_select: 3, examples: ["看懂战术"]}
+  - {code: I40_DEEP_TRAVEL, name: "深度游", description: "读者希望避开人潮的深度体验需求", parent: A40_DAYS_COUNT, max_select: 3, examples: ["深度游"]}
+  - {code: I41_SAFE_SUMMIT, name: "安全登顶", description: "读者希望安全完成路线的需求", parent: A41_DISTANCE_KM, max_select: 3, examples: ["安全登顶"]}
+  - {code: I42_GOOD_SLEEP, name: "住得舒心", description: "读者希望获得舒适住宿体验的需求", parent: A42_PRICE_NIGHT, max_select: 3, examples: ["住得舒心"]}
+  - {code: I43_HOME_COOK_EASY, name: "在家做得好", description: "读者希望降低 cooking 门槛的需求", parent: A43_WOK_HEAT, max_select: 3, examples: ["在家做得"]}
+  - {code: I44_WORTH_EATING, name: "值得一吃", description: "读者希望判断是否值得尝试的需求", parent: A44_AVG_PRICE, max_select: 3, examples: ["值得一吃"]}
+  - {code: I45_DAILY_CUP, name: "日常一杯", description: "读者希望稳定复刻日常咖啡的需求", parent: A45_GRIND_RATIO, max_select: 3, examples: ["日常一杯"]}
+  - {code: I46_WARM_CONNECTION, name: "亲密连接", description: "读者希望建立深度情感联结的需求", parent: A46_SESSION_COUNT, max_select: 3, examples: ["亲密连接"]}
+  - {code: I47_SELF_KNOW, name: "认识自己", description: "读者希望借星座理解自己的需求", parent: A47_TRAIT_COUNT, max_select: 3, examples: ["认识自己"]}
+  - {code: I48_CALM_MIND, name: "内心安定", description: "读者希望降低内耗与焦虑的需求", parent: A48_WEEK_PRACTICE, max_select: 3, examples: ["内心安定"]}
+  - {code: I49_STABLE_YIELD, name: "稳产增收", description: "读者希望获得稳定产量的需求", parent: A49_YIELD_PER_MU, max_select: 3, examples: ["稳产增收"]}
+  - {code: I50_HEALTHY_BREED, name: "健康养殖", description: "读者希望降低疫病风险的需求", parent: A50_LAY_RATE, max_select: 3, examples: ["健康养殖"]}
+  - {code: I51_TRUSTED_SOURCE, name: "买得放心", description: "读者希望确认产地与品质的需求", parent: A51_PREMIUM_RATE, max_select: 3, examples: ["买得放心"]}
+  - {code: I52_LOWER_LCOE, name: "降低度电成本", description: "读者希望获取更经济发电方案的需求", parent: A52_EFFICIENCY_PCT, max_select: 3, examples: ["降低度电"]}
+  - {code: I53_PEAK_SHAVING, name: "削峰填谷", description: "读者希望降低用电成本的需求", parent: A53_CYCLE_COUNT, max_select: 3, examples: ["削峰填谷"]}
+  - {code: I54_COMPLIANCE_COST, name: "合规成本可控", description: "读者希望控制履约成本的需求", parent: A54_CARBON_PRICE, max_select: 3, examples: ["合规成本"]}
+  - {code: I55_SKILL_IMPROVE, name: "技法提升", description: "读者希望提升绘画技法的需求", parent: A55_CANVAS_SIZE, max_select: 3, examples: ["技法提升"]}
+  - {code: I56_UNIQUE_GIFT, name: "独特之礼", description: "读者希望获得独特器物的需求", parent: A56_KILN_TEMP, max_select: 3, examples: ["独特之礼"]}
+  - {code: I57_SEE_MORE, name: "看懂展览", description: "读者希望获得解读线索的需求", parent: A57_WORK_COUNT, max_select: 3, examples: ["看懂展览"]}
+  - {code: I58_CHOOSE_CAMERA, name: "选对机身", description: "读者希望按用途选购的需求", parent: A58_MEGA_PIXEL, max_select: 3, examples: ["选对机身"]}
+  - {code: I59_BETTER_PICTURE, name: "拍得更好", description: "读者希望提升实拍水平的需要", parent: A59_EXPOSURE_SET, max_select: 3, examples: ["拍得更好"]}
+  - {code: I60_APPETITE_SHOT, name: "拍出食欲", description: "读者希望让食物更好卖的需求", parent: A60_APERTURE_F, max_select: 3, examples: ["拍出食欲"]}

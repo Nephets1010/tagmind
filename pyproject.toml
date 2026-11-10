@@ -142,6 +142,10 @@ exclude_lines = [
 line-length = 100
 target-version = "py311"
 src = ["src", "tests"]
+# ruff 0.17+ 会格式化 Markdown 内的 Python fenced code block。docs/ 里的
+# 报告与 ADR 含大量示意代码，格式化它们只会产生无意义 diff，且可能改变
+# 文档中的示例语义。代码门禁范围仍是全部 .py 文件。
+extend-exclude = ["*.md", "docs/**/*.md"]
 
 [tool.ruff.lint]
 select = [

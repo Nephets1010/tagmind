@@ -92,8 +92,8 @@ jobs:
         run: |
           pytest tests/unit -q --cov=src/tagmind --cov-report=term-missing --cov-fail-under=70
 
-      - name: 集成测试（无 DB 时自动 skip）
-        run: pytest tests/integration -q -m integration
+      # 集成测试已移至 migration-idempotent job（那里才有真实 PostgreSQL）。
+      # 本 job 只跑单元测试，避免在无 DB 环境下用 skip 制造假绿。
 
   secret-scan:
     name: Secret scan
@@ -197,3 +197,9 @@ jobs:
 
       - name: 迁移后一致性校验
         run: python scripts/consistency_check.py --after-migration head
+
+      # 此前 test job 没有 PG service，39 条集成测试恒 skip（恒绿但零验证）。
+      # 这里复用本 job 已有的真实 PostgreSQL 与 TAGMIND_TEST_DATABASE_URL，
+      # 让 T02 的 5 条 DB 验收项在 CI 里真跑、真失败。
+      - name: 集成测试（真实 PostgreSQL，硬失败）
+        run: pytest tests/integration -q -m integration

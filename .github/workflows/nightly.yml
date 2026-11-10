@@ -43,7 +43,12 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      TAGMIND_TEST_DATABASE_URL: postgresql://tagmind:tagmind@localhost:5432/tagmind
+      # alembic/env.py 与 consistency_check.py 读 TAGMIND_DATABASE_URL；
+      # 集成测试 fixture 读 TAGMIND_TEST_DATABASE_URL。两者必须同时给出，
+      # 否则迁移会回退到空密码 DSN 而认证失败。
+      TAGMIND_DATABASE_URL: postgresql+psycopg://tagmind:tagmind@localhost:5432/tagmind
+      TAGMIND_TEST_DATABASE_URL: postgresql+psycopg://tagmind:tagmind@localhost:5432/tagmind
+      TAGMIND_POSTGRES_PASSWORD: tagmind
       TAGMIND_ENV: development
       TAGMIND_LLM_BACKEND: deterministic
       TAGMIND_LLM_ENABLED: "false"
@@ -72,13 +77,13 @@ jobs:
       - name: 一致性巡检
         run: python scripts/consistency_check.py --after-migration head --full
 
-      - name: 离线评测
-        continue-on-error: true
-        run: python -m tagmind.cli eval
+      # 阶段 4 才实现 eval / bench。显式标注为占位，不用 continue-on-error
+      # 制造「恒绿」，也不产出任何指标（ADR-0010 口径诚实要求）。
+      - name: "[阶段 4 未实现] 离线评测占位"
+        run: "echo 'SKIPPED - eval 属阶段 4，尚未实现；本步骤不产出任何指标'"
 
-      - name: 离线回放（三条基线）
-        continue-on-error: true
-        run: python -m tagmind.cli bench
+      - name: "[阶段 4 未实现] 离线回放占位"
+        run: "echo 'SKIPPED - bench 属阶段 4，尚未实现；本步骤不产出任何指标'"
 
       - name: 上传报告
         if: always()

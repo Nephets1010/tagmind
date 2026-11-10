@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import math
 import re
 import threading
 import time
@@ -168,7 +169,13 @@ class TokenBucket:
 
         Returns:
             成功返回 ``True``，桶空返回 ``False``。
+
+        Raises:
+            ValueError: ``amount`` 非正或非有限数。负值此前会反向补充令牌
+                （``consume(-100)`` 直接把桶填满），等于绕过限流。
         """
+        if not math.isfinite(amount) or amount <= 0:
+            raise ValueError("amount 必须为正的有限数")
         with self._lock:
             now = time.monotonic()
             elapsed = now - self._updated_at

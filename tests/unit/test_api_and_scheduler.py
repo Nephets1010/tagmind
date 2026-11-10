@@ -53,10 +53,13 @@ class TestHealthProbes:
         """就绪探针必须始终返回可解析的 database 字段。"""
         with TestClient(create_app()) as client:
             response = client.get("/readyz")
-        assert response.status_code == 200
+        # 无 PG 时 /readyz 应返回 503（降级），有 PG 时为 200。
+        assert response.status_code in (200, 503)
         body = response.json()
         assert body["status"] in {"ok", "degraded"}
         assert body["database"] in {"up", "down"}
+        if response.status_code == 503:
+            assert body["status"] == "degraded"
 
 
 class TestRequestContextMiddleware:

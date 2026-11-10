@@ -72,7 +72,9 @@ def serve(
         host=host or settings.api_host,
         port=port or settings.api_port,
         reload=reload,
-        workers=workers or settings.workers,
+        # uvicorn 在 reload 模式下会忽略 workers 并打印告警；显式传 None，
+        # 避免「配了 4 个 worker 实际只有 1 个」的静默失效。
+        workers=None if reload else (workers or settings.workers),
     )
 
 

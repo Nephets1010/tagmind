@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS content_vector (
 );
 
 CREATE INDEX IF NOT EXISTS ix_content_vector_tag
-    ON content_vector USING GIN (tag_vector jsonb_path_ops);
+    ON content_vector USING GIN (tag_vector);
 """
 
 

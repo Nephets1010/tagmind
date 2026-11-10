@@ -18,6 +18,7 @@ from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from tagmind.config.settings import Settings, get_settings
+from tagmind.core.logging import get_logger
 
 __all__ = [
     "build_engine",
@@ -125,6 +126,13 @@ def ping(url: str | None = None) -> bool:
                     conn.execute(text("SELECT 1"))
             finally:
                 engine.dispose()
-    except Exception:
+    except Exception as exc:
+        # 吞掉异常却不留日志时，/readyz 只能给出布尔值，无法区分认证失败、
+        # 连接超时还是 DNS 问题。返回契约不变，只补可诊断性。
+        get_logger("tagmind.db").warning(
+            "db.ping.failed",
+            error_type=type(exc).__name__,
+            error=str(exc)[:200],
+        )
         return False
     return True

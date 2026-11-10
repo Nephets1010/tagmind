@@ -20,7 +20,7 @@ import time
 from collections.abc import Callable, Sequence
 from typing import Any, Generic, Protocol, TypeVar, cast
 
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import Column, and_, delete, func, select, update
 from sqlalchemy.engine import CursorResult
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session
@@ -169,6 +169,104 @@ class BaseRepository(Generic[M]):
         """领域对象 → 列值字典。"""
         raise NotImplementedError
 
+    # --- 主键适配 -----------------------------------------------------
+    #
+    # 阶段 0 把主键列名写死成 ``id``，但 16 张表里有 4 张不满足这个假设：
+    # ``UserProfile`` 用 ``user_id``（字符串），``ContentVector`` 用
+    # ``content_id``，``ExperimentAssignment`` / ``ExposureLog`` 是复合主键。
+    # 因此所有通用方法都必须从 ORM metadata 派生主键，而不是猜列名。
+    # -------------------------------------------------------------------
+
+    def _pk_columns(self) -> tuple[Column[Any], ...]:
+        """返回模型的主键列对象（按 DDL 中的顺序）。
+
+        Returns:
+            主键列元组；单列主键长度为 1，复合主键长度 ≥ 2。
+        """
+        return tuple(self.model.__table__.primary_key.columns)
+
+    def _pk_names(self) -> tuple[str, ...]:
+        """返回主键列名（按 DDL 顺序）。"""
+        return tuple(str(column.name) for column in self._pk_columns())
+
+    def _pk_condition(self, entity_id: Any) -> Any:
+        """构造主键等值条件。
+
+        单列主键 → ``pk == value``；复合主键 → ``and_(pk1 == v1, pk2 == v2, ...)``。
+
+        Args:
+            entity_id: 单列主键传标量；复合主键传与 ``_pk_names()`` 等长的
+                ``tuple`` / ``list``。
+
+        Returns:
+            SQLAlchemy 布尔表达式。
+
+        Raises:
+            DatabaseError: 复合主键但传入的键值数量不匹配（显式拒绝，
+                不静默按部分主键匹配——那会误伤别的行）。
+        """
+        columns = self._pk_columns()
+        if len(columns) == 1:
+            return getattr(self.model, str(columns[0].name)) == entity_id
+        values = tuple(entity_id) if isinstance(entity_id, tuple | list) else (entity_id,)
+        if len(values) != len(columns):
+            raise DatabaseError(
+                "复合主键请使用专用仓储方法",
+                details={
+                    "model": self.model.__name__,
+                    "pk_columns": self._pk_names(),
+                    "values_received": len(values),
+                    "values_required": len(columns),
+                },
+            )
+        return and_(
+            *(
+                getattr(self.model, str(column.name)) == value
+                for column, value in zip(columns, values, strict=True)
+            )
+        )
+
+    def _default_order_by(self) -> tuple[Any, ...]:
+        """默认排序键：全部主键列（复合主键按 DDL 顺序展开）。"""
+        return tuple(getattr(self.model, name) for name in self._pk_names())
+
+    def _primary_key_name(self) -> str:
+        """返回单列主键列名。
+
+        Raises:
+            DatabaseError: 复合主键——通用 ``upsert`` / ``insert_ignore``
+                无法安全推断键值组合，必须走专用仓储方法。
+        """
+        columns = self._pk_columns()
+        if len(columns) != 1:
+            raise DatabaseError(
+                "复合主键请使用专用仓储方法",
+                details={"model": self.model.__name__, "pk_columns": self._pk_names()},
+            )
+        return str(columns[0].name)
+
+    @staticmethod
+    def _is_new_entity_id(entity_id: Any) -> bool:
+        """判断主键值是否表示「尚未落库」。
+
+        **不能**统一用 ``<= 0``：``UserProfile.user_id`` 是字符串，
+        ``'u-1' <= 0`` 会抛 ``TypeError``。按 Python 类型分别判定：
+
+        - ``None`` → 未落库
+        - ``str`` → 空串视为未落库
+        - ``int``（非 bool）→ ``<= 0`` 视为未落库
+        - 其它类型 → 视为已落库，交由数据库判断
+        """
+        if entity_id is None:
+            return True
+        if isinstance(entity_id, str):
+            return entity_id == ""
+        if isinstance(entity_id, bool):
+            return False
+        if isinstance(entity_id, int):
+            return entity_id <= 0
+        return False
+
     # --- 通用实现 -----------------------------------------------------
 
     def get(self, entity_id: int) -> M | None:
@@ -205,7 +303,7 @@ class BaseRepository(Generic[M]):
         stmt = select(self.model)
         for column, value in (filters.conditions if filters else {}).items():
             stmt = stmt.where(getattr(self.model, column) == value)
-        stmt = stmt.order_by(order_by if order_by is not None else self.model.id)
+        stmt = stmt.order_by(*(order_by,) if order_by is not None else self._default_order_by())
         stmt = stmt.limit(limit).offset(offset)
         rows: Sequence[Any] = self._session.execute(stmt).scalars().all()
         return [self._map_row_to_domain(row) for row in rows]
@@ -240,9 +338,9 @@ class BaseRepository(Generic[M]):
         values = self._map_domain_to_values(entity)
         primary_key = self._primary_key_name()
         entity_id = values.pop(primary_key, None)
-        # 领域对象用 id=0 表示「尚未落库」——它不是合法主键，必须走 INSERT。
-        # 判据用 ``<= 0`` 而不是 ``is None``：新建对象的默认 id 就是 0。
-        if entity_id is not None and entity_id <= 0:
+        # 领域对象用 id=0 / user_id="" 表示「尚未落库」。判据必须按主键的
+        # Python 类型区分，字符串主键不能做 ``<= 0``。
+        if self._is_new_entity_id(entity_id):
             entity_id = None
         values = self._drop_server_managed(values)
         if entity_id is None:
@@ -252,7 +350,7 @@ class BaseRepository(Generic[M]):
             return self._map_row_to_domain(row)
         existing = self._session.get(self.model, entity_id)
         if existing is None:
-            row = self.model(id=entity_id, **values)
+            row = self.model(**{primary_key: entity_id, **values})
             self._session.add(row)
             self._session.flush()
             return self._map_row_to_domain(row)
@@ -393,7 +491,7 @@ class BaseRepository(Generic[M]):
         version_column = getattr(self.model, expected_version_column)
         if expected_version is None:
             row = self._session.execute(
-                select(version_column).where(self.model.id == entity_id)
+                select(version_column).where(self._pk_condition(entity_id))
             ).first()
             if row is None:
                 raise OptimisticLockError(
@@ -403,7 +501,7 @@ class BaseRepository(Generic[M]):
             expected_version = row[0]
         stmt = (
             update(self.model)
-            .where(self.model.id == entity_id)
+            .where(self._pk_condition(entity_id))
             .where(version_column == expected_version)
         )
         for column, value in values.items():
@@ -412,19 +510,13 @@ class BaseRepository(Generic[M]):
         self._session.flush()
         return result.rowcount > 0
 
-    def _primary_key_name(self) -> str:
-        """返回主键列名。"""
-        primary_key = builtins.list(self.model.__table__.primary_key.columns)
-        if len(primary_key) != 1:
-            raise DatabaseError(
-                "仓储基类只支持单列主键",
-                details={"model": self.model.__name__, "pk_count": len(primary_key)},
-            )
-        return str(primary_key[0].name)
-
 
 def bulk_delete(model: type[Any], session: Session, entity_ids: Sequence[int]) -> int:
     """批量删除。
+
+    主键列名从 ORM metadata 派生，因此 ``UserProfile(user_id)`` /
+    ``ContentVector(content_id)`` 也能用；复合主键没有单一标量键，
+    显式拒绝并提示走专用仓储方法。
 
     Args:
         model: ORM 模型类。
@@ -433,11 +525,25 @@ def bulk_delete(model: type[Any], session: Session, entity_ids: Sequence[int]) -
 
     Returns:
         删除的行数。
+
+    Raises:
+        DatabaseError: 模型是复合主键。
     """
     if not entity_ids:
         return 0
+    pk_columns = tuple(model.__table__.primary_key.columns)
+    if len(pk_columns) != 1:
+        raise DatabaseError(
+            "复合主键请使用专用仓储方法",
+            details={
+                "model": model.__name__,
+                "pk_columns": tuple(str(column.name) for column in pk_columns),
+            },
+        )
+    pk_column = getattr(model, str(pk_columns[0].name))
     result = cast(
-        "CursorResult[Any]", session.execute(delete(model).where(model.id.in_(entity_ids)))
+        "CursorResult[Any]",
+        session.execute(delete(model).where(pk_column.in_(entity_ids))),
     )
     session.flush()
     return int(result.rowcount or 0)

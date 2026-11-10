@@ -301,7 +301,18 @@ def test_exposure_log_is_partitioned(engine) -> None:
 
 
 def test_cross_month_insert_lands_in_correct_partition(engine) -> None:
-    """跨月数据落在正确的分区里。"""
+    """跨月数据落在正确的分区里。
+
+    迁移只预建相对当前月的 offset (-1, 0, 1) 三个分区，因此时间戳必须
+    **动态构造**为「上月 / 本月」。写死 2026-01 / 2026-06 会让两条数据
+    都掉进 DEFAULT 分区，断言必然失败。
+    """
+    from datetime import UTC, datetime, timedelta
+
+    this_month = datetime.now(UTC).replace(day=15, hour=10, minute=0, second=0, microsecond=0)
+    last_month = this_month.replace(day=1) - timedelta(days=1)
+    stamps = (last_month.replace(day=15, hour=10), this_month)
+
     with engine.begin() as conn:
         conn.execute(
             text(
@@ -310,13 +321,13 @@ def test_cross_month_insert_lands_in_correct_partition(engine) -> None:
             )
         )
         content_id = conn.execute(text("SELECT max(id) FROM content")).scalar_one()
-        for month in ("2026-01-15 10:00:00+00", "2026-06-15 10:00:00+00"):
+        for index, stamp in enumerate(stamps):
             conn.execute(
                 text(
                     "INSERT INTO exposure_log (user_id, content_id, action, ts, request_id) "
                     "VALUES ('u1', :cid, 'click', :ts, :rid)"
                 ),
-                {"cid": content_id, "ts": month, "rid": f"req-{month[:7]}"},
+                {"cid": content_id, "ts": stamp, "rid": f"req-partition-{index}"},
             )
         rows = conn.execute(
             text(
@@ -324,7 +335,7 @@ def test_cross_month_insert_lands_in_correct_partition(engine) -> None:
                 "WHERE content_id = :cid"
             ),
             {"cid": content_id},
-        )
+        ).all()
         assert len(rows) == 2
         # 两条数据落在不同分区（DEFAULT 分区也算一个分区）
         assert len({str(r[0]) for r in rows}) == 2, f"跨月数据未落到不同分区：{rows}"

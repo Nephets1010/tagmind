@@ -68,15 +68,23 @@ def test_session(test_engine):
 
 
 @pytest.fixture(autouse=True)
-def clean_tables(test_session: Session) -> None:
-    """每个测试前清空业务表。
+def clean_tables(request: pytest.FixtureRequest) -> None:
+    """每个**需要数据库**的测试前清空业务表。
 
     架构 §14.8 的「测试数据隔离」要求：不隔离的话，第二次跑就会撞上
     第一次留下的 ``idempotency_key``，报 UniqueViolation——测试失败的原因
     与被测代码无关。
+
+    QA 修正：原实现把 ``test_session`` 直接作为 autouse fixture 参数，
+    使得本模块里三个纯逻辑测试（``retry_on_deadlock`` / ``FilterSpec``）
+    在无 DB 环境下被整条 DB fixture 链连带 skip，属于「本该能跑却被跳过」。
+    这里改为按 ``request.fixturenames`` 惰性解析，纯逻辑测试不再触发 DB。
     """
-    test_session.execute(text(f"TRUNCATE {_BUSINESS_TABLES} RESTART IDENTITY CASCADE"))
-    test_session.commit()
+    if "test_session" not in request.fixturenames:
+        return
+    session: Session = request.getfixturevalue("test_session")
+    session.execute(text(f"TRUNCATE {_BUSINESS_TABLES} RESTART IDENTITY CASCADE"))
+    session.commit()
 
 
 @pytest.fixture

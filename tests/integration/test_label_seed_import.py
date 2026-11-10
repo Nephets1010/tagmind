@@ -197,11 +197,15 @@ def test_activate_version_marks_others_deprecated(test_session: Session, seeded:
 def test_materialized_path_prefix_query(test_session: Session, tree, seeded: int) -> None:
     """``path_prefix`` 前缀查询能取到子树（索引前缀扫描）。"""
     sample = tree.by_layer(3)[0]
-    rows = test_session.execute(
-        select(LabelDefModel.code)
-        .where(LabelDefModel.version == VERSION)
-        .where(LabelDefModel.path_prefix.like(f"{sample.path}/%"))
-    ).scalars().all()
+    rows = (
+        test_session.execute(
+            select(LabelDefModel.code)
+            .where(LabelDefModel.version == VERSION)
+            .where(LabelDefModel.path_prefix.like(f"{sample.path}/%"))
+        )
+        .scalars()
+        .all()
+    )
     assert rows, f"未查到 {sample.path} 的子树"
     assert all(code in tree.by_code for code in rows)
 

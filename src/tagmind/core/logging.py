@@ -65,6 +65,25 @@ _SENSITIVE_KEY_TOKENS: Final[tuple[str, ...]] = (
 #: 键名以 ``_key`` 结尾或恰为 ``key`` 时也整值抹除。
 _KEY_LIKE_SUFFIX: Final[str] = "_key"
 
+#: 短键名必须精确匹配，不能做子串匹配（否则会误伤 author / ping / session_id 等）。
+_SENSITIVE_EXACT_KEYS: Final[frozenset[str]] = frozenset(
+    {
+        "key",
+        "auth",
+        "pwd",
+        "pswd",
+        "passphrase",
+        "bearer",
+        "session",
+        "signature",
+        "jwt",
+        "otp",
+        "pin",
+        "client_id",
+        "access_key_id",
+    }
+)
+
 #: 只记长度与哈希、不落正文的字段。
 _TEXT_BODY_KEYS: Final[frozenset[str]] = frozenset(
     {
@@ -96,7 +115,9 @@ _COUNT_ONLY_KEYS: Final[frozenset[str]] = frozenset(
 )
 
 #: 需要截断的长文本字段。
-_TRUNCATE_KEYS: Final[frozenset[str]] = frozenset({"error", "exc_info", "stack", "traceback"})
+_TRUNCATE_KEYS: Final[frozenset[str]] = frozenset(
+    {"error", "exc_info", "stack", "traceback", "exception"}
+)
 
 #: 长文本字段的最大保留长度（2 KB）。
 _MAX_ERROR_CHARS: Final[int] = 2048
@@ -110,6 +131,21 @@ _SECRET_VALUE_PATTERNS: Final[tuple[re.Pattern[str], ...]] = (
     re.compile(r"AKIA[0-9A-Z]{12,}"),
     re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._\-]{8,}"),
 )
+
+#: 堆栈 / 异常文本里的 ``password=hunter2`` 这类键值对。
+#: 只匹配已知敏感键名，并保留键名本身，便于事后判断「哪一项被抹了」。
+_KV_SECRET_RE: Final[re.Pattern[str]] = re.compile(
+    r"(?i)\b(password|passwd|pwd|passphrase|secret|token|api[_-]?key|"
+    r"access[_-]?key|authorization|auth|credential|private[_-]?key|"
+    r"client[_-]?secret|jwt|otp|session[_-]?id)\s*([=:])\s*"
+    r"[\"']?([^\s,;)\&\"']{1,128})"
+)
+
+
+def _mask_kv_secrets(text: str) -> str:
+    """抹掉自由文本里「敏感键=值」的值部分。"""
+    return _KV_SECRET_RE.sub(lambda m: f"{m.group(1)}{m.group(2)}{REDACTED}", text)
+
 
 #: 值级 PII 模式。
 _PHONE_RE: Final[re.Pattern[str]] = re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)")
@@ -127,14 +163,30 @@ _PLACEHOLDER_PREFIXES: Final[tuple[tuple[re.Pattern[str], str], ...]] = (
 )
 
 
+def _normalize_key(key: str) -> str:
+    """把 ``api-key`` / ``X-API-Key`` / ``apiKey`` 归一成 ``api_key``。
+
+    脱敏漏判的一个常见来源就是键名写法差异：运维传 ``X-Api-Key``、
+    SDK 传 ``apiKey``、配置里写 ``api_key``，三者都该被同一套规则拦下。
+    """
+    import re as _re
+
+    normalized = _re.sub(r"[-.\s]", "_", key.strip())
+    normalized = _re.sub(r"(?<!^)(?=[A-Z])", "_", normalized).lower()
+    return _re.sub(r"_+", "_", normalized)
+
+
 def _is_sensitive_key(key: str) -> bool:
     """判断键名是否应整值抹除。"""
-    lowered = key.lower()
+    lowered = _normalize_key(key)
     if lowered in _TEXT_BODY_KEYS or lowered in _COUNT_ONLY_KEYS:
         return False
+    if lowered in _SENSITIVE_EXACT_KEYS:
+        return True
     if any(token in lowered for token in _SENSITIVE_KEY_TOKENS):
         return True
-    return lowered.endswith(_KEY_LIKE_SUFFIX)
+    # 注释约定「恰为 key 也抹除」，此前只判 endswith("_key") 会漏掉 "key"。
+    return lowered == "key" or lowered.endswith(_KEY_LIKE_SUFFIX)
 
 
 def _mask_pii_in_text(text: str) -> str:
@@ -188,8 +240,12 @@ def _redact_value(key: str, value: Any) -> Any:
             return value
         return {"count": 0}
 
-    if key.lower() in _TRUNCATE_KEYS and isinstance(value, str):
-        return value[:_MAX_ERROR_CHARS]
+    if _normalize_key(key) in _TRUNCATE_KEYS and isinstance(value, str):
+        masked = value
+        for pattern in _SECRET_VALUE_PATTERNS:
+            masked = pattern.sub(REDACTED, masked)
+        masked = _mask_kv_secrets(masked)
+        return _mask_pii_in_text(masked)[:_MAX_ERROR_CHARS]
 
     if key.lower() == "user_id" and isinstance(value, str):
         return _mask_user_id(value)
@@ -198,10 +254,15 @@ def _redact_value(key: str, value: Any) -> Any:
         masked = value
         for pattern in _SECRET_VALUE_PATTERNS:
             masked = pattern.sub(REDACTED, masked)
+        masked = _mask_kv_secrets(masked)
         return _mask_pii_in_text(masked)
 
     if isinstance(value, dict):
         return {k: _redact_value(str(k), v) for k, v in value.items()}
+
+    if isinstance(value, set | frozenset):
+        # 集合无序，直接 str() 会让日志不稳定；排序后逐项脱敏。
+        return [_redact_value(key, item) for item in sorted(value, key=str)]
 
     if isinstance(value, list | tuple):
         return [_redact_value(key, item) for item in value]
@@ -280,6 +341,17 @@ class _StreamLoggerFactory:
         return logger
 
 
+def _add_ts_alias(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+    """补齐架构 §14.4 约定的 ``ts`` 字段。
+
+    ``TimeStamper`` 默认写 ``timestamp``。为了让既有日志消费者不破，
+    这里保留 ``timestamp`` 并**额外**提供同值的 ``ts``，而不是直接改键名。
+    """
+    if "timestamp" in event_dict:
+        event_dict.setdefault("ts", event_dict["timestamp"])
+    return event_dict
+
+
 def configure_logging(
     *,
     level: str | None = None,
@@ -316,9 +388,12 @@ def configure_logging(
         structlog.stdlib.add_log_level,
         structlog.stdlib.add_logger_name,
         structlog.processors.TimeStamper(fmt="iso", utc=True),
-        redact_event,
+        _add_ts_alias,
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
+        # 必须先展开堆栈再脱敏：否则 exc_info=True 生成的 exception 字符串
+        # 绕过 redact_event，明文密钥会随 5xx 堆栈落到日志里。
+        redact_event,
         structlog.processors.UnicodeDecoder(),
         _drop_color_message,
         renderer,

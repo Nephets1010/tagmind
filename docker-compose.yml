@@ -4,6 +4,10 @@
 # 五个服务：api / worker / beat / postgres(pgvector) / redis。
 # api、worker、beat **复用同一镜像**，靠 TAGMIND_ROLE 分派（架构附录 A.4）。
 #
+# 安全：TAGMIND_POSTGRES_PASSWORD 无默认值，未设置时 compose 直接拒绝启动，
+# 避免任何人用弱口令起生产库。生产环境须显式设置 TAGMIND_ENV=production，
+# 此时 Settings 的 production 守卫会强制校验凭据。
+#
 # 凭据一律从环境读，不在文件里硬编码；本地开发用 .env，
 # 生产用 secret manager 注入。
 # ---------------------------------------------------------------------------
@@ -15,7 +19,7 @@ services:
     environment:
       POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
       POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
-      POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:?必须在 .env 中设置 TAGMIND_POSTGRES_PASSWORD}
     ports:
       - "${TAGMIND_POSTGRES_PORT:-5432}:5432"
     volumes:
@@ -59,7 +63,7 @@ services:
       TAGMIND_POSTGRES_PORT: 5432
       TAGMIND_POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
       TAGMIND_POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
-      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:?必须在 .env 中设置 TAGMIND_POSTGRES_PASSWORD}
       TAGMIND_REDIS_URL: redis://redis:6379/0
       TAGMIND_REDIS_PASSWORD: ${TAGMIND_REDIS_PASSWORD:-}
       TAGMIND_LLM_BACKEND: ${TAGMIND_LLM_BACKEND:-deterministic}
@@ -94,7 +98,7 @@ services:
       TAGMIND_POSTGRES_PORT: 5432
       TAGMIND_POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
       TAGMIND_POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
-      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:?必须在 .env 中设置 TAGMIND_POSTGRES_PASSWORD}
       TAGMIND_REDIS_URL: redis://redis:6379/0
       TAGMIND_REDIS_PASSWORD: ${TAGMIND_REDIS_PASSWORD:-}
       TAGMIND_LLM_BACKEND: ${TAGMIND_LLM_BACKEND:-deterministic}
@@ -121,7 +125,7 @@ services:
       TAGMIND_POSTGRES_PORT: 5432
       TAGMIND_POSTGRES_DB: ${TAGMIND_POSTGRES_DB:-tagmind}
       TAGMIND_POSTGRES_USER: ${TAGMIND_POSTGRES_USER:-tagmind}
-      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:-tagmind}
+      TAGMIND_POSTGRES_PASSWORD: ${TAGMIND_POSTGRES_PASSWORD:?必须在 .env 中设置 TAGMIND_POSTGRES_PASSWORD}
       TAGMIND_REDIS_URL: redis://redis:6379/0
       TAGMIND_REDIS_PASSWORD: ${TAGMIND_REDIS_PASSWORD:-}
       TAGMIND_SCHEDULER_TIMEZONE: ${TAGMIND_SCHEDULER_TIMEZONE:-Asia/Shanghai}

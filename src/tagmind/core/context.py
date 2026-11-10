@@ -13,6 +13,8 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Iterator
+from contextlib import contextmanager
 from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -22,6 +24,7 @@ __all__ = [
     "RequestContext",
     "bind_context",
     "clear_context",
+    "context_scope",
     "current_context",
     "new_request_id",
     "new_trace_id",
@@ -97,6 +100,11 @@ def bind_context(
 
     Returns:
         可用于 :func:`contextvars.ContextVar.reset` 的 token；无字段被设置时返回 ``None``。
+
+    Warning:
+        本函数只返回**其中一个**变量的 token。绑定多个字段时请用
+        :func:`context_scope`，它能保证退出时所有变量都被正确恢复；
+        否则其余变量会泄漏到下一条复用线程的请求/任务里。
     """
     token: Token[Any] | None = None
     if request_id is not None:
@@ -111,6 +119,41 @@ def bind_context(
         content_token = _content_id.set(content_id)
         token = token if token is not None else content_token
     return token
+
+
+@contextmanager
+def context_scope(
+    *,
+    request_id: str | None = None,
+    trace_id: str | None = None,
+    user_id: str | None = None,
+    content_id: int | None = None,
+) -> Iterator[RequestContext | None]:
+    """绑定多字段上下文，退出时**逆序 reset 全部** token。
+
+    ``bind_context`` 在多字段场景只返回其中一个 token，直接 ``reset`` 会
+    让其与余变量泄漏到复用线程的下一条请求/Celery 任务。本函数是这类场景的
+    推荐入口：HTTP 中间件与 worker 任务都通过 ``with context_scope(...)``
+    使用，退出时无论正常还是异常都会完整恢复。
+
+    Yields:
+        绑定后的上下文快照；若调用方一个 ID 都没传，则为 ``None``
+        （``current_context()`` 的既有语义，此处不额外伪造 ID）。
+    """
+    tokens: list[Token[Any]] = []
+    if request_id is not None:
+        tokens.append(_request_id.set(request_id))
+    if trace_id is not None:
+        tokens.append(_trace_id.set(trace_id))
+    if user_id is not None:
+        tokens.append(_user_id.set(user_id))
+    if content_id is not None:
+        tokens.append(_content_id.set(content_id))
+    try:
+        yield current_context()
+    finally:
+        for token in reversed(tokens):
+            token.var.reset(token)
 
 
 def clear_context() -> None:

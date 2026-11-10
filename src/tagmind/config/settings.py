@@ -17,7 +17,7 @@ from functools import lru_cache
 from typing import Annotated, Literal
 from urllib.parse import quote, urlsplit, urlunsplit
 
-from pydantic import SecretStr, field_validator
+from pydantic import SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 from tagmind.core.errors import ConfigError
@@ -109,10 +109,29 @@ class Settings(BaseSettings):
     llm_max_concurrency: int = 8
     llm_temperature: float = 0.0
     llm_max_tokens: int = 2048
+    llm_max_retries: int = 3
+    llm_retry_base_delay: float = 0.5
+    llm_retry_max_delay: float = 8.0
+    llm_local_api_base: str = "http://localhost:11434/v1"
+    llm_audit_enabled: bool = True
+    llm_context_shrink_attempts: int = 1
+    llm_health_probe_timeout: float = 5.0
 
     embedding_enabled: bool = False
     embedding_model: str = "BAAI/bge-m3"
     embedding_dim: int = 1024
+
+    # --- Preprocessing (T05) -------------------------------------------------
+    clean_rules_dir: str = "rules"
+    ad_words_path: str = "rules/ad_words.txt"
+    chunk_max_tokens: int = 2048
+    chunk_overlap_chars: int = 0
+    clean_unicode_normalize: bool = True
+    clean_min_length: int = 1
+    dedup_enabled: bool = True
+    dedup_simhash_distance: int = 3
+    ad_relevance_threshold: float = 0.15
+    clean_rules_hot_reload: bool = True
 
     # --- Labelling pipeline -------------------------------------------------
     label_batch_size: int = 50
@@ -185,6 +204,18 @@ class Settings(BaseSettings):
         """日志级别统一大写，避免 ``info``/``INFO`` 两种写法行为不一致。"""
         return value.strip().upper()
 
+    @model_validator(mode="after")
+    def _run_invariants(self) -> Settings:
+        """所有构造路径都必须经过安全护栏。
+
+        此前三个校验只在 ``get_settings()`` 里调用，直接 ``Settings(...)``
+        可以构造出 production 无密码、或 llm_enabled=false 却外发的配置。
+        """
+        self._validate_production_secrets()
+        self._validate_llm_backend()
+        self._validate_canary_ratio()
+        return self
+
     def _validate_production_secrets(self) -> None:
         """生产环境必须配置数据库密码，否则启动失败。"""
         if self.env == "production" and not self.postgres_password.get_secret_value():
@@ -235,14 +266,44 @@ class Settings(BaseSettings):
         return f"postgresql+psycopg://{netloc}/{self.postgres_db}"
 
     @property
+    def resolved_redis_url(self) -> str:
+        """把 ``redis_password`` 合并进 Redis URL 的认证段。
+
+        此前 ``TAGMIND_REDIS_PASSWORD`` 只有字段声明、没有任何消费点：运维
+        以为开了 Redis 鉴权，实际连的是无密码 URL。这里保留 URL 中已有的
+        凭据（不覆盖），仅在「URL 不带密码」且「配置了独立密码」时注入。
+        密码做 URL 编码，特殊字符不会破坏连接串。
+        """
+        url = self.redis_url
+        password = self.redis_password.get_secret_value()
+        if not password or not url:
+            return url
+        try:
+            parts = urlsplit(url)
+        except ValueError:  # pragma: no cover - 畸形 URL 的输入校验在别处
+            return url
+        if parts.password or not parts.hostname:
+            return url
+        host = parts.netloc.rsplit("@", 1)[-1]
+        encoded_password = quote(password, safe="")
+        userinfo = (
+            f"{quote(parts.username, safe='')}:{encoded_password}"
+            if parts.username
+            else f":{encoded_password}"
+        )
+        return urlunsplit(
+            (parts.scheme, f"{userinfo}@{host}", parts.path, parts.query, parts.fragment)
+        )
+
+    @property
     def redis_broker_url(self) -> str:
         """Celery broker 地址（Redis ``/1``）。"""
-        return _redis_url_with_db(self.redis_url, REDIS_DB_BROKER)
+        return _redis_url_with_db(self.resolved_redis_url, REDIS_DB_BROKER)
 
     @property
     def redis_cache_url(self) -> str:
         """结果缓存地址（Redis ``/2``）。"""
-        return _redis_url_with_db(self.redis_url, REDIS_DB_RESULT)
+        return _redis_url_with_db(self.resolved_redis_url, REDIS_DB_RESULT)
 
     @property
     def llm_provider(self) -> str:
@@ -276,9 +337,6 @@ def get_settings() -> Settings:
     下拿到互相矛盾的两份环境快照。
     """
     settings = Settings()
-    settings._validate_production_secrets()
-    settings._validate_llm_backend()
-    settings._validate_canary_ratio()
     if settings.llm_enabled and settings.llm_backend == "deterministic":
         from tagmind.core.logging import get_logger
 

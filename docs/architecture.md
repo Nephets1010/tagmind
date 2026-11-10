@@ -3686,7 +3686,7 @@ graph TD
 2. `docker-compose.yml`（尚不存在）：五个服务 `api` / `worker` / `beat` / `postgres`（`pgvector/pgvector:pg16`）/ `redis`，通过 `TAGMIND_ROLE` 复用同一镜像。
 3. `.env.example`：新增 `TAGMIND_LLM_BACKEND` / `TAGMIND_LABEL_CANARY_RATIO` / `TAGMIND_LABEL_CANARY_VERSION` 三行，并加注释说明与 `TAGMIND_LLM_ENABLED` 的派生关系。
 
-### A.4 变更记录
+### A.5 变更记录
 
 | 版本 | 日期 | 变更 | 作者 |
 | --- | --- | --- | --- |

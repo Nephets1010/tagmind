@@ -51,7 +51,13 @@ def _resolve_url() -> str:
         if settings.database_url:
             return settings.database_url
         return settings.resolved_database_url
-    except Exception:
+    except Exception as exc:
+        # 此前裸 except 把「production 缺密码」这类 ConfigError 一起吞掉，
+        # 最终只报「未找到数据库连接串」，把真实原因掩盖了。
+        from tagmind.core.errors import ConfigError
+
+        if isinstance(exc, ConfigError):
+            raise RuntimeError(f"数据库配置校验失败：{exc}") from exc
         return config.get_main_option("sqlalchemy.url", "")
 
 

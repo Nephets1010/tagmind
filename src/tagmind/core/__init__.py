@@ -13,6 +13,7 @@ from __future__ import annotations
 from tagmind.core.context import (
     bind_context,
     clear_context,
+    context_scope,
     current_context,
     new_request_id,
     new_trace_id,
@@ -25,6 +26,7 @@ __all__ = [
     "bind_context",
     "clear_context",
     "configure_logging",
+    "context_scope",
     "current_context",
     "get_logger",
     "new_request_id",

@@ -39,11 +39,11 @@ coverage: ## Run the tests with the coverage report
 	$(PYTHON) -m pytest tests --cov=src/tagmind --cov-report=term-missing --cov-report=html
 
 lint: ## Run ruff
-	ruff check src tests
+	ruff check .
 
 format: ## Format the code with ruff
-	ruff format src tests
-	ruff check --fix src tests
+	ruff format .
+	ruff check --fix .
 
 typecheck: ## Run mypy
 	mypy src/tagmind
@@ -60,10 +60,10 @@ labels: ## Import the 12-layer label taxonomy seed
 seed: ## Load the synthetic dataset
 	$(PYTHON) -m tagmind.cli seed --contents 1000 --users 100 --days 30
 
-demo: ## Run the end-to-end demo (label + recommend + evaluate)
+demo: ## [阶段 4 占位] End-to-end demo (currently exits 1)
 	$(PYTHON) -m tagmind.cli demo
 
-bench: ## Run the offline recommendation benchmark (three baselines)
+bench: ## [阶段 4 占位] Offline benchmark / three baselines (currently exits 1)
 	$(PYTHON) -m tagmind.cli bench
 
 build: ## Build the container image

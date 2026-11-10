@@ -133,15 +133,17 @@ class InteractionRepository(BaseRepository[UserProfile]):
             }
             for event in events
         ]
-        stmt = pg_insert(ExposureLogModel).values(payload)
-        stmt = stmt.on_conflict_do_nothing(
+        insert_stmt = pg_insert(ExposureLogModel).values(payload)
+        conflict_stmt = insert_stmt.on_conflict_do_nothing(
             index_elements=["request_id", "content_id", "action", "ts"]
         )
         # 用 RETURNING 精确统计**实际插入**的行数：``rowcount`` 在
         # ``ON CONFLICT DO NOTHING`` 下可能返回 -1（psycopg 对多行 VALUES
         # 的计数不总是可靠），而 -1 会被误当成「插入了 -1 行」。
-        stmt = stmt.returning(ExposureLogModel.id)
-        result = cast("CursorResult[Any]", self._session.execute(stmt))
+        # ``returning()`` 的静态类型是 ReturningInsert，与 Insert 不兼容，
+        # 因此必须换一个变量名承接，不能原地赋回 stmt。
+        returning_stmt = conflict_stmt.returning(ExposureLogModel.id)
+        result = cast("CursorResult[Any]", self._session.execute(returning_stmt))
         inserted = len(result.fetchall())
         self._session.flush()
         return inserted
